@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic HTML — Introduction | Web Design & Development (BBA)</title>
+<style>
+  :root{
+    --b1:#2d5f8d; --b2:#3a7ca5; --b3:#5ba8cf;
+    --ink:#22303c; --muted:#5a6b7a;
+    --note:#fff8c9; --note-line:#e8c84a; --note-ink:#6b5300;
+    --bg:#eef3f8; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+    line-height:1.7; font-size:17px;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 18px 80px}
+  .slide{
+    background:var(--card); border-radius:16px; padding:34px 34px 30px;
+    margin-bottom:30px; box-shadow:0 6px 22px rgba(45,95,141,.10);
+    position:relative; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .slide:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(45,95,141,.16)}
+  .slide-no{
+    position:absolute; top:14px; right:20px; font-size:13px; font-weight:600;
+    color:#9db4c7; letter-spacing:.5px;
+  }
+  h1{
+    font-size:38px; margin:0 0 8px; line-height:1.25;
+    background:linear-gradient(90deg,var(--b1),var(--b3));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h2{
+    font-size:26px; margin:0 0 18px; padding:8px 0 8px 16px;
+    border-left:6px solid var(--b2);
+    background:linear-gradient(90deg,rgba(91,168,207,.18),rgba(91,168,207,0));
+    color:var(--b1);
+  }
+  h3{font-size:20px;color:var(--b1);margin:26px 0 10px}
+  .lede{font-size:19px;color:var(--muted)}
+  .meta{color:var(--muted);font-size:15px}
+
+  /* ---- handwritten yellow note ---- */
+  .note{
+    font-family:"Segoe Print","Bradley Hand","Comic Sans MS","Marker Felt",cursive;
+    background:var(--note); border:2px dashed var(--note-line);
+    color:var(--note-ink); border-radius:10px; padding:14px 18px 14px 20px;
+    margin:16px 0; font-size:17px; line-height:1.6;
+    transform:rotate(-.35deg);
+  }
+  .note p{margin:6px 0}
+  .note .arrow{font-weight:700;margin-right:6px}
+  .note.right{transform:rotate(.4deg)}
+  .note b{color:#8a6a00}
+
+  .key{
+    background:linear-gradient(90deg,rgba(45,95,141,.10),rgba(91,168,207,.06));
+    border-left:6px solid var(--b1); border-radius:10px;
+    padding:14px 18px; margin:18px 0;
+  }
+  .key strong{color:var(--b1)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+  .box{border:1px solid #d8e4ee;border-radius:12px;padding:16px;background:#fbfdff}
+  .box h4{margin:0 0 8px;color:var(--b1);font-size:17px}
+  .bad{border-color:#f0c9c9;background:#fff8f8}
+  .bad h4{color:#a63b3b}
+  .good{border-color:#c9e6d2;background:#f7fdf9}
+  .good h4{color:#2e7d4f}
+
+  /* ---- code ---- */
+  .codewrap{position:relative;margin:16px 0}
+  pre{
+    background:#12232f;color:#e8f1f7;border-radius:12px;padding:18px 18px;
+    overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:14.5px;
+    line-height:1.6;margin:0;
+  }
+  .copy{
+    position:absolute;top:10px;right:10px;background:var(--b2);color:#fff;
+    border:0;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;
+    font-family:"Segoe UI",sans-serif;
+  }
+  .copy:hover{background:var(--b1)}
+  code.inline{background:#e7eff6;color:var(--b1);padding:2px 7px;border-radius:5px;
+    font-family:Consolas,monospace;font-size:15px}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:16px}
+  th{background:linear-gradient(90deg,var(--b1),var(--b2));color:#fff;text-align:left;padding:11px 12px}
+  td{padding:11px 12px;border-bottom:1px solid #e3ecf3;vertical-align:top}
+  tr:nth-child(even) td{background:#f8fbfd}
+  td code{background:#e7eff6;color:var(--b1);padding:2px 6px;border-radius:5px;
+    font-family:Consolas,monospace;font-size:14.5px}
+
+  .pill{display:inline-block;background:#e7eff6;color:var(--b1);border-radius:20px;
+    padding:5px 14px;margin:4px 6px 4px 0;font-size:14.5px;font-weight:600}
+
+  /* ---- quiz ---- */
+  .q{border:1px solid #d8e4ee;border-radius:12px;padding:18px;margin-bottom:16px;background:#fbfdff}
+  .q .qn{font-weight:700;color:var(--b1);margin-bottom:10px}
+  .opt{display:block;padding:9px 12px;border:1px solid #dce7f0;border-radius:8px;
+    margin:7px 0;cursor:pointer;background:#fff;transition:.15s}
+  .opt:hover{border-color:var(--b3);background:#f2f9fd}
+  .opt input{margin-right:9px}
+  .opt.correct{background:#eafaf0;border-color:#57b77f}
+  .opt.wrong{background:#fdeeee;border-color:#d98787}
+  .exp{display:none;margin-top:12px}
+  .exp.show{display:block}
+  .btn{background:linear-gradient(90deg,var(--b1),var(--b2));color:#fff;border:0;
+    border-radius:10px;padding:13px 28px;font-size:17px;cursor:pointer;font-weight:600}
+  .btn:hover{opacity:.92}
+  .btn.ghost{background:#e7eff6;color:var(--b1)}
+  #score{font-size:22px;font-weight:700;color:var(--b1);margin:18px 0;display:none}
+
+  /* ---- vs code icons ---- */
+  .ic{width:1.05em;height:1.05em;vertical-align:-.17em;fill:none;
+    stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .ic.solid{fill:currentColor;stroke:none}
+  .iconkey{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:18px 0}
+  .iconkey div{display:flex;gap:11px;align-items:flex-start;border:1px solid #d8e4ee;
+    border-radius:10px;padding:12px 14px;background:#fbfdff;font-size:15px}
+  .iconkey .ic{width:26px;height:26px;flex:0 0 26px;color:var(--b2);margin-top:2px}
+  .iconkey b{color:var(--b1);display:block}
+  .vsmock{background:#1e1e1e;border-radius:12px;overflow:hidden;margin:18px 0;
+    font-family:Consolas,monospace;font-size:14px;color:#ccc}
+  .vsmock .bar{display:flex;justify-content:space-between;align-items:center;
+    background:#007acc;color:#fff;padding:7px 14px;font-size:13.5px}
+  .vsmock .bar span{display:inline-flex;align-items:center;gap:6px}
+  .vsmock .body{display:flex;min-height:150px}
+  .vsmock .side{background:#252526;padding:12px 14px;width:250px;border-right:1px solid #333}
+  .vsmock .side .hd{color:#9d9d9d;font-size:11.5px;letter-spacing:1.3px;
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .vsmock .side .hd .acts{display:flex;gap:9px;color:#ccc}
+  .vsmock .f{padding:3px 0 3px 14px;display:flex;align-items:center;gap:7px}
+  .vsmock .f.dirty{color:#e2c08d}
+  .vsmock .dot{width:8px;height:8px;border-radius:50%;background:#e2c08d;margin-left:auto}
+  .vsmock .ed{padding:14px 18px;color:#9cdcfe;flex:1}
+  .vsmock .ed .c{color:#6a9955}
+  .callout{background:#fff8c9;border:2px dashed #e8c84a;border-radius:8px;
+    padding:3px 9px;font-size:13px;color:#6b5300;display:inline-block;
+    font-family:"Segoe Print","Comic Sans MS",cursive}
+
+  @media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:29px}.slide{padding:24px 20px}}
+  @media print{
+    body{background:#fff}.slide{page-break-after:always;box-shadow:none;border:1px solid #ddd}
+    .copy{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 1 -->
+<section class="slide"><span class="slide-no">01</span>
+  <h1>Semantic HTML</h1>
+  <p class="lede">Writing web pages that <em>mean</em> something — not just pages that <em>look</em> like something.</p>
+  <p class="meta">Web Design &amp; Development · BBA (Digital Business) · Lecture — Introduction<br>
+  No prior coding experience needed. If you can type, you can do this.</p>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> Today we learn <b>3 things</b> only:</p>
+    <p><span class="arrow">➜</span> 1. Editor shortcuts that save you hours</p>
+    <p><span class="arrow">➜</span> 2. What "Semantic Web" actually means (in Hindi-English, no jargon)</p>
+    <p><span class="arrow">➜</span> 3. Fifteen tags. That's it. Fifteen.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide"><span class="slide-no">02</span>
+  <h2>Before anything — 5 shortcuts you'll use every single day</h2>
+  <p>Open <strong>VS Code</strong> (free download from code.visualstudio.com). Create a file called <code class="inline">index.html</code>. Now memorise these five.</p>
+
+  <table>
+    <tr><th style="width:170px">Shortcut</th><th>What it does</th><th>When you'll need it</th></tr>
+    <tr><td><code>Ctrl + /</code></td><td>Comment / un-comment the selected line</td><td>To "hide" code without deleting it</td></tr>
+    <tr><td><code>Ctrl + Z</code></td><td>Undo the last thing you did</td><td>Every 30 seconds, honestly</td></tr>
+    <tr><td><code>Ctrl + S</code></td><td>Save the file</td><td>Before every refresh of the browser</td></tr>
+    <tr><td><code>Ctrl + D</code></td><td>Duplicate the current line</td><td>Making 5 similar menu items</td></tr>
+    <tr><td><code>! + Tab</code></td><td>Auto-writes a full HTML skeleton</td><td>Starting any new page</td></tr>
+  </table>
+
+  <div class="note right">
+    <p><span class="arrow">➜</span> <b>Mac users:</b> wherever it says Ctrl, you press Cmd (⌘).</p>
+    <p><span class="arrow">➜</span> <b>Ctrl + /</b> gives you this in HTML: &lt;!-- like this --&gt;<br>
+       Anything inside those marks is invisible to the browser. It is a note for humans only.</p>
+    <p><span class="arrow">➜</span> Try <b>! then Tab</b> right now in an empty index.html. Magic. Your whole page appears.</p>
+  </div>
+
+  <div class="codewrap">
+    <button class="copy">Copy</button>
+<pre>&lt;!-- This is a comment. The browser ignores it completely. --&gt;
+&lt;!-- Use Ctrl + / to make one instantly --&gt;
+
+&lt;p&gt;This line WILL show on the page.&lt;/p&gt;
+&lt;!-- &lt;p&gt;This line will NOT show. It is commented out.&lt;/p&gt; --&gt;</pre>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide"><span class="slide-no">03</span>
+  <h2>So what is the "Semantic Web"?</h2>
+  <p><strong>Semantic</strong> is just a fancy word for <strong>meaning</strong>.</p>
+  <p>A web page has two audiences. One is a <strong>human</strong> — your customer, scrolling on a phone. The other is a <strong>machine</strong> — Google's crawler, a screen reader used by a blind user, ChatGPT reading your site, a price-comparison bot.</p>
+  <p>Humans see colours, size and position, so they understand your page instantly. Machines see <em>only your tags</em>. If your tags carry no meaning, the machine is reading your page blindfolded.</p>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> Think of a <b>Nykaa product page</b>.</p>
+    <p><span class="arrow">➜</span> You <i>see</i> the price because it's big and bold. Google can't "see" big and bold.</p>
+    <p><span class="arrow">➜</span> Google reads the tag around it. If the tag says &lt;div&gt; → "some box, no idea what."<br>
+       If the tag says &lt;article&gt; or &lt;time&gt; → "ah, this is a product, this is a date."</p>
+    <p><span class="arrow">➜</span> <b>Semantic HTML = choosing tags that describe the content, not the look.</b></p>
+  </div>
+
+  <div class="grid">
+    <div class="box bad">
+      <h4>✗ Non-semantic (meaningless)</h4>
+      <pre style="font-size:13.5px">&lt;div class="top"&gt;
+  &lt;div class="menu"&gt;Home&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="main"&gt;
+  &lt;div class="title"&gt;Our Story&lt;/div&gt;
+&lt;/div&gt;</pre>
+      <p style="margin:10px 0 0;font-size:15px">Every box is a <code class="inline">div</code>. To a machine, this page is a pile of identical grey boxes.</p>
+    </div>
+    <div class="box good">
+      <h4>✓ Semantic (meaningful)</h4>
+      <pre style="font-size:13.5px">&lt;header&gt;
+  &lt;nav&gt;Home&lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;h1&gt;Our Story&lt;/h1&gt;
+&lt;/main&gt;</pre>
+      <p style="margin:10px 0 0;font-size:15px">Same page on screen. But now the machine knows: top bar, navigation, main content, main heading.</p>
+    </div>
+  </div>
+
+  <div class="key">
+    <strong>Why a business student should care:</strong> semantic tags directly affect <strong>SEO ranking</strong>, <strong>accessibility compliance</strong> (a legal requirement in many markets), and now <strong>whether AI assistants can read and recommend your brand</strong>. Same effort to type. Very different business outcome.
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide"><span class="slide-no">04</span>
+  <h2>How a tag works (30-second theory)</h2>
+  <div class="codewrap"><button class="copy">Copy</button>
+<pre>&lt;p&gt;Hello students&lt;/p&gt;
+ ↑        ↑        ↑
+opening  content  closing tag (note the / )</pre>
+  </div>
+  <div class="note right">
+    <p><span class="arrow">➜</span> A tag is a <b>label wrapped around content</b>.</p>
+    <p><span class="arrow">➜</span> Almost every tag opens &lt;p&gt; and closes &lt;/p&gt;. Forget the slash → the page breaks.</p>
+    <p><span class="arrow">➜</span> A few tags don't need closing, e.g. &lt;img&gt; and &lt;br&gt;. They are "self-closing".</p>
+    <p><span class="arrow">➜</span> Tags sit inside other tags — like boxes inside a carton. That's called <b>nesting</b>.</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide"><span class="slide-no">05</span>
+  <h2>The 15 tags — the whole syllabus of today</h2>
+  <p>Group A is the <strong>skeleton</strong> of a page. Group B gives <strong>meaning to text</strong>.</p>
+
+  <h3>Group A — Layout / structure tags (7)</h3>
+  <table>
+    <tr><th style="width:150px">Tag</th><th>Means</th><th>Real example</th></tr>
+    <tr><td><code>&lt;header&gt;</code></td><td>Top strip of the page or of a section — logo, tagline</td><td>The Zomato logo bar at the top</td></tr>
+    <tr><td><code>&lt;nav&gt;</code></td><td>A group of navigation links (menu)</td><td>Home · Menu · Offers · Cart</td></tr>
+    <tr><td><code>&lt;main&gt;</code></td><td>The one main content area. Only <strong>one</strong> per page</td><td>The restaurant listings themselves</td></tr>
+    <tr><td><code>&lt;section&gt;</code></td><td>A themed chunk of content, usually with a heading</td><td>"Top rated near you"</td></tr>
+    <tr><td><code>&lt;article&gt;</code></td><td>A self-contained item that makes sense alone</td><td>One restaurant card, one blog post</td></tr>
+    <tr><td><code>&lt;aside&gt;</code></td><td>Side content — related but not essential</td><td>Filters sidebar, "You may also like"</td></tr>
+    <tr><td><code>&lt;footer&gt;</code></td><td>Bottom strip — contact, copyright, policy links</td><td>"© 2026 · Privacy · Careers"</td></tr>
+  </table>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> Confused between <b>section</b> and <b>article</b>?</p>
+    <p><span class="arrow">➜</span> Ask: <i>"If I cut this out and paste it in WhatsApp, does it still make sense on its own?"</i></p>
+    <p><span class="arrow">➜</span> Yes → &lt;article&gt; (one boAt earphone card, one news story).<br>
+       No → &lt;section&gt; ("Bestsellers" heading alone means nothing).</p>
+  </div>
+
+  <h3>Group B — Text-meaning tags (8)</h3>
+  <table>
+    <tr><th style="width:180px">Tag</th><th>Means</th><th>Note</th></tr>
+    <tr><td><code>&lt;h1&gt;</code> … <code>&lt;h6&gt;</code></td><td>Headings, h1 biggest idea → h6 smallest</td><td>Use <strong>one h1</strong> per page. Never skip levels</td></tr>
+    <tr><td><code>&lt;p&gt;</code></td><td>A paragraph of text</td><td>The default home for any sentence</td></tr>
+    <tr><td><code>&lt;ul&gt;</code> / <code>&lt;li&gt;</code></td><td>Unordered list and its list items</td><td>Bullet points — features, benefits</td></tr>
+    <tr><td><code>&lt;strong&gt;</code></td><td>Genuinely important text</td><td>Looks bold, <em>but</em> also tells machines "this matters"</td></tr>
+    <tr><td><code>&lt;em&gt;</code></td><td>Emphasis — stress this word when speaking</td><td>Looks italic, carries meaning</td></tr>
+    <tr><td><code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code></td><td>An image with its official caption</td><td>Ties picture and caption together</td></tr>
+    <tr><td><code>&lt;time&gt;</code></td><td>A machine-readable date or time</td><td><code>&lt;time datetime="2026-08-07"&gt;</code></td></tr>
+    <tr><td><code>&lt;blockquote&gt;</code></td><td>A quotation from another source</td><td>Customer testimonials</td></tr>
+  </table>
+
+  <div class="note right">
+    <p><span class="arrow">➜</span> <b>&lt;b&gt; vs &lt;strong&gt;</b> — both look bold. &lt;b&gt; only paints it bold. &lt;strong&gt; says "this is important."</p>
+    <p><span class="arrow">➜</span> Same story: &lt;i&gt; is just slanted, &lt;em&gt; means emphasis.</p>
+    <p><span class="arrow">➜</span> Rule of thumb → <b>always pick the one that carries meaning.</b></p>
+  </div>
+
+  <p style="margin-top:20px">
+    <span class="pill">header</span><span class="pill">nav</span><span class="pill">main</span><span class="pill">section</span><span class="pill">article</span><span class="pill">aside</span><span class="pill">footer</span><span class="pill">h1–h6</span><span class="pill">p</span><span class="pill">ul / li</span><span class="pill">strong</span><span class="pill">em</span><span class="pill">figure</span><span class="pill">time</span><span class="pill">blockquote</span>
+  </p>
+</section>
+
+<!-- 6 -->
+<section class="slide"><span class="slide-no">06</span>
+  <h2>Practice file — copy this, save as index.html, double-click it</h2>
+  <p>This is a complete working page. Every tag we learned is inside it. Change the words to your own brand.</p>
+
+  <div class="codewrap"><button class="copy">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Chai Point Dehradun&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;!-- TOP OF PAGE --&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Chai Point Dehradun&lt;/h1&gt;
+    &lt;p&gt;Fresh chai, brewed every 20 minutes.&lt;/p&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#menu"&gt;Menu&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#story"&gt;Our Story&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;!-- THE ONE MAIN CONTENT AREA --&gt;
+  &lt;main&gt;
+
+    &lt;section id="menu"&gt;
+      &lt;h2&gt;Today's Menu&lt;/h2&gt;
+
+      &lt;article&gt;
+        &lt;h3&gt;Masala Chai&lt;/h3&gt;
+        &lt;p&gt;Our &lt;strong&gt;bestseller&lt;/strong&gt; since 2019. Only &lt;em&gt;fresh&lt;/em&gt; ginger.&lt;/p&gt;
+        &lt;p&gt;Price: Rs 30&lt;/p&gt;
+      &lt;/article&gt;
+
+      &lt;article&gt;
+        &lt;h3&gt;Kulhad Coffee&lt;/h3&gt;
+        &lt;p&gt;Served in a clay cup. Zero plastic.&lt;/p&gt;
+        &lt;p&gt;Price: Rs 60&lt;/p&gt;
+      &lt;/article&gt;
+    &lt;/section&gt;
+
+    &lt;section id="story"&gt;
+      &lt;h2&gt;Our Story&lt;/h2&gt;
+      &lt;p&gt;We opened on
+        &lt;time datetime="2019-04-15"&gt;15 April 2019&lt;/time&gt;
+        with one kettle.&lt;/p&gt;
+
+      &lt;figure&gt;
+        &lt;img src="shop.jpg" alt="Our first tea stall in Rajpur Road"&gt;
+        &lt;figcaption&gt;Day one — Rajpur Road, 2019.&lt;/figcaption&gt;
+      &lt;/figure&gt;
+
+      &lt;blockquote&gt;
+        Best cutting chai I have had outside Mumbai.
+      &lt;/blockquote&gt;
+    &lt;/section&gt;
+
+  &lt;/main&gt;
+
+  &lt;!-- SIDE INFO — nice to have, not essential --&gt;
+  &lt;aside&gt;
+    &lt;h2&gt;Opening Hours&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Mon to Sat: 7 am - 10 pm&lt;/li&gt;
+      &lt;li&gt;Sunday: 8 am - 9 pm&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/aside&gt;
+
+  &lt;!-- BOTTOM OF PAGE --&gt;
+  &lt;footer id="contact"&gt;
+    &lt;p&gt;Rajpur Road, Dehradun · 98xxxxxx12&lt;/p&gt;
+    &lt;p&gt;&amp;copy; 2026 Chai Point Dehradun&lt;/p&gt;
+  &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+  </div>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> The page will look <b>plain and ugly</b>. That is correct! Styling is CSS — next class.</p>
+    <p><span class="arrow">➜</span> Today we only care that the <b>structure carries meaning</b>.</p>
+    <p><span class="arrow">➜</span> Right-click the page → <b>Inspect</b> → see your own tags live in the browser.</p>
+    <p><span class="arrow">➜</span> <b>Homework:</b> rebuild this page for your own idea (café, gym, boutique, startup). Use all 15 tags at least once.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide"><span class="slide-no">07</span>
+  <h2>Your workshop: Visual Studio Code</h2>
+  <p>VS Code is just a <strong>very smart notepad for code</strong>. It is free, from Microsoft, and it is what working developers actually use. Download from <code class="inline">code.visualstudio.com</code>.</p>
+
+  <h3>The screen, in plain language</h3>
+  <table>
+    <tr><th style="width:190px">What you see</th><th>What it is</th><th>What you do there</th></tr>
+    <tr><td>Left icon strip</td><td>Activity Bar</td><td>Top icon (two sheets) = <strong>Explorer</strong>, your files</td></tr>
+    <tr><td>Left panel</td><td>Explorer / file tree</td><td>Your project folder and everything inside it</td></tr>
+    <tr><td>Big middle area</td><td>Editor</td><td>Where you actually type code</td></tr>
+    <tr><td>Bottom blue strip</td><td>Status Bar</td><td>Errors, line number, and the <strong>Go Live</strong> button</td></tr>
+    <tr><td>Squares icon (left strip)</td><td>Extensions</td><td>Install add-ons like Live Server</td></tr>
+  </table>
+
+  <h3>The icons you actually click</h3>
+  <div class="iconkey">
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5M9.5 14.5h5"/></svg>
+      <span><b>New File</b> Page with a +. Type code here.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>
+      <span><b>New Folder</b> Folder with a +. Holds files only.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><path d="M15 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7z"/><path d="M15 3v4h4"/><path d="M3 7v12a2 2 0 0 0 2 2h1"/></svg>
+      <span><b>Explorer</b> Two sheets. Your file tree.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M17.5 3v7M14 6.5h7"/></svg>
+      <span><b>Extensions</b> Squares with one detached. Install add-ons.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span><b>Search</b> Magnifier. Find text across all files.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M6 8.5v7M15.5 6h-7"/></svg>
+      <span><b>Source Control</b> Branching lines. Git — later units.</span>
+    </div>
+    <div>
+      <svg class="ic solid" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
+      <span><b>White dot ●</b> Unsaved file. Press Ctrl + S.</span>
+    </div>
+    <div>
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 3v5h5"/></svg>
+      <span><b>Go Live</b> Broadcast/reload mark, bottom-right.</span>
+    </div>
+  </div>
+
+  <div class="vsmock" aria-label="Mock-up of the VS Code window">
+    <div class="body">
+      <div class="side">
+        <div class="hd">CHAI-POINT
+          <span class="acts">
+            <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5M9.5 14.5h5"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>
+          </span>
+        </div>
+        <div class="f dirty">index.html <span class="dot"></span></div>
+        <div class="f">about.html</div>
+        <div class="f">📁 css</div>
+        <div class="f">📁 images</div>
+      </div>
+      <div class="ed">
+        <div class="c">&lt;!-- Ctrl + / --&gt;</div>
+        &lt;header&gt;<br>
+        &nbsp;&nbsp;&lt;h1&gt;Chai Point&lt;/h1&gt;<br>
+        &lt;/header&gt;
+      </div>
+    </div>
+    <div class="bar">
+      <span>⚠ 0&nbsp;&nbsp;✕ 0</span>
+      <span>
+        <svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 3v5h5"/></svg>
+        Go Live
+      </span>
+    </div>
+  </div>
+  <p style="margin-top:-6px"><span class="callout">➜ orange dot on index.html = not saved yet</span> <span class="callout">➜ blue strip at bottom = Status Bar</span></p>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> <b>New File vs New Folder</b> — students always click the wrong one.</p>
+    <p><span class="arrow">➜</span> Students always click the wrong one. <b>Folder = almirah. File = the paper inside it.</b></p>
+    <p><span class="arrow">➜</span> When you create a new file, VS Code asks for the name. You <b>must</b> type the extension yourself: <code>index.html</code>, not <code>index</code>.</p>
+  </div>
+
+  <h3>Symbols you will see next to filenames</h3>
+  <table>
+    <tr><th style="width:130px">Symbol</th><th>Meaning</th></tr>
+    <tr><td><strong>●</strong> white dot</td><td>Unsaved changes. Press <code>Ctrl + S</code>. Until you do, the browser sees the OLD version</td></tr>
+    <tr><td><strong>M</strong> (orange)</td><td>Modified since your last Git save (later in the course)</td></tr>
+    <tr><td><strong>U</strong> (green)</td><td>Untracked — a brand new file Git has not seen yet</td></tr>
+    <tr><td>Red squiggly line</td><td>An error in your code — usually a missing closing tag</td></tr>
+    <tr><td>Yellow squiggly</td><td>A warning. Page still works, but something is not ideal</td></tr>
+    <tr><td>Coloured file icon</td><td>Orange = HTML, blue = CSS, yellow = JavaScript (once you install an icon theme)</td></tr>
+  </table>
+
+  <div class="note right">
+    <p><span class="arrow">➜</span> The <b>white dot ●</b> is the number one reason students say "Sir, my code is not working."</p>
+    <p><span class="arrow">➜</span> Dot visible = not saved = browser is showing yesterday's page. <b>Ctrl + S first, always.</b></p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide"><span class="slide-no">08</span>
+  <h2>File naming — the rules that save you from broken websites</h2>
+  <p>On your laptop, a bad filename is a small annoyance. On a live web server, a bad filename means a <strong>404 page not found</strong>. Web servers are strict in ways Windows is not.</p>
+
+  <h3>The 6 rules</h3>
+  <table>
+    <tr><th style="width:60px">#</th><th>Rule</th><th>✗ Wrong</th><th>✓ Right</th></tr>
+    <tr><td>1</td><td>Always add the extension</td><td><code>homepage</code></td><td><code>homepage.html</code></td></tr>
+    <tr><td>2</td><td>No spaces — ever</td><td><code>about us.html</code></td><td><code>about-us.html</code></td></tr>
+    <tr><td>3</td><td>All lowercase</td><td><code>AboutUs.HTML</code></td><td><code>about-us.html</code></td></tr>
+    <tr><td>4</td><td>Only letters, numbers, <code>-</code> and <code>_</code></td><td><code>price@list#1.html</code></td><td><code>price_list_1.html</code></td></tr>
+    <tr><td>5</td><td>Homepage must be named exactly this</td><td><code>Home.html</code></td><td><code>index.html</code></td></tr>
+    <tr><td>6</td><td>Name it by content, not by date</td><td><code>final_final_v2.html</code></td><td><code>contact.html</code></td></tr>
+  </table>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> <b>Why no spaces?</b> A web address cannot carry a space. The server converts it to <code>%20</code> — so <i>about us.html</i> becomes <code>about%20us.html</code>. Ugly, and it breaks links.</p>
+    <p><span class="arrow">➜</span> <b>Why lowercase?</b> Windows thinks Home.html and home.html are the same file. A Linux web server — which hosts most of the internet — thinks they are two <b>different</b> files. Your site works on your laptop and dies after upload. Classic.</p>
+    <p><span class="arrow">➜</span> <b>Why index.html?</b> When someone types your domain with no page name, the server automatically serves the file called <code>index.html</code>. That is a built-in convention, not a choice.</p>
+  </div>
+
+  <h3>The two joining styles</h3>
+  <div class="grid">
+    <div class="box">
+      <h4>hyphen-case  (kebab-case)</h4>
+      <p style="margin:0 0 8px"><code class="inline">about-us.html</code> · <code class="inline">product-list.html</code></p>
+      <p style="font-size:15px;margin:0">Use for <strong>web pages and images</strong>. Google reads the hyphen as a word separator — better for SEO.</p>
+    </div>
+    <div class="box">
+      <h4>snake_case (underscore _)</h4>
+      <p style="margin:0 0 8px"><code class="inline">sales_data.csv</code> · <code class="inline">user_login.py</code></p>
+      <p style="font-size:15px;margin:0">Use for <strong>data files and code files</strong>. Google reads the underscore as glue, joining words into one — bad for page names.</p>
+    </div>
+  </div>
+
+  <div class="note right">
+    <p><span class="arrow">➜</span> Simple rule to remember: <b>hyphen for pages, underscore for data.</b></p>
+    <p><span class="arrow">➜</span> Google sees <code>about-us</code> as "about us" (two words) but <code>about_us</code> as "aboutus" (one nonsense word).</p>
+  </div>
+
+  <h3>Common extensions</h3>
+  <p>
+    <span class="pill">.html — structure</span>
+    <span class="pill">.css — styling</span>
+    <span class="pill">.js — behaviour</span>
+    <span class="pill">.jpg / .png — images</span>
+    <span class="pill">.svg — logos, icons</span>
+    <span class="pill">.json — data</span>
+  </p>
+</section>
+
+<!-- 9 -->
+<section class="slide"><span class="slide-no">09</span>
+  <h2>Where to save it — the project folder</h2>
+  <p>Never save loose files on the Desktop. Every website is a <strong>folder</strong>, and everything it needs lives inside that folder.</p>
+
+  <div class="codewrap"><button class="copy">Copy</button>
+<pre>Documents/
+└── chai-point/          ← the project folder (your website)
+    ├── index.html       ← homepage. This exact name.
+    ├── about.html
+    ├── contact.html
+    ├── css/
+    │   └── style.css    ← all your styling
+    ├── images/
+    │   ├── logo.png
+    │   └── shop-front.jpg
+    └── js/
+        └── script.js</pre>
+  </div>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> <b>Steps:</b> create the folder <code>chai-point</code> → open VS Code → <b>File &gt; Open Folder</b> → pick it.</p>
+    <p><span class="arrow">➜</span> Now the Explorer panel shows your project. Create new files with the 📄 icon <i>inside</i> it.</p>
+    <p><span class="arrow">➜</span> <b>Never</b> open a single file alone — open the <b>folder</b>. Live Server and links only work properly this way.</p>
+    <p><span class="arrow">➜</span> Why subfolders? With 40 images loose next to your HTML, you will lose your mind by week three.</p>
+  </div>
+
+  <div class="key">
+    <strong>The link between folders and code:</strong> when you write <code class="inline">&lt;img src="images/logo.png"&gt;</code>, you are giving the browser <em>directions from your HTML file</em>. "Go into the images folder, find logo.png." Rename the folder, and the image disappears. Folder structure is not housekeeping — it is part of your code.
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide"><span class="slide-no">10</span>
+  <h2>Extensions and the Go Live button</h2>
+  <p>An <strong>extension</strong> is a free add-on that gives VS Code a new skill. Click the <strong>squares icon</strong> in the left strip, search the name, press Install.</p>
+
+  <table>
+    <tr><th style="width:210px">Extension</th><th>What it does for you</th></tr>
+    <tr><td><strong>Live Server</strong> (Ritwick Dey)</td><td>Runs your page in a real browser and auto-refreshes on every save. <strong>Install this one today.</strong></td></tr>
+    <tr><td><strong>Prettier</strong></td><td>Cleans up your messy indentation instantly (<code>Shift + Alt + F</code>)</td></tr>
+    <tr><td><strong>Auto Rename Tag</strong></td><td>Change &lt;div&gt; and the closing &lt;/div&gt; changes with it</td></tr>
+    <tr><td><strong>HTML CSS Support</strong></td><td>Suggests your own class names as you type</td></tr>
+    <tr><td><strong>Material Icon Theme</strong></td><td>Colourful file icons so you spot files faster</td></tr>
+  </table>
+
+  <h3>Go Live — what it actually does</h3>
+  <p>After installing Live Server, look at the <strong>bottom-right blue bar</strong>. You will see <strong>Go Live</strong>. Click it. Your browser opens with your page.</p>
+
+  <div class="note">
+    <p><span class="arrow">➜</span> Without Live Server: double-click the file → address bar shows <code>file:///C:/Users/...</code><br>
+       That is your <b>hard disk</b>. You are reading a document, not visiting a website.</p>
+    <p><span class="arrow">➜</span> With Go Live: address shows <code>http://127.0.0.1:5500/index.html</code><br>
+       That is a <b>real web server</b> running on your own laptop. Same conditions as the live internet.</p>
+    <p><span class="arrow">➜</span> Best part: press <b>Ctrl + S</b> and the browser refreshes <b>by itself</b>. No more Alt-Tab-F5-Alt-Tab.</p>
+    <p><span class="arrow">➜</span> Click <b>Port: 5500</b> in the same blue bar to stop it.</p>
+  </div>
+
+  <div class="vsmock" style="padding:0" aria-label="Status bar before and after clicking Go Live">
+    <div class="bar"><span>⚠ 0 &nbsp; ✕ 0 &nbsp;&nbsp; Ln 12, Col 4</span>
+      <span><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M12 3a9 9 0 1 1-9 9"/><path d="M3 3v5h5"/></svg> Go Live</span></div>
+    <div style="padding:12px 14px;color:#888;font-size:13px">↓ after you click it ↓</div>
+    <div class="bar" style="background:#16825d"><span>⚠ 0 &nbsp; ✕ 0 &nbsp;&nbsp; Ln 12, Col 4</span>
+      <span><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M5 12a7 7 0 0 1 7-7M2 12a10 10 0 0 1 10-10"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg> Port : 5500</span></div>
+  </div>
+  <p style="margin-top:-6px"><span class="callout">➜ click "Port : 5500" again to stop the server</span></p>
+
+  <h3>Decoding <code class="inline">http://127.0.0.1:5500</code></h3>
+  <table>
+    <tr><th style="width:150px">Part</th><th>Meaning</th></tr>
+    <tr><td><code>http://</code></td><td>The language browsers and servers speak to each other</td></tr>
+    <tr><td><code>127.0.0.1</code></td><td>Also written <code>localhost</code>. It means "this computer, right here." Nobody else on the internet can reach it</td></tr>
+    <tr><td><code>:5500</code></td><td>The <strong>port number</strong> — which door of your computer this website is being served from</td></tr>
+  </table>
+
+  <div class="note right">
+    <p><span class="arrow">➜</span> <b>What is a port, really?</b> Your computer is one building with one address (127.0.0.1). But many services run inside it at once.</p>
+    <p><span class="arrow">➜</span> Ports are the <b>numbered doors</b> of that building. Live Server uses door <b>5500</b>. A React app uses <b>3000</b>. A database uses <b>3306</b>.</p>
+    <p><span class="arrow">➜</span> Same address, different door → no collision. That's the whole idea.</p>
+    <p><span class="arrow">➜</span> <b>"Port 5500 is already in use"?</b> You left an old Live Server running. Close the old browser tab, or just accept the new port it offers (5501). Nothing is broken.</p>
+  </div>
+
+  <div class="key">
+    <strong>Later in this course</strong> you will replace <code class="inline">127.0.0.1</code> with a real domain and push this same folder to a host like Netlify or Vercel. Nothing about your HTML changes — only the address in front of it. That is why we get the folder and filenames right from day one.
+  </div>
+</section>
+
+<!-- 11 QUIZ -->
+<section class="slide"><span class="slide-no">11</span>
+  <h2>Quick Check — 10 questions on semantic tags</h2>
+  <p class="meta">Pick one option per question, then press Check answers. Read every explanation — that is where the real learning is.</p>
+  <div id="quiz"></div>
+  <div id="score"></div>
+  <button class="btn" id="check">Check answers</button>
+  <button class="btn ghost" id="reset">Try again</button>
+</section>
+
+</div>
+
+<script>
+/* ---------- copy buttons ---------- */
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var code = btn.parentElement.querySelector('pre').innerText;
+    navigator.clipboard.writeText(code).then(function(){
+      btn.textContent='Copied!';
+      setTimeout(function(){btn.textContent='Copy';},1500);
+    });
+  });
+});
+
+/* ---------- quiz ---------- */
+var QUIZ = [
+  {
+    q:"What does the word \"semantic\" mean in \"semantic HTML\"?",
+    o:["Colourful and well designed","Meaning — the tag describes what the content IS","Fast loading","Mobile friendly"],
+    a:1,
+    e:"Semantic simply means meaning. A semantic tag describes the ROLE of the content, not how it looks. &lt;nav&gt; means 'these are navigation links' — it says nothing about colour or size. Appearance is handled separately, by CSS."
+  },
+  {
+    q:"Which tag holds the navigation menu of a website?",
+    o:["&lt;menu-bar&gt;","&lt;links&gt;","&lt;nav&gt;","&lt;div class='menu'&gt;"],
+    a:2,
+    e:"&lt;nav&gt; is the standard tag for a block of navigation links. Screen readers offer a 'skip to navigation' jump precisely because they can find this tag. &lt;div class='menu'&gt; renders identically on screen but carries zero meaning — the class name is invisible to machines. &lt;menu-bar&gt; and &lt;links&gt; are not real HTML tags."
+  },
+  {
+    q:"How many &lt;main&gt; tags should a single web page have?",
+    o:["Exactly one","One per section","As many as you want","None — it is optional decoration"],
+    a:0,
+    e:"Exactly one. &lt;main&gt; marks the single dominant content area of the page — the thing that is unique to this page, excluding the header, nav, sidebar and footer. Two &lt;main&gt; tags would be like a report with two 'Chapter 1' headings: the machine no longer knows what the page is about."
+  },
+  {
+    q:"You are building a blog. One complete blog post should be wrapped in…",
+    o:["&lt;section&gt;","&lt;article&gt;","&lt;aside&gt;","&lt;p&gt;"],
+    a:1,
+    e:"&lt;article&gt; is for self-contained content that still makes sense if you lift it out and place it somewhere else — a blog post, a news story, a product card, a customer review. The test: 'Would this make sense on its own in a WhatsApp forward?' If yes, it is an article. &lt;section&gt; is for a themed chunk that only makes sense inside the page."
+  },
+  {
+    q:"What is the difference between &lt;strong&gt; and &lt;b&gt;?",
+    o:["No difference at all","&lt;b&gt; is bigger than &lt;strong&gt;","&lt;strong&gt; signals importance; &lt;b&gt; only paints text bold","&lt;strong&gt; is outdated and removed from HTML"],
+    a:2,
+    e:"Both usually look identical — bold. But &lt;strong&gt; carries meaning: 'this content is important', and a screen reader will change its tone of voice for it. &lt;b&gt; is purely visual styling with no meaning attached. Same logic applies to &lt;em&gt; (emphasis, meaningful) versus &lt;i&gt; (just slanted). When in doubt, choose the meaningful one."
+  },
+  {
+    q:"A sidebar showing 'You may also like' products should use…",
+    o:["&lt;footer&gt;","&lt;aside&gt;","&lt;main&gt;","&lt;header&gt;"],
+    a:1,
+    e:"&lt;aside&gt; is for content that is related to the main content but not essential to it — sidebars, related links, filters, advertisements, pull quotes. Marking it as &lt;aside&gt; tells search engines 'this is secondary', so they do not treat it as the page's main subject. That protects your SEO focus."
+  },
+  {
+    q:"Which is the correct heading structure for a page?",
+    o:["h1 → h2 → h3 in order","h3 → h1 → h6, order does not matter","Six h1 tags, one per section","Only h2 tags, because h1 is too big"],
+    a:0,
+    e:"Headings are an outline, like a table of contents — h1 is the title of the page, h2 the main sections, h3 the sub-points inside them. Use one h1 per page and never skip a level (h2 straight to h4 confuses screen readers navigating by heading). If a heading looks too big, fix the size in CSS — never downgrade the tag for visual reasons."
+  },
+  {
+    q:"Why write &lt;time datetime=\"2026-08-07\"&gt;7 August 2026&lt;/time&gt; instead of just typing the date?",
+    o:["It makes the date appear in bold","It gives the machine an unambiguous, sortable date","It automatically updates every day","It is compulsory in every paragraph"],
+    a:1,
+    e:"Humans write dates in many ways — 07/08/26, 7 Aug, next Friday. A machine cannot reliably parse those, and 07/08 means August 7 in the US and 7 August in India. The datetime attribute supplies one standard format (YYYY-MM-DD) that any machine reads correctly, which is how Google shows event dates and article freshness in search results."
+  },
+  {
+    q:"What is the correct way to attach a caption to an image?",
+    o:["&lt;img&gt; followed by a &lt;p&gt;","&lt;figure&gt; containing &lt;img&gt; and &lt;figcaption&gt;","&lt;div&gt; with the caption inside","Type the caption inside the alt text"],
+    a:1,
+    e:"&lt;figure&gt; groups the image and its caption into one unit, and &lt;figcaption&gt; marks which text is the caption. A plain &lt;p&gt; underneath looks the same but the machine has no idea the two belong together. Note also: alt text and a caption are different jobs — alt describes the image for someone who cannot see it, the caption adds context for everyone."
+  },
+  {
+    q:"Your page is built entirely from &lt;div&gt; tags and looks perfect on screen. What is the real problem?",
+    o:["Nothing — if it looks right, it is right","It will load slowly","Search engines and screen readers cannot understand the structure","&lt;div&gt; is not allowed in HTML"],
+    a:2,
+    e:"&lt;div&gt; is a legitimate tag — but it is a blank box with no meaning, meant for grouping when no semantic tag fits. A page made only of divs looks fine to your eyes and is unreadable to machines: weaker SEO, a poor experience for users on screen readers, and accessibility risk. The fix costs nothing — swap the outer divs for header, nav, main, section, article, aside and footer."
+  }
+];
+
+var quizEl = document.getElementById('quiz');
+QUIZ.forEach(function(item,i){
+  var opts = item.o.map(function(txt,j){
+    return '<label class="opt" data-q="'+i+'" data-o="'+j+'">'+
+           '<input type="radio" name="q'+i+'" value="'+j+'">'+txt+'</label>';
+  }).join('');
+  quizEl.insertAdjacentHTML('beforeend',
+    '<div class="q"><div class="qn">Q'+(i+1)+'. '+item.q+'</div>'+opts+
+    '<div class="exp" id="exp'+i+'"></div></div>');
+});
+
+document.getElementById('check').addEventListener('click',function(){
+  var score=0;
+  QUIZ.forEach(function(item,i){
+    var picked=document.querySelector('input[name="q'+i+'"]:checked');
+    document.querySelectorAll('.opt[data-q="'+i+'"]').forEach(function(l){
+      l.classList.remove('correct','wrong');
+      if(+l.dataset.o===item.a) l.classList.add('correct');
+    });
+    if(picked){
+      if(+picked.value===item.a){score++;}
+      else{
+        document.querySelector('.opt[data-q="'+i+'"][data-o="'+picked.value+'"]').classList.add('wrong');
+      }
+    }
+    var exp=document.getElementById('exp'+i);
+    exp.className='exp show';
+    exp.innerHTML='<div class="note"><p><span class="arrow">➜</span> <b>Correct answer:</b> '+
+      item.o[item.a]+'</p><p><span class="arrow">➜</span> '+item.e+'</p></div>';
+  });
+  var s=document.getElementById('score');
+  s.style.display='block';
+  s.textContent='You scored '+score+' out of 10. Now read every explanation below — especially the ones you got right by guessing.';
+  s.scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+document.getElementById('reset').addEventListener('click',function(){
+  document.querySelectorAll('input[type=radio]').forEach(function(r){r.checked=false;});
+  document.querySelectorAll('.opt').forEach(function(l){l.classList.remove('correct','wrong');});
+  document.querySelectorAll('.exp').forEach(function(e){e.className='exp';e.innerHTML='';});
+  document.getElementById('score').style.display='none';
+  window.scrollTo({top:document.getElementById('quiz').offsetTop-80,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
