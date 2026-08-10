@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Website 102 — Spacing, Headings &amp; the Anatomy of a Real Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,8 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62}
+  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62;
+  overflow-x:hidden}
 .sheet{max-width:1180px;margin:0 auto;padding:0 24px 130px}
 h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
 .cover{padding:74px 0 26px}
@@ -50,7 +51,7 @@ ul.tick li::before{content:"✓";font-size:15px;color:var(--pen-green)}
 table{border-collapse:collapse;width:100%;font-size:14.5px;margin:16px 0}
 th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
 td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
-code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px;overflow-wrap:anywhere}
 .codeblock{background:#161821;color:#d7dae3;border-radius:7px;padding:15px 17px;font-family:"Space Mono",monospace;font-size:12.5px;line-height:1.68;overflow-x:auto;margin:16px 0}
 .codeblock code{background:none;padding:0;font-size:1em}
 .codeblock .tag{color:#7fc8ff}.codeblock .attr{color:#f0b86e}.codeblock .str{color:#9fdc8f}.codeblock .cmt{color:#7d879c}.codeblock .prop{color:#c8a0ff}
@@ -59,7 +60,7 @@ code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51
 .browser{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff;margin-top:22px}
 .chrome{height:30px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
 .dot{width:8px;height:8px;border-radius:50%}
-.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:18px;font-family:"Space Mono",monospace;font-size:9.5px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:18px;font-family:"Space Mono",monospace;font-size:9.5px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .bwindow{position:relative;overflow:hidden}
 .mk{position:absolute;z-index:20;width:25px;height:25px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
 .mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
@@ -146,6 +147,125 @@ code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51
 .m-acc .r{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--m-line);font-size:12px;font-weight:600}
 .m-acc .r span{color:#a5a5a5;font-family:"Space Mono",monospace}
 
+
+/* ==========================================================================
+   MOBILE LAYER — phones and small tablets.
+   Nothing above is removed; every rule below only reshapes the same content.
+   ========================================================================== */
+@media (max-width:820px){
+
+  /* --- page frame --- */
+  body{background-size:20px 20px;font-size:16px;line-height:1.6}
+  .sheet{padding:0 16px 72px}
+  .cover{padding:42px 0 16px}
+  .cover .sub{font-size:10.5px;letter-spacing:.18em;margin-bottom:15px}
+  .cover h1{font-size:clamp(29px,8.2vw,44px);max-width:15ch;letter-spacing:-.028em}
+  .cover .deck{font-size:16.5px;margin-top:16px;max-width:none}
+  .chapter{margin-top:56px}
+  .chapter[style]{margin-top:26px!important}   /* the inline margin-top:32px chapters */
+  .chapter-num{font-size:10px;letter-spacing:.22em}
+  h2{font-size:clamp(23px,6.4vw,31px);max-width:none;line-height:1.1}
+  h3{font-size:17.5px;margin:24px 0 8px}
+  p{max-width:none!important}
+  p.lead{font-size:17px}
+  .card{padding:18px 17px;margin:18px 0}
+  .card.tilt{transform:none}          /* the tilt reads as a rendering bug on a narrow screen */
+  .tape{left:20px;width:62px;height:18px;top:-9px}
+  .part-break{margin-top:64px;font-size:10.5px;letter-spacing:.2em}
+  .footnote,figcaption,ul.nl{max-width:none}
+  figcaption{font-size:10.5px}
+  ul.nl li{padding-left:23px}
+
+  /* --- dense SVG diagrams: scroll them rather than shrink them to unreadable --- */
+  figure{margin:18px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  figure svg{min-width:640px}
+  figure figcaption{position:sticky;left:0}
+
+  /* --- tables scroll: three crushed columns are worse than a swipe --- */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13.5px}
+  table thead,table tbody{display:table;width:100%;min-width:560px}
+  th{font-size:9.5px}
+  td{padding:9px 10px 9px 0}
+
+  .codeblock{font-size:11px;padding:13px 14px;line-height:1.62;border-radius:6px}
+
+  /* --- browser mockups: height comes from content, not a fixed pixel value --- */
+  .browser{border-radius:9px;margin-top:18px}
+  .bwindow{height:auto!important}
+  .chrome{height:27px;padding:0 10px;gap:5px}
+  .dot{width:7px;height:7px}
+  .urlbar{height:17px;font-size:8.5px;padding:0 8px}
+
+  /* --- pinned callouts can't follow a reflowed layout; the numbered notes carry them --- */
+  .mk{display:none}
+  .notes-grid{gap:0;margin-top:18px}
+  .note{grid-template-columns:26px 1fr;gap:10px;margin-bottom:15px}
+  .note .n{width:22px;height:22px;font-size:15px}
+  .note .body{font-size:15px}
+  .note .body .say{font-size:18px;margin-top:4px}
+
+  /* --- store: announcement + nav --- */
+  .m-ann{font-size:9.5px;padding:6px 10px;line-height:1.4}
+  .m-nav{padding:11px 14px!important;gap:10px}
+  .m-logo{font-size:14px!important;letter-spacing:.12em}
+  .m-links{font-size:9.5px!important;gap:11px;flex:1;justify-content:center;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .m-links::-webkit-scrollbar{display:none}
+  .m-links span{white-space:nowrap}
+  .m-ic{font-size:10px!important;gap:9px;white-space:nowrap}
+
+  /* --- store: hero. Stacks, and the bottle stops being absolutely placed --- */
+  .m-hero{height:auto;flex-direction:column;align-items:flex-start;padding:26px 18px 24px}
+  .m-hero .in{max-width:none;width:100%}
+  .m-hero .hl1{font-size:23px}
+  .m-hero .sl{font-size:12.5px;max-width:34ch}
+  .m-hero .btn{margin-top:14px;padding:11px 20px}
+  .m-hero .bottle{position:static;width:62px;height:118px;margin:18px auto 0}
+  .m-hero .bottle i{top:34px;height:34px}
+
+  /* --- store: product row --- */
+  .m-sec{padding:26px 16px}
+  .m-sec .h{font-size:17px;margin-bottom:14px}
+  .m-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .m-card .im{height:96px}
+  .m-card .bd{padding:10px 10px 12px}
+  .m-card .nm{min-height:32px}
+  .m-card .cn{min-height:26px}
+  .m-card .sz span{padding:3px 5px;font-size:9px}
+  .m-foot{grid-template-columns:1fr 1fr;padding:22px 16px;gap:16px}
+
+  /* --- store: product page --- */
+  .m-crumb{padding:10px 16px 0;font-size:10px}
+  .m-pdp{grid-template-columns:1fr;gap:22px;padding:14px 16px 24px}
+  .m-gal .main{height:210px}
+  .m-gal .main b{top:26px;height:152px}
+  .m-gal .th i{width:40px;height:48px}
+  .m-buy h1{font-size:19px}
+  .m-offers .r{align-items:flex-start}
+  .m-offers .r b{white-space:nowrap}
+  .m-var .row{flex-wrap:wrap}
+  .m-atc .p{padding:12px 8px;font-size:12px}
+  .m-pin{flex-direction:column;align-items:flex-start;gap:9px}
+  .m-pin input{width:100%}
+  .m-pin span:last-child{display:flex;gap:9px;align-items:center;width:100%}
+}
+
+/* --- small phones (≈360px and under) --- */
+@media (max-width:400px){
+  .sheet{padding:0 14px 64px}
+  .cover h1{font-size:28px}
+  .cover .deck{font-size:15.5px}
+  h2{font-size:22px}
+  .m-links{font-size:9px!important;gap:9px}
+  .m-hero .hl1{font-size:21px}
+  .m-grid{gap:10px}
+  .m-card .im{height:84px}
+  .m-card .nm{font-size:11.5px}
+  .m-gal .main{height:180px}
+  .m-gal .main b{height:126px;width:48px}
+  .m-price .now{font-size:20px}
+  .codeblock{font-size:10.2px}
+}
+
 @media print{
   body{background:#fff;background-image:none;font-size:11pt}
   .sheet{max-width:none;padding:0}
@@ -153,6 +273,12 @@ code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51
   .chapter{break-inside:avoid-page;margin-top:28px}
   .part-break{break-before:page;margin-top:0}
   .browser{box-shadow:none;break-inside:avoid}
+  .mk{display:grid}
+  figure{overflow:visible}
+  figure svg{min-width:0}
+  table{display:table}
+  table thead{display:table-header-group}
+  table tbody{display:table-row-group;min-width:0}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
