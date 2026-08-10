@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website 102 — Spacing, Headings &amp; the Anatomy of a Real Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3; --grid:#e2e6ee; --ink:#1b2233; --pencil:#7d879c;
+  --pen-red:#c0392b; --pen-blue:#2f5fa8; --pen-green:#0a8754;
+  --marker:#ffe27a; --rule:#d8dbe3;
+  /* Minimalist-style tokens (observed) */
+  --m-ink:#1a1a1a; --m-mute:#6e6e6e; --m-line:#e5e5e5; --m-bg:#ffffff;
+  --m-soft:#f6f4f1; --m-accent:#1a1a1a; --m-sale:#c8102e; --m-ok:#1a7f4b;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 130px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:74px 0 26px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:20px}
+.cover h1{font-size:clamp(36px,7vw,76px);font-weight:800;letter-spacing:-.032em;line-height:.99;max-width:18ch}
+.cover .deck{max-width:62ch;font-size:19px;color:#3b4356;margin-top:20px}
+.chapter{margin-top:98px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.026em;line-height:1.06;max-width:26ch}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:68ch} p.lead{font-size:18.5px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:22px 25px;margin:22px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)} .card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:32px;width:76px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+.part-break{margin:112px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:74ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:64ch}
+svg{max-width:100%;height:auto;display:block}
+ul.nl{list-style:none;padding:0;margin:14px 0;max-width:68ch}
+ul.nl li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.nl li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+ul.x li::before{content:"✕";font-size:15px}
+ul.tick li::before{content:"✓";font-size:15px;color:var(--pen-green)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:16px 0}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+.codeblock{background:#161821;color:#d7dae3;border-radius:7px;padding:15px 17px;font-family:"Space Mono",monospace;font-size:12.5px;line-height:1.68;overflow-x:auto;margin:16px 0}
+.codeblock code{background:none;padding:0;font-size:1em}
+.codeblock .tag{color:#7fc8ff}.codeblock .attr{color:#f0b86e}.codeblock .str{color:#9fdc8f}.codeblock .cmt{color:#7d879c}.codeblock .prop{color:#c8a0ff}
+
+/* browser */
+.browser{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff;margin-top:22px}
+.chrome{height:30px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
+.dot{width:8px;height:8px;border-radius:50%}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:18px;font-family:"Space Mono",monospace;font-size:9.5px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.bwindow{position:relative;overflow:hidden}
+.mk{position:absolute;z-index:20;width:25px;height:25px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+.mk.g{background:var(--pen-green);box-shadow:0 2px 8px rgba(10,135,84,.4)}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 30px;margin-top:24px}
+@media (max-width:820px){.notes-grid{grid-template-columns:1fr}}
+.note{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;margin-bottom:8px}
+.note .n{width:24px;height:24px;display:grid;place-items:center;margin-top:2px;font-family:"Caveat",cursive;font-size:17px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg)}
+.note.b .n{background:var(--pen-blue)}.note.g .n{background:var(--pen-green)}
+.note .body{font-size:15.5px;line-height:1.5}
+.note .body .say{display:block;font-family:"Caveat",cursive;font-size:19px;color:var(--pen-red);margin-top:3px;line-height:1.3}
+.note.b .body .say{color:var(--pen-blue)}.note.g .body .say{color:var(--pen-green)}
+
+/* ===== Minimalist-style store chrome ===== */
+.m{font-family:"Inter",system-ui,sans-serif;color:var(--m-ink);background:#fff}
+.m-ann{background:#1a1a1a;color:#fff;font-size:10.5px;text-align:center;padding:7px 10px;letter-spacing:.01em}
+.m-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--m-line)}
+.m-logo{font-weight:700;font-size:17px;letter-spacing:.16em;text-transform:uppercase}
+.m-links{display:flex;gap:20px;font-size:11.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:#3a3a3a}
+.m-ic{display:flex;gap:15px;font-size:12.5px;color:#3a3a3a;align-items:center}
+.m-hero{position:relative;height:210px;background:linear-gradient(105deg,#efe7dd 0%,#e2d3c2 42%,#cbb9a4 100%);display:flex;align-items:center;padding:0 46px}
+.m-hero .in{max-width:44%}
+.m-hero .eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#7a6a58;font-weight:600}
+.m-hero .hl1{font-size:29px;font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-top:9px}
+.m-hero .sl{font-size:12.5px;color:#5c5145;margin-top:9px;line-height:1.5}
+.m-hero .btn{display:inline-block;margin-top:16px;background:#1a1a1a;color:#fff;font-size:12px;font-weight:600;padding:11px 22px;letter-spacing:.03em}
+.m-hero .bottle{position:absolute;right:70px;top:28px;width:78px;height:152px;border-radius:6px;background:linear-gradient(160deg,#fdfcfa,#e9e2d8);border:1px solid #d9cfc2}
+.m-hero .bottle i{position:absolute;left:11px;right:11px;top:44px;height:44px;background:#f4f1ec;border-top:1px solid #e2dbd0;border-bottom:1px solid #e2dbd0;display:block}
+.m-sec{padding:38px 28px}
+.m-sec .h{font-size:20px;font-weight:700;letter-spacing:-.018em;margin:0 0 18px;text-align:center}
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.m-card{border:1px solid var(--m-line);position:relative;display:flex;flex-direction:column}
+.m-card .badge{position:absolute;top:0;left:0;background:#1a1a1a;color:#fff;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;z-index:2}
+.m-card .im{height:104px;background:var(--m-soft);position:relative}
+.m-card .im b{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:30px;height:74px;border-radius:4px;background:linear-gradient(160deg,#fff,#eae3d9);border:1px solid #ddd4c8;display:block}
+.m-card .bd{padding:12px 12px 14px;display:flex;flex-direction:column;flex:1}
+.m-card .nm{font-size:12.5px;font-weight:600;line-height:1.32;min-height:33px}
+.m-card .cn{font-size:10.5px;color:var(--m-mute);margin-top:5px;line-height:1.4;min-height:29px}
+.m-card .pr{font-size:12.5px;font-weight:700;margin-top:9px;font-variant-numeric:tabular-nums}
+.m-card .pr s{color:#a5a5a5;font-weight:400;font-size:11px;margin-left:6px}
+.m-card .pr em{color:var(--m-sale);font-style:normal;font-size:10.5px;margin-left:6px;font-weight:600}
+.m-card .sz{display:flex;gap:5px;margin-top:9px}
+.m-card .sz span{border:1px solid var(--m-line);font-size:9.5px;padding:3px 7px;color:#4a4a4a}
+.m-card .sz span.on{border-color:#1a1a1a;font-weight:600}
+.m-card .atc{margin-top:11px;border:1px solid #1a1a1a;text-align:center;font-size:11px;font-weight:600;padding:8px;letter-spacing:.04em;text-transform:uppercase}
+.m-foot{background:#f6f4f1;padding:26px 28px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;font-size:11px;color:#4a4a4a;border-top:1px solid var(--m-line)}
+.m-foot h6{font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 9px;color:#1a1a1a;font-weight:700}
+.m-foot div div{margin-bottom:5px}
+
+/* PDP */
+.m-crumb{padding:12px 28px 0;font-size:10.5px;color:var(--m-mute)}
+.m-pdp{display:grid;grid-template-columns:1fr 1fr;gap:34px;padding:18px 28px 28px}
+.m-gal .main{height:236px;background:var(--m-soft);position:relative;border:1px solid var(--m-line)}
+.m-gal .main b{position:absolute;left:50%;top:34px;transform:translateX(-50%);width:56px;height:166px;border-radius:6px;background:linear-gradient(160deg,#fff,#e9e2d8);border:1px solid #d9cfc2;display:block}
+.m-gal .th{display:flex;gap:7px;margin-top:8px}
+.m-gal .th i{width:44px;height:52px;background:var(--m-soft);border:1px solid var(--m-line);display:block}
+.m-gal .th i.on{border-color:#1a1a1a}
+.m-buy h1{font-family:"Inter",sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.m-buy .claim{font-size:12.5px;font-weight:600;color:#3a3a3a;margin-top:6px}
+.m-buy .desc{font-size:12px;color:var(--m-mute);margin-top:8px;line-height:1.6}
+.m-props{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.m-props span{font-size:9.5px;border:1px solid var(--m-line);padding:4px 8px;color:#3a3a3a}
+.m-offers{border:1px dashed #bdbdbd;padding:10px 12px;margin-top:14px}
+.m-offers .t{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.m-offers .r{display:flex;gap:8px;font-size:10.5px;color:#4a4a4a;margin-top:6px}
+.m-offers .r b{font-family:"Space Mono",monospace;background:#f0ede8;padding:1px 5px;font-size:9.5px}
+.m-var{margin-top:16px}
+.m-var .t{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--m-mute);margin-bottom:7px}
+.m-var .row{display:flex;gap:7px}
+.m-var .row span{border:1px solid var(--m-line);padding:6px 13px;font-size:11.5px}
+.m-var .row span.on{border-color:#1a1a1a;font-weight:700}
+.m-var .row span.out{color:#bbb;text-decoration:line-through}
+.m-price{margin-top:16px;display:flex;align-items:baseline;gap:9px}
+.m-price .now{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.m-price .mrp{font-size:12px;color:#a5a5a5}
+.m-price .off{font-size:11px;color:var(--m-sale);font-weight:600}
+.m-tax{font-size:10px;color:var(--m-mute);margin-top:5px;font-variant-numeric:tabular-nums}
+.m-atc{display:flex;gap:10px;margin-top:16px}
+.m-atc .p{flex:1;background:#1a1a1a;color:#fff;text-align:center;padding:12px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.m-atc .q{border:1px solid var(--m-line);padding:12px 14px;font-size:12px}
+.m-pin{margin-top:14px;border-top:1px solid var(--m-line);padding-top:12px;font-size:11px;color:#4a4a4a;display:flex;justify-content:space-between;align-items:center}
+.m-pin input{border:1px solid var(--m-line);padding:6px 9px;font-size:11px;width:120px;font-family:"Inter",sans-serif}
+.m-acc{margin-top:16px;border-top:1px solid var(--m-line)}
+.m-acc .r{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--m-line);font-size:12px;font-weight:600}
+.m-acc .r span{color:#a5a5a5;font-family:"Space Mono",monospace}
+
+@media print{
+  body{background:#fff;background-image:none;font-size:11pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:28px}
+  .part-break{break-before:page;margin-top:0}
+  .browser{box-shadow:none;break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · website 102 · sheet a</div>
+  <h1>Spacing, headings, and the anatomy of a real store</h1>
+  <p class="deck">Sheet 00 used a made-up brand so we could point anywhere. This one uses a real, live, Indian store — <strong>beminimalist.co</strong> — read directly off the page. Every structure, price and heading below was on their site when these notes were written. Open the site in a second tab and follow along.</p>
+  <p style="margin-top:20px"><span class="stamp">Real site · read live · open it alongside</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>Why Minimalist is the right site to learn on</h4>
+  <p style="max-width:66ch">Founded 2020 in Jaipur, built on radical ingredient transparency — they print the exact concentration on the front of the bottle. That obsession shows up in the interface: very little decoration, very few colours, and a heavy reliance on <em>space and hierarchy</em> to organise a lot of technical information. <span class="hl">When a site removes decoration, spacing becomes the only thing holding it together.</span> That makes it the perfect place to learn margin, padding and headings.</p>
+  <p class="footnote" style="margin-top:12px">The screens in this notebook are teaching <strong>reconstructions</strong> built from the live page structure — same layout logic, same content shape, my own CSS. Not their code, not their images, not their photography.</p>
+</div>
+
+
+<!-- ============ PART ONE ============ -->
+<div class="part-break">Part one — the hero banner</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">01 / purpose</span>
+  <h2>The hero has one job, and it isn't looking nice</h2>
+  <p class="lead">A hero banner exists to answer three questions in about two seconds: <strong>what is this, why should I care, where do I click.</strong> If a hero doesn't answer all three, it's a decoration with a mortgage — it's occupying the most expensive space on the site.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">beminimalist.co</div></div>
+    <div class="bwindow m" style="height:300px">
+      <div class="m-ann">🎁 Build Your Own Bundle — save up to 15% · Buy 3, Get 4th Free · Upto 33% off + freebies</div>
+      <div class="m-nav">
+        <div class="m-logo">Minimalist</div>
+        <div class="m-links"><span>Shop</span><span>Best Sellers</span><span>Skin &amp; Body</span><span>Hair Care</span><span>Baby Care</span></div>
+        <div class="m-ic"><span>⌕</span><span>☻</span><span>Cart ₹0 (0)</span></div>
+      </div>
+      <div class="m-hero">
+        <div class="in">
+          <div class="eyebrow">New launch</div>
+          <div class="hl1">Retinal 0.1% Face Serum</div>
+          <div class="sl">Our anti-ageing powerhouse. Full concentration disclosed, as always.</div>
+          <span class="btn">Shop now</span>
+        </div>
+        <div class="bottle"><i></i></div>
+      </div>
+      <span class="mk" style="top:5px;left:16px">1</span>
+      <span class="mk b" style="top:44px;left:16px">2</span>
+      <span class="mk g" style="top:110px;left:16px">3</span>
+      <span class="mk" style="top:196px;left:52px">4</span>
+      <span class="mk b" style="top:120px;right:24px">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>Announcement bar</b> — a separate strip <em>above</em> the header, not part of the hero. Minimalist runs three or four rotating offers here. It's the cheapest place on a site to say something urgent.<span class="say">note it pushes everything else down. that's a layout decision with a cost.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">The <b>header sits between</b> the announcement and the hero. Three separate horizontal bands, three separate jobs. Beginners try to build these as one block and immediately get stuck.<span class="say">one band = one job. always.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body"><b>Eyebrow → headline → subline → button.</b> Four elements, always this order, on almost every hero on the internet. The eyebrow is tiny and uppercase; it gives context so the headline doesn't have to.<span class="say">memorise this four-part shape. you'll use it forever.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body"><b>Exactly one button.</b> Two buttons in a hero means the brand hasn't decided what it wants you to do, and the visitor won't decide for them.<span class="say">if you must have two, one is filled and one is text-only.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Text lives on the <b>left half</b>, product on the right. This split works because we read left-to-right — the words arrive before the picture and frame what you're looking at.<span class="say">flip it and the image becomes decoration instead of proof.</span></div></div>
+  </div>
+
+  <div class="card">
+    <h4>What the real site actually does — and the trade-off</h4>
+    <p style="max-width:66ch">Minimalist's live homepage does <em>not</em> build its hero out of HTML text like the reconstruction above. It stacks six full-bleed <strong>banner images</strong>, each one a link, with the headline text baked into the image file. And it ships <strong>two different image files</strong> — a wide one for desktop, a taller one for phones.</p>
+    <table style="margin-top:14px">
+      <thead><tr><th style="width:34%">Approach</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><b>Text baked into image</b><br>(what Minimalist does)</td><td>Marketing can ship a new banner without a developer. But: search engines can't read it, screen readers can't read it, it can't be translated, and it gets blurry on high-density screens.</td></tr>
+        <tr><td><b>Real HTML text over an image</b><br>(what you should build)</td><td>Slower for marketing to change. But readable, searchable, accessible, and sharp at every screen size.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:12px">Both are real, defensible choices made by real teams. <span class="hl">Learn the second one; recognise the first one.</span> And notice the deeper point — the desktop and mobile banners are two <em>separate files</em>, not one image squeezed. Nobody solves mobile by shrinking.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART TWO ============ -->
+<div class="part-break">Part two — margin and padding</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">02 / the box model</span>
+  <h2>Padding is inside. Margin is outside. That's the whole thing.</h2>
+  <p class="lead">This single distinction causes more beginner confusion than anything else in CSS, and it's genuinely simple once you see it drawn.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 360" role="img" aria-label="The CSS box model showing content, padding, border and margin as nested rectangles">
+      <rect x="60" y="30" width="380" height="280" fill="#fdeee3" stroke="#c0392b" stroke-dasharray="5 4"/>
+      <text x="70" y="48" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#c0392b">MARGIN — outside, invisible</text>
+      <rect x="110" y="76" width="280" height="188" fill="#1b2233"/>
+      <rect x="114" y="80" width="272" height="180" fill="#eaf1fb"/>
+      <text x="124" y="98" font-family="Space Mono, monospace" font-size="10.5" font-weight="700" fill="#2f5fa8">PADDING — inside, coloured</text>
+      <rect x="158" y="118" width="184" height="104" fill="#fff" stroke="#b9c1d1"/>
+      <text x="250" y="166" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1b2233">CONTENT</text>
+      <text x="250" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#7d879c">your text or image</text>
+      <text x="396" y="94" font-family="Caveat, cursive" font-size="20" fill="#1b2233">border</text>
+      <path d="M392,88 C384,84 380,84 372,82" fill="none" stroke="#1b2233" stroke-width="1.4" stroke-linecap="round"/>
+
+      <text x="500" y="52" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="700" fill="#1b2233">The test that never fails</text>
+      <text x="500" y="84" font-family="Newsreader, serif" font-size="14.5" fill="#1b2233">Give the box a background colour.</text>
+      <text x="500" y="108" font-family="Newsreader, serif" font-size="14.5" fill="#1b2233">Whatever the colour covers is padding.</text>
+      <text x="500" y="132" font-family="Newsreader, serif" font-size="14.5" fill="#1b2233">Whatever stays paper-coloured is margin.</text>
+
+      <rect x="500" y="158" width="150" height="62" fill="#1a1a1a"/>
+      <text x="575" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#fff">Add to cart</text>
+      <text x="575" y="204" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#9a9a9a">padding: 14px 24px</text>
+      <text x="672" y="192" font-family="Caveat, cursive" font-size="20" fill="#2f5fa8">black = padding</text>
+
+      <line x1="500" y1="238" x2="650" y2="238" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text x="500" y="258" font-family="Space Mono, monospace" font-size="10" fill="#c0392b">margin-top: 24px — nothing lives here</text>
+
+      <text x="500" y="300" font-family="Caveat, cursive" font-size="23" fill="#c0392b">padding makes the button bigger.</text>
+      <text x="500" y="324" font-family="Caveat, cursive" font-size="23" fill="#c0392b">margin pushes other things away from it.</text>
+    </svg>
+    <figcaption>Padding grows the element. Margin grows the gap. A button with no padding is a strip of text; a button with no margin collides with its neighbour.</figcaption>
+  </figure>
+
+  <h3>Three rules that stop 90% of spacing bugs</h3>
+  <ul class="nl">
+    <li><b>Margins collapse, padding never does.</b> Two stacked boxes with <code>margin-bottom: 20px</code> and <code>margin-top: 30px</code> end up 30px apart, not 50px. CSS takes the larger. Padding always adds up.</li>
+    <li><b>Pick one direction and stay there.</b> Space every element with <code>margin-bottom</code> only, or <code>margin-top</code> only — never both. Mixing them is what makes spacing feel unpredictable.</li>
+    <li><b>Between grid or flex children, don't use margin at all — use <code>gap</code>.</b> One property, no collapse, no leftover margin on the last item.</li>
+  </ul>
+
+  <div class="codeblock">
+<span class="cmt">/* the whole spacing system, four lines */</span>
+<span class="tag">section</span> { <span class="prop">padding</span>: 64px 24px; }        <span class="cmt">/* air inside every section  */</span>
+<span class="tag">.grid</span>   { <span class="prop">display</span>: grid; <span class="prop">gap</span>: 24px; }  <span class="cmt">/* air between the cards     */</span>
+<span class="tag">.card</span>   { <span class="prop">padding</span>: 16px; }             <span class="cmt">/* air inside each card      */</span>
+<span class="tag">.card h3</span>{ <span class="prop">margin-bottom</span>: 8px; }        <span class="cmt">/* air under the card title  */</span>
+  </div>
+
+  <h3>The 8-point scale — stop inventing numbers</h3>
+  <p>Every space in a professional interface comes from one short list: <strong>4, 8, 16, 24, 32, 48, 64, 96</strong>. Nothing else. You will never need 13px or 27px, and if you think you do, you're compensating for a different problem.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 200" role="img" aria-label="An eight point spacing scale with named uses">
+      <g font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c" letter-spacing="1.2"><text x="30" y="24">THE ONLY SPACING VALUES YOU NEED</text></g>
+      <g>
+        <rect x="30" y="40" width="4"  height="46" fill="#c0392b"/><text x="30" y="102" font-family="Space Mono, monospace" font-size="10">4</text>
+        <rect x="90" y="40" width="8"  height="46" fill="#c0392b"/><text x="90" y="102" font-family="Space Mono, monospace" font-size="10">8</text>
+        <rect x="160" y="40" width="16" height="46" fill="#c0392b"/><text x="160" y="102" font-family="Space Mono, monospace" font-size="10">16</text>
+        <rect x="250" y="40" width="24" height="46" fill="#c0392b"/><text x="250" y="102" font-family="Space Mono, monospace" font-size="10">24</text>
+        <rect x="350" y="40" width="32" height="46" fill="#c0392b"/><text x="350" y="102" font-family="Space Mono, monospace" font-size="10">32</text>
+        <rect x="460" y="40" width="48" height="46" fill="#c0392b"/><text x="460" y="102" font-family="Space Mono, monospace" font-size="10">48</text>
+        <rect x="590" y="40" width="64" height="46" fill="#c0392b"/><text x="590" y="102" font-family="Space Mono, monospace" font-size="10">64</text>
+        <rect x="740" y="40" width="96" height="46" fill="#c0392b"/><text x="740" y="102" font-family="Space Mono, monospace" font-size="10">96</text>
+      </g>
+      <g font-family="Newsreader, serif" font-size="12" fill="#5a6377">
+        <text x="30" y="132">icon–label</text><text x="160" y="132">inside a chip</text><text x="250" y="132">inside a card</text>
+        <text x="350" y="132">between cards</text><text x="460" y="132">card → heading</text><text x="590" y="132">section padding</text><text x="740" y="132">big section gaps</text>
+      </g>
+      <text x="30" y="176" font-family="Caveat, cursive" font-size="24" fill="#c0392b">every number here is 8 × something. that's the trick.</text>
+    </svg>
+    <figcaption>Related things sit closer together than unrelated things. That single principle — proximity — does more work than any border or box you could draw.</figcaption>
+  </figure>
+</section>
+
+
+<!-- ============ PART THREE ============ -->
+<div class="part-break">Part three — h1 to h6</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">03 / headings</span>
+  <h2>Headings are an outline, not a size picker</h2>
+  <p class="lead">The single biggest beginner mistake: choosing <code>&lt;h3&gt;</code> because you want smaller text. Headings describe <em>structure</em>. Size is CSS's problem, not HTML's.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="Heading levels shown as a nested outline like a book's table of contents">
+      <text x="30" y="26" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c" letter-spacing="1.2">THINK OF IT AS A BOOK</text>
+      <g font-family="Inter, sans-serif" fill="#1b2233">
+        <text x="30" y="64" font-size="24" font-weight="700">h1 — the title of the book</text>
+        <text x="66" y="102" font-size="19" font-weight="700">h2 — a chapter</text>
+        <text x="102" y="136" font-size="16" font-weight="600">h3 — a section in that chapter</text>
+        <text x="138" y="166" font-size="14" font-weight="600">h4 — a sub-point</text>
+        <text x="66" y="202" font-size="19" font-weight="700">h2 — the next chapter</text>
+        <text x="102" y="234" font-size="16" font-weight="600">h3 — a section in it</text>
+      </g>
+      <g stroke="#c0392b" stroke-width="1.3" fill="none">
+        <path d="M46,74 L46,206"/><path d="M46,206 L62,206"/><path d="M46,106 L62,106"/>
+        <path d="M82,112 L82,140"/><path d="M82,140 L98,140"/>
+        <path d="M118,146 L118,170"/><path d="M118,170 L134,170"/>
+        <path d="M82,212 L82,238"/><path d="M82,238 L98,238"/>
+      </g>
+      <text x="480" y="70" font-family="Caveat, cursive" font-size="25" fill="#c0392b">one h1 per page. always.</text>
+      <text x="480" y="100" font-family="Caveat, cursive" font-size="25" fill="#c0392b">never skip a level going down.</text>
+      <text x="480" y="130" font-family="Caveat, cursive" font-size="25" fill="#c0392b">you can jump back up freely.</text>
+      <text x="30" y="282" font-family="Newsreader, serif" font-size="15" fill="#1b2233">A blind user's screen reader can list every heading on a page and jump between them. If your headings are chosen by size, that list is nonsense.</text>
+    </svg>
+    <figcaption>Screen readers, search engines and browser reading modes all build a navigable outline from your headings. Get it wrong and the page is unusable for people who can't see the sizes you chose.</figcaption>
+  </figure>
+
+  <h3>The real audit — Minimalist's homepage, read live</h3>
+  <p>Here is what's actually on their homepage, top to bottom. Read it as an outline and see whether it makes sense on its own:</p>
+
+  <table>
+    <thead><tr><th style="width:12%">Level</th><th style="width:44%">Text on the live page</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td><code>h2</code></td><td>Our Best Sellers</td><td>Section heading. Correct.</td></tr>
+      <tr><td><code>h2</code></td><td>Shop by Category</td><td>Correct.</td></tr>
+      <tr><td><code>h2</code></td><td>Shop by Concerns</td><td>Correct.</td></tr>
+      <tr><td><code>h2</code></td><td>New Launches</td><td>Correct.</td></tr>
+      <tr><td><code>h2</code></td><td>The future of personal care is here</td><td>Correct — and note it's a <em>sentence</em>, not a label. Brand voice lives in headings too.</td></tr>
+      <tr><td><code>h3</code></td><td>Transparency · Efficacy · Affordable · Only the best</td><td>Correctly nested under the h2 above. This is a textbook h2→h3 relationship.</td></tr>
+      <tr><td><code>h3</code></td><td>Minimalist Trust Circle · Download Our App</td><td>Also h3, but not conceptually inside the h2 above them. Debatable.</td></tr>
+      <tr><td><code>h2</code></td><td>Company Overview · Quick Links · Contact Us</td><td>Footer column titles as h2. Very common, arguably too loud for the outline.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h4>The uncomfortable finding — and the best discussion question in this notebook</h4>
+    <p style="max-width:66ch">Scanning that homepage, the heading outline starts at <code>h2</code>. There's a rotating banner carousel where the headline text is baked into image files — so the biggest, most important words on the page are <strong>pictures, not headings</strong>.</p>
+    <p style="max-width:66ch;margin-top:12px">Ask the class: <em>if the largest text on the homepage isn't a heading, what is a search engine supposed to think this page is about?</em> There's a real answer either way — the brand name carries enormous search weight regardless, and marketing agility has genuine commercial value. <span class="hl">But make them argue it, rather than repeat a rule.</span></p>
+  </div>
+
+  <h3>The product page does it properly</h3>
+  <p>Same site, different template, much cleaner outline — because a product page has one obvious subject:</p>
+  <div class="codeblock">
+<span class="tag">&lt;h1&gt;</span>Niacinamide 10% Face Serum<span class="tag">&lt;/h1&gt;</span>          <span class="cmt">&lt;!-- the one subject --&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>Ingredients<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>You might also like<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;h3&gt;</span>AI Generated Review Summary<span class="tag">&lt;/h3&gt;</span>
+    <span class="tag">&lt;h3&gt;</span>Review highlights<span class="tag">&lt;/h3&gt;</span>
+      <span class="tag">&lt;h4&gt;</span>Perfect for Sensitive Skin<span class="tag">&lt;/h4&gt;</span>   <span class="cmt">&lt;!-- each review title --&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>FAQs<span class="tag">&lt;/h2&gt;</span>
+  </div>
+  <p class="footnote">One <code>h1</code>, sensible <code>h2</code>s, reviews nested three deep. This is a good outline. Note the h1 is the <em>short</em> product name — while the browser tab title is a long, keyword-heavy sentence. Two different jobs, two different strings.</p>
+
+  <h3>Practical defaults</h3>
+  <table>
+    <thead><tr><th style="width:14%">Tag</th><th style="width:26%">Use it for</th><th>Typical size</th></tr></thead>
+    <tbody>
+      <tr><td><code>h1</code></td><td>The page's one subject. Homepage: the brand promise. Product page: the product name.</td><td>32–48px</td></tr>
+      <tr><td><code>h2</code></td><td>Each major section — "Best Sellers", "Ingredients", "FAQs"</td><td>24–30px</td></tr>
+      <tr><td><code>h3</code></td><td>A sub-block inside a section — a value prop, a review group</td><td>18–22px</td></tr>
+      <tr><td><code>h4</code></td><td>Card titles, individual review titles, accordion labels</td><td>15–17px</td></tr>
+      <tr><td><code>h5</code> <code>h6</code></td><td>Rare. Footer column labels, deep documentation. If you need h6, restructure.</td><td>12–14px</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ============ PART FOUR ============ -->
+<div class="part-break">Part four — cards, sections, paragraphs</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">04 / the product card</span>
+  <h2>The most-copied component on the internet</h2>
+  <p class="lead">Reconstructed from Minimalist's live "Our Best Sellers" row. Real names, real prices, real structure.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">beminimalist.co — best sellers</div></div>
+    <div class="bwindow m" style="height:390px">
+      <div class="m-sec">
+        <div class="h">Our Best Sellers</div>
+        <div class="m-grid">
+          <div class="m-card"><span class="badge">Best Seller</span><div class="im"><b></b></div><div class="bd">
+            <div class="nm">Niacinamide 10% Face Serum</div>
+            <div class="cn">Acne Marks, Acne Prone &amp; Oily Skin</div>
+            <div class="pr">₹540 <s>₹599</s><em>9% off</em></div>
+            <div class="sz"><span class="on">30ml</span><span>60ml</span><span>10ml</span></div>
+            <div class="atc">Add to cart</div></div></div>
+
+          <div class="m-card"><span class="badge">Best Seller</span><div class="im"><b></b></div><div class="bd">
+            <div class="nm">SPF 50 Sunscreen</div>
+            <div class="cn">Sun protection, UV exposure &amp; damage</div>
+            <div class="pr">₹360 <s>₹399</s><em>10% off</em></div>
+            <div class="sz"><span class="on">50g</span><span>100g</span><span>30g</span></div>
+            <div class="atc">Add to cart</div></div></div>
+
+          <div class="m-card"><span class="badge">Best Seller</span><div class="im"><b></b></div><div class="bd">
+            <div class="nm">Salicylic Acid + LHA 2% Cleanser</div>
+            <div class="cn">Acne, Breakouts &amp; Oiliness</div>
+            <div class="pr">₹270 <s>₹299</s><em>10% off</em></div>
+            <div class="sz"><span class="on">100ml</span><span>250ml</span></div>
+            <div class="atc">Add to cart</div></div></div>
+
+          <div class="m-card"><span class="badge">Best Seller</span><div class="im"><b></b></div><div class="bd">
+            <div class="nm">Vitamin B5 10% Moisturizer</div>
+            <div class="cn">Damaged Barrier, Oily &amp; Dehydrated</div>
+            <div class="pr">₹315 <s>₹349</s><em>10% off</em></div>
+            <div class="sz"><span class="on">50g</span><span>100g</span></div>
+            <div class="atc">Add to cart</div></div></div>
+        </div>
+      </div>
+      <span class="mk" style="top:36px;left:44px">1</span>
+      <span class="mk b" style="top:78px;left:24px">2</span>
+      <span class="mk g" style="top:172px;left:24px">3</span>
+      <span class="mk" style="top:212px;left:24px">4</span>
+      <span class="mk b" style="top:255px;left:24px">5</span>
+      <span class="mk g" style="top:118px;left:224px">6</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">Section heading is <b>centred and small</b> — 20px, not 40px. It's a signpost, not a hero. The products are the point; the label just tells you where you are.<span class="say">not every heading needs to be big.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">The <b>badge sits at the very top-left corner, flush</b> — zero margin. Badges are stickers; a stuck-on label with a gap around it reads as an accident.<span class="say">position:absolute, top:0, left:0. no padding on the parent side.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">Under the name, a <b>concern line</b> — "Acne Marks, Acne Prone &amp; Oily Skin". Not a description; a matching key. The shopper isn't buying niacinamide, they're buying a solution to a problem they already named.<span class="say">this one line is the smartest thing on their card.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body"><b>Three numbers, three jobs</b>: pay this (bold), don't pay this (struck, grey), you saved this (red). Exactly the pattern from Sheet 02's Zomato teardown, on a completely different site.<span class="say">patterns transfer. that's why we learn them.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body"><b>Size selector inside the card</b> — you can pick 30ml vs 60ml without opening the product. Fewer clicks to purchase, but the card gets taller and denser. A real trade-off, deliberately taken.<span class="say">most brands don't do this. ask the class why minimalist does.</span></div></div>
+    <div class="note g"><div class="n">6</div><div class="body">Every card is the <b>same height</b>, even though the names are different lengths. That's <code>min-height</code> on the name and concern lines, plus <code>display:flex; flex-direction:column</code> so the button pins to the bottom.<span class="say">ragged card bottoms are the #1 giveaway of a beginner grid.</span></div></div>
+  </div>
+
+  <div class="codeblock">
+<span class="cmt">/* why the buttons all line up at the bottom */</span>
+<span class="tag">.card</span>      { <span class="prop">display</span>: flex; <span class="prop">flex-direction</span>: column; }
+<span class="tag">.card .name</span>{ <span class="prop">min-height</span>: 33px; }   <span class="cmt">/* two lines of room, always */</span>
+<span class="tag">.card .atc</span> { <span class="prop">margin-top</span>: auto; }   <span class="cmt">/* eat the leftover space   */</span>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">05 / sections &amp; paragraphs</span>
+  <h2>A section is a band. A paragraph has a maximum width.</h2>
+
+  <figure>
+    <svg viewBox="0 0 900 330" role="img" aria-label="Section band structure with full-bleed background and a constrained inner container, plus paragraph measure">
+      <rect x="30" y="30" width="840" height="110" fill="#f6f4f1" stroke="#c0392b" stroke-dasharray="5 4"/>
+      <text x="40" y="50" font-family="Space Mono, monospace" font-size="10.5" font-weight="700" fill="#c0392b">&lt;section&gt; — background goes edge to edge</text>
+      <rect x="190" y="64" width="520" height="60" fill="#fff" stroke="#2f5fa8"/>
+      <text x="200" y="82" font-family="Space Mono, monospace" font-size="10.5" font-weight="700" fill="#2f5fa8">.container — max-width: 1200px; margin: 0 auto</text>
+      <text x="200" y="106" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">content never touches the browser edge</text>
+      <text x="30" y="164" font-family="Caveat, cursive" font-size="23" fill="#c0392b">colour full-width. content centred. two boxes, not one.</text>
+
+      <line x1="30" y1="188" x2="870" y2="188" stroke="#d8dbe3"/>
+
+      <text x="30" y="214" font-family="Space Mono, monospace" font-size="10.5" fill="#c0392b" letter-spacing="1.2">TOO WIDE — 130 CHARACTERS</text>
+      <g fill="#e23744" opacity=".2"><rect x="30" y="224" width="840" height="7"/><rect x="30" y="238" width="840" height="7"/><rect x="30" y="252" width="700" height="7"/></g>
+      <text x="30" y="278" font-family="Caveat, cursive" font-size="20" fill="#c0392b">eye loses the line coming back</text>
+
+      <text x="480" y="214" font-family="Space Mono, monospace" font-size="10.5" fill="#0a8754" letter-spacing="1.2">GOOD — 45 TO 75 CHARACTERS</text>
+      <g fill="#0a8754" opacity=".22"><rect x="480" y="224" width="330" height="7"/><rect x="480" y="238" width="330" height="7"/><rect x="480" y="252" width="260" height="7"/></g>
+      <text x="480" y="278" font-family="Caveat, cursive" font-size="20" fill="#0a8754">max-width: 65ch — one line of CSS</text>
+
+      <text x="30" y="316" font-family="Newsreader, serif" font-size="14.5" fill="#1b2233">A wide screen is not permission to use a wide paragraph. The container gets wide; the text does not.</text>
+    </svg>
+    <figcaption>Two-box structure: the outer section carries the background and the vertical padding; the inner container caps the width and centres itself. Almost every well-built site on the internet does exactly this.</figcaption>
+  </figure>
+
+  <div class="codeblock">
+<span class="tag">&lt;section</span> <span class="attr">class</span>=<span class="str">"bestsellers"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"container"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;h2&gt;</span>Our Best Sellers<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"grid"</span><span class="tag">&gt;</span> ...cards... <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/section&gt;</span>
+
+<span class="tag">.bestsellers</span> { <span class="prop">background</span>: #f6f4f1; <span class="prop">padding</span>: 64px 0; }
+<span class="tag">.container</span>   { <span class="prop">max-width</span>: 1200px; <span class="prop">margin</span>: 0 auto; <span class="prop">padding</span>: 0 24px; }
+<span class="tag">p</span>            { <span class="prop">max-width</span>: 65ch; <span class="prop">line-height</span>: 1.6; }
+  </div>
+</section>
+
+
+<!-- ============ PART FIVE ============ -->
+<div class="part-break">Part five — the product page, deep</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">06 / the buy box</span>
+  <h2>Where a website stops being a brochure</h2>
+  <p class="lead">Reconstructed from the live Niacinamide 10% page. Every element below is on the real page — including the tax breakdown, which is unusual and worth studying.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">beminimalist.co/products/niacinamide-10-with-matmarine</div></div>
+    <div class="bwindow m" style="height:600px">
+      <div class="m-nav" style="padding:11px 28px">
+        <div class="m-logo" style="font-size:15px">Minimalist</div>
+        <div class="m-links" style="font-size:10.5px"><span>Shop</span><span>Best Sellers</span><span>Skin &amp; Body</span><span>Hair Care</span></div>
+        <div class="m-ic" style="font-size:11px"><span>⌕</span><span>☻</span><span>Cart ₹0 (0)</span></div>
+      </div>
+      <div class="m-crumb">Home / Face Serum / <b style="color:#1a1a1a">Niacinamide 10% Face Serum</b></div>
+
+      <div class="m-pdp">
+        <div class="m-gal">
+          <div class="main"><b></b></div>
+          <div class="th"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="m-buy">
+          <h1>Niacinamide 10% Face Serum</h1>
+          <div class="claim">For reducing sebum &amp; pores, and even skin tone</div>
+          <div class="desc">A daily serum built around pure Vitamin B3 with Matmarine, a biotech marine extract. Targets excess oil, visible pores and uneven tone.</div>
+
+          <div class="m-props"><span>✓ Fragrance Free</span><span>✓ Non-comedogenic</span><span>✓ Essential Oil Free</span><span>✓ pH 5.5–6.5</span></div>
+
+          <div class="m-offers">
+            <div class="t">Offers (4)</div>
+            <div class="r"><b>ATC10</b><span>Additional 10% off on orders above ₹599</span></div>
+            <div class="r"><b>B3G4THFREE</b><span>Buy 3, get the 4th product free</span></div>
+          </div>
+
+          <div class="m-var">
+            <div class="t">Select size</div>
+            <div class="row"><span class="on">30ml</span><span>60ml</span><span>10ml</span><span class="out">20ml</span></div>
+          </div>
+
+          <div class="m-price"><span class="now">₹540</span><span class="mrp">MRP ₹599</span><span class="off">9% off</span></div>
+          <div class="m-tax">Base ₹458 &nbsp;+&nbsp; 18% GST ₹82 &nbsp;=&nbsp; ₹540 (incl. of all taxes)</div>
+
+          <div class="m-atc"><div class="q">− 1 +</div><div class="p">Add to cart</div></div>
+
+          <div class="m-pin"><span>Delivery &amp; cash on delivery</span><span><input placeholder="Enter pincode"> Check</span></div>
+
+          <div class="m-acc">
+            <div class="r"><span style="color:#1a1a1a">What Makes It Potent?</span><span>+</span></div>
+            <div class="r"><span style="color:#1a1a1a">Ideal For</span><span>+</span></div>
+            <div class="r"><span style="color:#1a1a1a">How to Use</span><span>+</span></div>
+            <div class="r"><span style="color:#1a1a1a">Consumer Studies</span><span>+</span></div>
+          </div>
+        </div>
+      </div>
+
+      <span class="mk" style="top:56px;left:24px">1</span>
+      <span class="mk b" style="top:94px;right:250px">2</span>
+      <span class="mk g" style="top:168px;right:250px">3</span>
+      <span class="mk" style="top:214px;right:250px">4</span>
+      <span class="mk b" style="top:300px;right:250px">5</span>
+      <span class="mk g" style="top:346px;right:250px">6</span>
+      <span class="mk" style="top:400px;right:250px">7</span>
+      <span class="mk b" style="top:456px;right:250px">8</span>
+      <span class="mk g" style="top:200px;left:24px">9</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>Breadcrumb</b> — three links and two slashes. The cheapest orientation device on the web, and the one beginners always leave out.<span class="say">Home / Category / This product. that's it.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">The <code>&lt;h1&gt;</code> is the <b>short</b> name — "Niacinamide 10% Face Serum". The browser tab carries a much longer keyword sentence. <b>Two different strings for two different readers</b>: one for humans, one for search.<span class="say">&lt;title&gt; ≠ &lt;h1&gt;. most people never learn this.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body"><b>Property chips</b> — fragrance free, non-comedogenic, pH range. Tiny, bordered, no colour. They answer objections without interrupting the buying flow.<span class="say">notice they're facts, not adjectives. no "amazing", no "revolutionary".</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body"><b>Offers block, dashed border.</b> A dashed border is the universal "coupon" signal — it's imitating a tear-off voucher. Real design references a physical object you already understand.<span class="say">border-style: dashed. one word, whole metaphor.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Variants are <b>visible pills, not a dropdown</b>, and the sold-out size stays on screen struck through rather than disappearing. Hiding it would make the shopper wonder if they misremembered.<span class="say">show unavailability. don't hide it.</span></div></div>
+    <div class="note g"><div class="n">6</div><div class="body">The <b>tax breakdown is spelled out</b>: base ₹458 + 18% GST ₹82 = ₹540. Almost no global brand does this. It's Minimalist's transparency positioning, expressed as a spacing-and-type decision in the buy box.<span class="say">brand values become interface details. this is the clearest example i've found.</span></div></div>
+    <div class="note"><div class="n">7</div><div class="body"><b>Pincode check + COD</b> — the single most India-specific element on the page. Delivery certainty and cash-on-delivery are purchase blockers here in a way they aren't in the US or UK.<span class="say">geography changes the interface. always ask "where is the user".</span></div></div>
+    <div class="note b"><div class="n">8</div><div class="body"><b>Everything else is collapsed.</b> Potency, ideal for, how to use, consumer studies — four accordions. This page holds an enormous amount of technical content; collapsing lets each shopper open only their own question.<span class="say">&lt;details&gt;&lt;summary&gt; gives you this with zero javascript.</span></div></div>
+    <div class="note g"><div class="n">9</div><div class="body"><b>One large image, five thumbnails.</b> Same gallery pattern as Sheet 00's KOSA page and as every e-commerce site you've ever used. Once you know a pattern, you stop having to invent one.<span class="say">this is the fourth time we've seen this exact component.</span></div></div>
+  </div>
+
+  <h3>Everything below the fold, in order</h3>
+  <table>
+    <thead><tr><th style="width:26%">Block</th><th style="width:12%">Heading</th><th>What it's really doing</th></tr></thead>
+    <tbody>
+      <tr><td>Goes Well With</td><td>—</td><td>One complementary product. Raises basket size without feeling like a sales pitch, because it's a routine suggestion, not an upsell.</td></tr>
+      <tr><td>Ingredients</td><td><code>h2</code></td><td>Three key actives explained one by one, then the <em>full</em> INCI list. This is the "Nothing to Hide" promise made structural.</td></tr>
+      <tr><td>You might also like</td><td><code>h2</code></td><td>Six more cards — identical component to the homepage row. One card, reused everywhere.</td></tr>
+      <tr><td>Review summary</td><td><code>h3</code></td><td>An AI-written digest plus topic breakdown, sitting above the raw reviews. Note it summarises criticism too, not only praise.</td></tr>
+      <tr><td>Individual reviews</td><td><code>h4</code></td><td>Each review has its own title, body, reviewer name and star count. Consistent structure, hundreds of times over.</td></tr>
+      <tr><td>FAQs</td><td><code>h2</code></td><td>Contains the statutory block — see below. Not really an FAQ at all.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The block your students will never see on a Western site</h4>
+    <p style="max-width:66ch">Inside "FAQs" sits a specification table: product type, net quantity, shelf life, product dimensions, <strong>country of origin</strong>, SKU codes, and the full manufacturer and consumer-care address in Jaipur. That isn't marketing copy — most of it is <span class="hl">legally required for goods sold online in India</span> under Legal Metrology packaged-commodity rules.</p>
+    <p style="max-width:66ch;margin-top:12px">This is the lesson: <strong>some parts of a page exist because the law says so, not because a designer wanted them.</strong> A student who builds a beautiful Indian e-commerce page with no country of origin and no consumer-care address has built something that couldn't legally ship. Worth one slide, and worth saying out loud.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART SIX ============ -->
+<div class="part-break">Part six — this week's exercise</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">07 / do it</span>
+  <h2>Measure first. Build second.</h2>
+
+  <div class="card">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:15%">Step</th><th style="width:40%">Do</th><th>You'll learn</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Count</b></td><td>Open any Indian D2C store. Right-click a section heading → Inspect. Write down its tag: is it h1, h2 or a styled div?</td><td>That real sites are inconsistent, and rules are choices.</td></tr>
+        <tr><td><b>2 · Outline</b></td><td>List every heading on one page in order, indented by level. Read the list alone. Does it describe the page?</td><td>What a screen reader hears.</td></tr>
+        <tr><td><b>3 · Measure</b></td><td>Inspect one product card. Note its padding, and the gap between cards. Are they multiples of 8?</td><td>That the 8-point scale is real and in use.</td></tr>
+        <tr><td><b>4 · Rebuild</b></td><td>Build one section — heading + four cards — from your notes only. No tracing.</td><td>Grid, gap, padding, and why cards need equal height.</td></tr>
+        <tr><td><b>5 · Break</b></td><td>Set every margin and padding to 0. Screenshot. Then set them all to 40px. Screenshot.</td><td>That spacing <em>is</em> the design.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:14px"><strong>Step 5 is the grade.</strong> A page with perfect type, perfect colour and no spacing is unreadable. A page with plain type, no colour and correct spacing looks professional. Make them prove that to themselves once and they'll never forget it.</p>
+  </div>
+
+  <h3>Source note</h3>
+  <ul class="nl">
+    <li><b>Read live from beminimalist.co</b>: homepage section headings, product names, prices and MRPs, concern lines, variant sizes, offer codes, the PDP heading outline, the tax breakdown, the accordion labels, and the statutory specification block.</li>
+    <li><b>My reconstruction, not their code</b>: all CSS, all layout values, all colours, all imagery. Their real hero is a stack of banner images; mine is HTML text, deliberately, to show the better-built version.</li>
+    <li><b>Live sites change.</b> Prices, offers and banners will differ by the time you read this. If a student finds a mismatch, that's the exercise working — send them to inspect it themselves.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

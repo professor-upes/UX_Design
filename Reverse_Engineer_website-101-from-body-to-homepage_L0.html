@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website 101 — From &lt;body&gt; to Homepage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3; --grid:#e2e6ee; --ink:#1b2233; --pencil:#7d879c;
+  --pen-red:#c0392b; --pen-blue:#2f5fa8; --pen-green:#0a8754;
+  --marker:#ffe27a; --rule:#d8dbe3;
+  --k-brand:#b5562e; --k-brand-ink:#3a2a1f; --k-bg:#faf6ef; --k-line:#e7ded0;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink); font-family:"Newsreader",Georgia,serif; font-size:17px; line-height:1.62;
+}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 130px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:76px 0 28px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:22px}
+.cover h1{font-size:clamp(38px,7.4vw,80px);font-weight:800;letter-spacing:-.032em;line-height:.98;max-width:17ch}
+.cover .deck{max-width:60ch;font-size:19px;color:#3b4356;margin-top:22px}
+.chapter{margin-top:100px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.026em;line-height:1.06;max-width:25ch}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:68ch} p.lead{font-size:18.5px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:22px 25px;margin:22px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)} .card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:32px;width:76px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+.part-break{margin:114px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:72ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:64ch}
+svg{max-width:100%;height:auto;display:block}
+ul.notes-list{list-style:none;padding:0;margin:14px 0;max-width:68ch}
+ul.notes-list li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.notes-list li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:16px 0}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+
+/* ---- code block ---- */
+.code{background:#161821;color:#d7dae3;border-radius:7px;padding:15px 17px;font-family:"Space Mono",monospace;font-size:12.5px;line-height:1.68;overflow-x:auto;margin:16px 0}
+.code .tag{color:#7fc8ff} .code .attr{color:#f0b86e} .code .str{color:#9fdc8f} .code .cmt{color:#7d879c}
+
+/* ---- browser mockup ---- */
+.browser{position:relative;width:100%;border-radius:13px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff;margin-top:24px}
+.chrome{height:32px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
+.dot{width:8px;height:8px;border-radius:50%}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:19px;font-family:"Space Mono",monospace;font-size:10px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.bwindow{position:relative;overflow:hidden}
+
+/* markers + notes */
+.mk{position:absolute;z-index:20;width:25px;height:25px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+.mk.g{background:var(--pen-green);box-shadow:0 2px 8px rgba(10,135,84,.4)}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 30px;margin-top:26px}
+@media (max-width:820px){.notes-grid{grid-template-columns:1fr}}
+.note{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;margin-bottom:6px}
+.note .n{width:24px;height:24px;display:grid;place-items:center;margin-top:2px;font-family:"Caveat",cursive;font-size:17px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);flex-shrink:0}
+.note.b .n{background:var(--pen-blue)} .note.g .n{background:var(--pen-green)}
+.note .body{font-size:15.5px;line-height:1.5}
+.note .body .say{display:block;font-family:"Caveat",cursive;font-size:19px;color:var(--pen-red);margin-top:3px;line-height:1.3}
+.note.b .body .say{color:var(--pen-blue)} .note.g .body .say{color:var(--pen-green)}
+
+/* ---- KOSA site chrome (fictional brand used throughout) ---- */
+.k{font-family:"Inter",system-ui,sans-serif;color:var(--k-brand-ink);background:#fff}
+.k-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid var(--k-line)}
+.k-logo{font-family:"Poppins",sans-serif;font-weight:700;font-size:19px;letter-spacing:.01em}
+.k-links{display:flex;gap:22px;font-size:13px;font-weight:500;color:#6b5d4f}
+.k-links span.on{color:var(--k-brand-ink);border-bottom:2px solid var(--k-brand);padding-bottom:3px}
+.k-icons{display:flex;gap:16px;font-size:14px;color:#6b5d4f}
+.k-icons .cart{position:relative}
+.k-icons .cart b{position:absolute;top:-7px;right:-9px;background:var(--k-brand);color:#fff;font-size:9px;border-radius:50%;width:15px;height:15px;display:grid;place-items:center;font-family:"Space Mono",monospace}
+
+.k-hero{display:grid;grid-template-columns:1fr 1fr;background:var(--k-bg)}
+.k-hero .txt{padding:60px 46px}
+.k-hero .eyebrow{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--k-brand)}
+.k-hero h3{font-family:"Newsreader",serif;font-weight:600;font-size:34px;line-height:1.14;letter-spacing:-.015em;margin:12px 0 0;max-width:11ch;color:var(--k-brand-ink)}
+.k-hero p{font-size:14px;color:#6b5d4f;margin-top:14px;max-width:34ch}
+.k-cta{display:inline-block;margin-top:22px;background:var(--k-brand-ink);color:#fff;font-size:13px;font-weight:600;padding:12px 22px;border-radius:6px}
+.k-hero .img{background:linear-gradient(140deg,#e3cba6,#c98f5c 55%,#a86138)}
+
+.k-trust{display:flex;justify-content:space-around;padding:16px 20px;border-bottom:1px solid var(--k-line);font-size:11.5px;color:#6b5d4f;font-weight:500}
+
+.k-sec{padding:40px 26px}
+.k-sec h4{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:20px;letter-spacing:-.015em;color:var(--k-brand-ink);text-transform:none;margin:0 0 18px}
+.k-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.k-cat{border-radius:8px;overflow:hidden}
+.k-cat .im{height:96px}
+.k-cat .lb{padding:8px 0 0;font-size:12.5px;font-weight:600}
+
+.k-prods{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.k-card{}
+.k-card .im{height:120px;border-radius:7px;margin-bottom:8px}
+.k-card .nm{font-size:12.5px;font-weight:600;line-height:1.3}
+.k-card .pr{font-size:12px;color:var(--k-brand);font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+.k-card .rt{font-size:10.5px;color:#8a7a68;margin-top:2px}
+
+.k-testi{background:var(--k-bg);text-align:center;padding:46px 60px}
+.k-testi q{font-family:"Newsreader",serif;font-style:italic;font-size:19px;color:var(--k-brand-ink);line-height:1.5}
+.k-testi .who{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a7a68;margin-top:12px}
+
+.k-news{display:flex;align-items:center;justify-content:space-between;padding:26px 40px;background:var(--k-brand-ink);color:#fff}
+.k-news .t{font-size:15px;font-weight:600}
+.k-news .in{display:flex;background:#fff;border-radius:6px;overflow:hidden}
+.k-news .in input{border:0;padding:9px 12px;font-size:12px;width:170px;font-family:"Inter",sans-serif;color:#3a2a1f}
+.k-news .in button{border:0;background:var(--k-brand);color:#fff;font-size:12px;font-weight:600;padding:9px 14px}
+
+.k-foot{background:#3a2a1f;color:#d8cabb;padding:30px 26px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:20px;font-size:12px}
+.k-foot h5{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#a6957f;margin:0 0 10px}
+.k-foot div div{margin-bottom:6px;color:#e5dbcc}
+.k-foot .brand{font-family:"Poppins",sans-serif;font-weight:700;font-size:17px;color:#fff}
+.k-foot .pay{margin-top:14px;font-family:"Space Mono",monospace;font-size:9.5px;color:#a6957f}
+
+/* breadcrumb */
+.k-crumb{padding:12px 26px 0;font-size:11.5px;color:#8a7a68}
+.k-crumb b{color:var(--k-brand-ink)}
+
+/* PLP */
+.k-plp-head{padding:16px 26px 0;display:flex;justify-content:space-between;align-items:baseline}
+.k-plp-head h4{margin:0;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:21px;color:var(--k-brand-ink)}
+.k-plp-head span{font-family:"Space Mono",monospace;font-size:11px;color:#8a7a68}
+.k-plp-body{display:grid;grid-template-columns:180px 1fr;gap:22px;padding:18px 26px 30px}
+.k-filt{font-size:12.5px}
+.k-filt h6{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a7a68;margin:14px 0 8px;font-weight:700}
+.k-filt h6:first-child{margin-top:0}
+.k-filt label{display:flex;gap:7px;align-items:center;margin-bottom:6px;color:#4a3d31}
+.k-filt input{width:12px;height:12px}
+.k-sort{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#6b5d4f;margin-bottom:14px}
+.k-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.k-gcard .im{height:118px;border-radius:7px;margin-bottom:7px;position:relative}
+.k-gcard .badge{position:absolute;top:7px;left:7px;background:var(--k-brand-ink);color:#fff;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600}
+.k-gcard .nm{font-size:12.5px;font-weight:600;line-height:1.3}
+.k-gcard .pr{font-size:12px;margin-top:3px;font-variant-numeric:tabular-nums}
+.k-gcard .pr s{color:#b0a493;font-weight:400;margin-right:5px}
+.k-gcard .pr b{color:var(--k-brand)}
+.k-page{display:flex;gap:8px;justify-content:center;margin-top:20px;font-family:"Space Mono",monospace;font-size:11px;color:#8a7a68}
+.k-page span.on{color:#fff;background:var(--k-brand-ink);padding:3px 8px;border-radius:4px}
+.k-page span{padding:3px 8px}
+
+/* PDP */
+.k-pdp{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:26px}
+.k-gal .main{height:230px;border-radius:9px;background:linear-gradient(150deg,#e9d3b3,#c98f5c 60%,#96603a)}
+.k-thumbs{display:flex;gap:8px;margin-top:8px}
+.k-thumbs .t{width:46px;height:46px;border-radius:5px;border:2px solid transparent}
+.k-thumbs .t.on{border-color:var(--k-brand)}
+.k-buy .brandlink{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--k-brand)}
+.k-buy h4{font-family:"Newsreader",serif;font-weight:600;font-size:23px;margin:6px 0 4px;color:var(--k-brand-ink);letter-spacing:-.01em}
+.k-buy .rt{font-size:12px;color:#8a7a68}
+.k-buy .price{margin-top:12px;font-size:20px;font-weight:700;color:var(--k-brand-ink);font-variant-numeric:tabular-nums}
+.k-buy .price s{color:#b0a493;font-weight:400;font-size:14px;margin-left:8px}
+.k-buy .price em{color:var(--pen-green);font-style:normal;font-size:11.5px;margin-left:8px;font-weight:600}
+.k-vary{margin-top:16px}
+.k-vary h6{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a7a68;margin:0 0 8px}
+.k-pills{display:flex;gap:8px}
+.k-pills span{border:1px solid var(--k-line);padding:6px 13px;border-radius:16px;font-size:12px}
+.k-pills span.on{background:var(--k-brand-ink);color:#fff;border-color:var(--k-brand-ink)}
+.k-ctarow{display:flex;gap:10px;margin-top:20px}
+.k-ctarow .primary{flex:1;background:var(--k-brand-ink);color:#fff;text-align:center;padding:12px;border-radius:7px;font-size:13.5px;font-weight:600}
+.k-ctarow .secondary{flex:1;border:1.5px solid var(--k-brand-ink);color:var(--k-brand-ink);text-align:center;padding:11px;border-radius:7px;font-size:13.5px;font-weight:600}
+.k-accord{margin-top:22px;border-top:1px solid var(--k-line)}
+.k-arow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--k-line);font-size:13px;font-weight:500}
+.k-arow span.n{color:#b0a493;font-family:"Space Mono",monospace}
+
+/* About */
+.k-ahero{padding:50px 26px;text-align:center;background:var(--k-bg)}
+.k-ahero .eyebrow{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--k-brand)}
+.k-ahero h4{font-family:"Newsreader",serif;font-weight:600;font-size:28px;max-width:16ch;margin:10px auto 0;line-height:1.22;color:var(--k-brand-ink)}
+.k-story{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:36px 26px;align-items:center}
+.k-story .im{height:190px;border-radius:9px;background:linear-gradient(135deg,#cdb89a,#8c6a49)}
+.k-story p{font-size:14px;color:#4a3d31;line-height:1.7}
+.k-values{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 26px 36px}
+.k-val{text-align:center}
+.k-val .ic{font-size:20px}
+.k-val .t{font-size:12px;font-weight:600;margin-top:6px}
+.k-tl{padding:0 26px 36px;position:relative}
+.k-tl .line{position:absolute;left:26px;right:26px;top:12px;height:2px;background:var(--k-line)}
+.k-tl-row{display:flex;justify-content:space-between;position:relative}
+.k-tl-item{text-align:center;font-size:11px;width:80px}
+.k-tl-item .dot2{width:11px;height:11px;border-radius:50%;background:var(--k-brand);margin:0 auto 8px}
+.k-tl-item b{display:block;font-family:"Space Mono",monospace;font-size:11px}
+
+@media print{
+  body{background:#fff;background-image:none;font-size:11pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:28px}
+  .part-break{break-before:page;margin-top:0}
+  .browser{box-shadow:none;break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · absolute beginners · sheet 00</div>
+  <h1>From &lt;body&gt; to homepage</h1>
+  <p class="deck">You've seen the boilerplate. Blank <code>&lt;head&gt;</code>, empty <code>&lt;body&gt;</code>. This notebook reverse-engineers a real kind of website — an Indian D2C store, built page by page — and points at every single box saying <em>this is that tag, arranged this way.</em> Nothing here requires knowing what "design" means yet. It only requires the boilerplate you already have.</p>
+  <p style="margin-top:22px"><span class="stamp">Every screen below is HTML + CSS. No magic.</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>One honest note before we start</h4>
+  <p style="max-width:66ch">The site in this notebook — <strong>KOSA</strong> — is not real. It's built to look like the dozens of Indian skincare/D2C sites you've already used (Mamaearth, Nykaa, Purplle, boAt and friends all share this anatomy), so we can point at exact numbers without copying anyone's actual code. Once you can see the pattern here, you'll see it on every real site you open. That recognition <em>is</em> the skill.</p>
+</div>
+
+
+<!-- ============ PART ONE ============ -->
+<div class="part-break">Part one — the skeleton</div>
+
+<section class="chapter">
+  <span class="chapter-num">01 / the one box you already have</span>
+  <h2>Your boilerplate is the whole website</h2>
+  <p class="lead">Look at what you were given. Nothing about it is incomplete — it is the entire structure every website on earth starts from.</p>
+
+  <div class="code">
+<span class="cmt">&lt;!-- what you already have --&gt;</span>
+<span class="tag">&lt;!DOCTYPE</span> <span class="attr">html</span><span class="tag">&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="str">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>Document<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+
+  <span class="cmt">&lt;!-- everything you will ever design goes here --&gt;</span>
+
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span>
+  </div>
+
+  <p><span class="hl">Every homepage, every product page, every "About Us" you have ever scrolled</span> is just content arranged inside that one pair of <code>&lt;body&gt;</code> tags. A website is not a mysterious canvas — it is boxes, inside boxes, inside the one box you already know how to open.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 420" role="img" aria-label="A browser window broken into labeled landmark regions: header containing nav, main containing sections, and footer">
+      <rect x="30" y="20" width="840" height="380" fill="#fffdf8" stroke="#1b2233" stroke-width="1.6" rx="6"/>
+      <rect x="30" y="20" width="840" height="26" fill="#ececea" stroke="#1b2233" stroke-width="1.6" rx="6"/>
+      <circle cx="48" cy="33" r="4" fill="#e0645a"/><circle cx="62" cy="33" r="4" fill="#e0b84f"/><circle cx="76" cy="33" r="4" fill="#6fbf6f"/>
+
+      <!-- header -->
+      <rect x="46" y="62" width="808" height="58" fill="#fdeee3" stroke="#c0392b" stroke-dasharray="4 3"/>
+      <text x="58" y="82" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#c0392b">&lt;header&gt;</text>
+      <rect x="58" y="92" width="150" height="18" fill="#fff" stroke="#e6c2b0"/>
+      <text x="66" y="105" font-family="Space Mono, monospace" font-size="9.5" fill="#c0392b">&lt;nav&gt; logo + links &lt;/nav&gt;</text>
+
+      <!-- main -->
+      <rect x="46" y="136" width="808" height="216" fill="#eaf1fb" stroke="#2f5fa8" stroke-dasharray="4 3"/>
+      <text x="58" y="156" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#2f5fa8">&lt;main&gt;</text>
+
+      <rect x="58" y="166" width="784" height="52" fill="#fff" stroke="#c7d6ec"/>
+      <text x="66" y="184" font-family="Space Mono, monospace" font-size="9.5" fill="#2f5fa8">&lt;section class="hero"&gt;</text>
+      <text x="66" y="200" font-family="Newsreader, serif" font-size="11" fill="#5a6377" font-style="italic">headline, subtext, one button</text>
+
+      <rect x="58" y="226" width="378" height="118" fill="#fff" stroke="#c7d6ec"/>
+      <text x="66" y="244" font-family="Space Mono, monospace" font-size="9.5" fill="#2f5fa8">&lt;section class="categories"&gt;</text>
+      <rect x="66" y="252" width="70" height="76" fill="#f0f0ee"/><rect x="144" y="252" width="70" height="76" fill="#f0f0ee"/>
+      <rect x="222" y="252" width="70" height="76" fill="#f0f0ee"/><rect x="300" y="252" width="70" height="76" fill="#f0f0ee"/>
+
+      <rect x="464" y="226" width="378" height="118" fill="#fff" stroke="#c7d6ec"/>
+      <text x="472" y="244" font-family="Space Mono, monospace" font-size="9.5" fill="#2f5fa8">&lt;section class="products"&gt;</text>
+      <rect x="472" y="252" width="80" height="76" fill="#f0f0ee"/><rect x="560" y="252" width="80" height="76" fill="#f0f0ee"/>
+      <rect x="648" y="252" width="80" height="76" fill="#f0f0ee"/><rect x="736" y="252" width="80" height="76" fill="#f0f0ee"/>
+
+      <!-- footer -->
+      <rect x="46" y="360" width="808" height="46" fill="#f2eee6" stroke="#8a7a68" stroke-dasharray="4 3"/>
+      <text x="58" y="380" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#6b5d4f">&lt;footer&gt;</text>
+      <text x="140" y="380" font-family="Newsreader, serif" font-size="11" fill="#6b5d4f" font-style="italic">sitemap links, social, legal, copyright</text>
+
+      <text x="46" y="412" font-family="Caveat, cursive" font-size="24" fill="#c0392b">four boxes. that's a homepage.</text>
+    </svg>
+    <figcaption>Every real homepage is a variation on this exact skeleton — header holding a nav, main holding stacked sections, footer at the bottom. What changes page to page is what goes inside each box, not the boxes themselves.</figcaption>
+  </figure>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">02 / the only vocabulary you need on day one</span>
+  <h2>Five tags build ninety percent of every website</h2>
+  <p class="lead">You don't need forty HTML tags to start. You need these, plus the discipline to use them for what they mean, not just what they look like.</p>
+
+  <table>
+    <thead><tr><th style="width:16%">Tag</th><th style="width:30%">What lives inside it</th><th>Plain-English rule</th></tr></thead>
+    <tbody>
+      <tr><td><code>&lt;header&gt;</code></td><td>Logo, nav, sometimes a search bar</td><td>The introduction row. Usually appears once, at the top.</td></tr>
+      <tr><td><code>&lt;nav&gt;</code></td><td>The list of links to other pages</td><td>If it's a list of places you can go, it's a <code>nav</code> — even if it's just three links.</td></tr>
+      <tr><td><code>&lt;main&gt;</code></td><td>The actual content of the page</td><td>One per page. Everything that makes this page different from every other page lives here.</td></tr>
+      <tr><td><code>&lt;section&gt;</code></td><td>A distinct chunk of content inside main</td><td>If you'd give it its own heading, it's a section — hero, categories, testimonials are each their own.</td></tr>
+      <tr><td><code>&lt;footer&gt;</code></td><td>Sitemap, legal, social, copyright</td><td>The last thing on every page, usually identical across the whole site.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h4>The tag that means "I give up, it's just a box"</h4>
+    <p style="max-width:64ch">When nothing above fits — a card, a row of icons, a wrapper you only need for layout — use <code>&lt;div&gt;</code>. It carries no meaning at all, and that's fine; not everything needs to mean something. A product card is usually an <code>&lt;article&gt;</code> (it makes sense on its own, out of context) with plain <code>&lt;div&gt;</code>s inside it for image/name/price.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART TWO ============ -->
+<div class="part-break">Part two — navigation</div>
+
+<section class="chapter">
+  <span class="chapter-num">03 / the nav bar</span>
+  <h2>The one row that's on every single page</h2>
+  <p class="lead">Reverse-engineered below. Same three questions on every real site: where's the logo, how do I get where I'm going, where's my cart.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in</div></div>
+    <div class="bwindow k" style="height:76px">
+      <div class="k-nav">
+        <div class="k-logo">KOSA</div>
+        <div class="k-links"><span class="on">Shop</span><span>Skin</span><span>Hair</span><span>Body</span><span>About</span></div>
+        <div class="k-icons"><span>⌕</span><span>☻</span><span class="cart">🛒<b>2</b></span></div>
+      </div>
+      <span class="mk" style="top:26px;left:20px">1</span>
+      <span class="mk b" style="top:26px;left:230px">2</span>
+      <span class="mk g" style="top:26px;right:24px">3</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">
+      <b>Logo, top-left, always.</b> This is muscle memory across the entire internet — clicking it takes you home. Break this rule and every returning visitor gets briefly lost.
+      <span class="say">it's an &lt;a href="/"&gt; wrapped around the logo image or text.</span>
+    </div></div>
+    <div class="note b"><div class="n">2</div><div class="body">
+      <b>The links are a <code>&lt;ul&gt;</code> of <code>&lt;li&gt;&lt;a&gt;</code>,</b> laid out horizontally with <code>display: flex</code>. "Shop" is underlined because it's the <em>current</em> page — one visual cue, not five.
+      <span class="say">a list that happens to run sideways is still a list.</span>
+    </div></div>
+    <div class="note g"><div class="n">3</div><div class="body">
+      <b>Search, account, cart — always right-aligned,</b> always in that order, across almost every e-commerce site you'll ever open. The cart badge is a small red circle because it needs to be noticed, not read.
+      <span class="say">consistency across the whole internet is itself a design lesson.</span>
+    </div></div>
+  </div>
+
+  <div class="code">
+<span class="tag">&lt;header&gt;</span>
+  <span class="tag">&lt;nav&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/"</span> <span class="attr">class</span>=<span class="str">"logo"</span><span class="tag">&gt;</span>KOSA<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;ul</span> <span class="attr">class</span>=<span class="str">"nav-links"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;li&gt;&lt;a</span> <span class="attr">href</span>=<span class="str">"/shop"</span><span class="tag">&gt;</span>Shop<span class="tag">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="tag">&lt;li&gt;&lt;a</span> <span class="attr">href</span>=<span class="str">"/skin"</span><span class="tag">&gt;</span>Skin<span class="tag">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="cmt">&lt;!-- ...repeat per link... --&gt;</span>
+    <span class="tag">&lt;/ul&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"nav-icons"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+  </div>
+
+  <h3>On a phone, the same nav folds up</h3>
+  <div class="browser" style="max-width:340px">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in</div></div>
+    <div class="bwindow k" style="height:56px">
+      <div class="k-nav" style="padding:12px 18px">
+        <div class="k-logo" style="font-size:16px">KOSA</div>
+        <div style="font-size:18px">☰</div>
+      </div>
+      <span class="mk" style="top:16px;right:14px">4</span>
+    </div>
+  </div>
+  <p class="footnote" style="margin-top:12px"><strong>4</strong> — the middle links didn't disappear, they moved. That <code>☰</code> is a <code>&lt;button&gt;</code> that, on click, reveals the same <code>&lt;ul&gt;</code> of links — just stacked vertically in a panel instead of side-by-side. Same list. Different layout. This is the entire idea behind "responsive."</p>
+</section>
+
+
+<!-- ============ PART THREE ============ -->
+<div class="part-break">Part three — the four pages</div>
+
+<section class="chapter">
+  <span class="chapter-num">04 / the homepage</span>
+  <h2>Job: convince a stranger to go deeper in five seconds</h2>
+  <p class="lead">The homepage sells nothing directly. Its only job is to make the next click obvious.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in</div></div>
+    <div class="bwindow k" style="height:960px">
+      <div class="k-nav">
+        <div class="k-logo">KOSA</div>
+        <div class="k-links"><span class="on">Shop</span><span>Skin</span><span>Hair</span><span>Body</span><span>About</span></div>
+        <div class="k-icons"><span>⌕</span><span>☻</span><span class="cart">🛒<b>2</b></span></div>
+      </div>
+
+      <div class="k-hero">
+        <div class="txt">
+          <div class="eyebrow">New · Vitamin C range</div>
+          <h3>Skincare that reads the label so you don't have to</h3>
+          <p>Dermat-formulated, zero nasties, delivered across Delhi NCR in 45 minutes.</p>
+          <span class="k-cta">Shop bestsellers →</span>
+        </div>
+        <div class="img"></div>
+      </div>
+
+      <div class="k-trust">
+        <span>🚚 Free shipping above ₹499</span><span>↺ 7-day easy returns</span><span>🔒 Secure checkout</span><span>💊 Dermat approved</span>
+      </div>
+
+      <div class="k-sec">
+        <h4>Shop by concern</h4>
+        <div class="k-cats">
+          <div class="k-cat"><div class="im" style="background:linear-gradient(140deg,#f2e2c8,#d7a978)"></div><div class="lb">Face</div></div>
+          <div class="k-cat"><div class="im" style="background:linear-gradient(140deg,#e8d6e0,#c191b0)"></div><div class="lb">Hair</div></div>
+          <div class="k-cat"><div class="im" style="background:linear-gradient(140deg,#d9e6d2,#93b384)"></div><div class="lb">Body</div></div>
+          <div class="k-cat"><div class="im" style="background:linear-gradient(140deg,#e0d4c3,#a98a63)"></div><div class="lb">Gifting</div></div>
+        </div>
+      </div>
+
+      <div class="k-sec" style="padding-top:0">
+        <h4>Bestsellers</h4>
+        <div class="k-prods">
+          <div class="k-card"><div class="im" style="background:linear-gradient(150deg,#e9d3b3,#c98f5c)"></div><div class="nm">Vitamin C Serum</div><div class="pr">₹649</div><div class="rt">4.4 ★ 1,204</div></div>
+          <div class="k-card"><div class="im" style="background:linear-gradient(150deg,#dfe6da,#9db98d)"></div><div class="nm">Ubtan Face Wash</div><div class="pr">₹299</div><div class="rt">4.2 ★ 860</div></div>
+          <div class="k-card"><div class="im" style="background:linear-gradient(150deg,#ecd9e2,#c78ba9)"></div><div class="nm">Rose Toner</div><div class="pr">₹399</div><div class="rt">4.5 ★ 612</div></div>
+          <div class="k-card"><div class="im" style="background:linear-gradient(150deg,#e6ded0,#b39a76)"></div><div class="nm">Onion Hair Oil</div><div class="pr">₹349</div><div class="rt">4.3 ★ 2,011</div></div>
+        </div>
+      </div>
+
+      <div class="k-testi">
+        <q>The serum actually did what the label promised. First brand that's happened with.</q>
+        <div class="who">Ritika S. · verified buyer</div>
+      </div>
+
+      <div class="k-news">
+        <div class="t">Get 10% off your first order</div>
+        <div class="in"><input placeholder="you@email.com"><button>Subscribe</button></div>
+      </div>
+
+      <div class="k-foot">
+        <div><div class="brand">KOSA</div><div style="margin-top:8px;color:#a6957f">Clean skincare, made in India.</div><div class="pay">VISA · UPI · COD</div></div>
+        <div><h5>Shop</h5><div>Face</div><div>Hair</div><div>Body</div><div>Gifting</div></div>
+        <div><h5>Company</h5><div>About</div><div>Careers</div><div>Press</div></div>
+        <div><h5>Help</h5><div>Track order</div><div>Returns</div><div>Contact</div></div>
+      </div>
+
+      <span class="mk" style="top:96px;left:44px">1</span>
+      <span class="mk b" style="top:96px;left:260px">2</span>
+      <span class="mk g" style="top:230px;left:44px">3</span>
+      <span class="mk" style="top:410px;left:44px">4</span>
+      <span class="mk b" style="top:410px;right:44px">5</span>
+      <span class="mk g" style="top:700px;left:44px">6</span>
+      <span class="mk" style="top:812px;left:44px">7</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>Eyebrow + headline + one CTA</b> — exactly one button in the entire hero. A second button here would split attention on the single most important pixel of the page.<span class="say">one job per section, one button per job.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">Headline is set in a <b>serif at 34px</b> against a body sans everywhere else — the one deliberate typeface switch on the whole page, reserved for the one sentence that has to feel considered.<span class="say">this is note 07 from sheet 01, applied for real.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">The trust strip is <b>plain text, no colour</b>. It answers objections ("will it arrive," "can I return it") before the user has to ask — quietly, so it doesn't compete with the hero above it.<span class="say">reassurance doesn't need to shout.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body">Category tiles are a <b>4-column CSS grid</b> — <code>display:grid; grid-template-columns:repeat(4,1fr)</code>. Four equal boxes, one line of CSS.<span class="say">this single property replaces what used to take a whole float-based layout.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Product cards repeat the <b>exact same structure</b> four times — image, name, price, rating, always in that order. Once a shopper learns the pattern once, they can scan the rest without reading labels.<span class="say">repetition is a feature, not laziness.</span></div></div>
+    <div class="note g"><div class="n">6</div><div class="body">The testimonial section is <b>the only place</b> on the homepage using an italic serif quote — borrowed weight from note 2's headline, signalling "this matters" without adding a new colour.<span class="say">reuse your one distinctive move. don't invent a second one.</span></div></div>
+    <div class="note"><div class="n">7</div><div class="body">Footer runs <b>4 columns on a dark ground</b> — the only dark section on the entire page, which is exactly why your eye knows the page has ended.<span class="say">a colour change can mean "you've arrived" as much as a heading can.</span></div></div>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">05 / the collections page</span>
+  <h2>Job: let someone compare twenty things at once</h2>
+  <p class="lead">Also called a PLP — product listing page. Different job from the homepage, so it needs a different anatomy entirely.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/collections/face</div></div>
+    <div class="bwindow k" style="height:620px">
+      <div class="k-nav" style="padding:12px 26px">
+        <div class="k-logo" style="font-size:17px">KOSA</div>
+        <div class="k-links" style="font-size:12px"><span class="on">Shop</span><span>Skin</span><span>Hair</span><span>Body</span><span>About</span></div>
+        <div class="k-icons" style="font-size:13px"><span>⌕</span><span>☻</span><span class="cart">🛒<b>2</b></span></div>
+      </div>
+      <div class="k-crumb">Home / <b>Face care</b></div>
+      <div class="k-plp-head"><h4>Face care</h4><span>42 products</span></div>
+
+      <div class="k-plp-body">
+        <div class="k-filt">
+          <h6>Category</h6>
+          <label><input type="checkbox" checked> Cleanser</label>
+          <label><input type="checkbox"> Serum</label>
+          <label><input type="checkbox"> Moisturiser</label>
+          <label><input type="checkbox"> Sunscreen</label>
+          <h6>Skin type</h6>
+          <label><input type="checkbox"> Oily</label>
+          <label><input type="checkbox"> Dry</label>
+          <label><input type="checkbox"> Combination</label>
+          <h6>Rating</h6>
+          <label><input type="checkbox"> 4★ &amp; above</label>
+        </div>
+        <div>
+          <div class="k-sort"><span>Sort by: <b style="color:#3a2a1f">Popularity ▾</b></span><span>▦ ▤</span></div>
+          <div class="k-grid">
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#e9d3b3,#c98f5c)"><span class="badge">Bestseller</span></div><div class="nm">Vitamin C Serum</div><div class="pr"><s>₹899</s><b>₹649</b></div></div>
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#dfe6da,#9db98d)"></div><div class="nm">Ubtan Face Wash</div><div class="pr">₹299</div></div>
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#ecd9e2,#c78ba9)"><span class="badge">New</span></div><div class="nm">Rose Water Toner</div><div class="pr">₹399</div></div>
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#e6d4c0,#b3946a)"></div><div class="nm">Clay Mask</div><div class="pr"><s>₹549</s><b>₹429</b></div></div>
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#d8e2e6,#8fa8b3)"></div><div class="nm">SPF 50 Sunscreen</div><div class="pr">₹499</div></div>
+            <div class="k-gcard"><div class="im" style="background:linear-gradient(150deg,#e9e0cf,#c2a878)"></div><div class="nm">Night Repair Cream</div><div class="pr">₹749</div></div>
+          </div>
+          <div class="k-page"><span class="on">1</span><span>2</span><span>3</span><span>→</span></div>
+        </div>
+      </div>
+
+      <span class="mk" style="top:110px;left:32px">1</span>
+      <span class="mk b" style="top:198px;left:32px">2</span>
+      <span class="mk g" style="top:198px;right:190px">3</span>
+      <span class="mk" style="top:238px;left:220px">4</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>Breadcrumb</b> tells you where you are without a screenshot's worth of nav. It's just three links and a slash: <code>Home / Face care</code>.<span class="say">the cheapest orientation tool on the internet.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">Filters sit in an <code>&lt;aside&gt;</code> beside a <code>&lt;main&gt;</code> grid — two columns, made with <code>display:grid; grid-template-columns:180px 1fr</code>. The sidebar has a fixed width; the grid takes whatever's left.<span class="say">this two-column pattern shows up on almost every listing page you'll ever build.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">"Sort by" changes <b>order</b>. Filters change <b>which items appear at all</b>. Beginners mix these up constantly — they are not the same control.<span class="say">say this sentence out loud to your own students. it saves an entire week of confusion.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body">Every card is <b>identical in structure and height</b> — image, name, price. This is Sheet 02's Zomato lesson again: a listing page only works if every unit is directly comparable to its neighbour.<span class="say">same pattern, different app. that's the whole point of learning patterns.</span></div></div>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">06 / the product page</span>
+  <h2>Job: answer every remaining doubt, then get out of the way</h2>
+  <p class="lead">Also called a PDP — product detail page. Highest control-density of any page on the site, because this is where the purchase decision actually happens.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/products/vitamin-c-serum</div></div>
+    <div class="bwindow k" style="height:640px">
+      <div class="k-nav" style="padding:12px 26px">
+        <div class="k-logo" style="font-size:17px">KOSA</div>
+        <div class="k-links" style="font-size:12px"><span class="on">Shop</span><span>Skin</span><span>Hair</span><span>Body</span><span>About</span></div>
+        <div class="k-icons" style="font-size:13px"><span>⌕</span><span>☻</span><span class="cart">🛒<b>2</b></span></div>
+      </div>
+      <div class="k-crumb">Home / Face care / <b>Vitamin C Serum</b></div>
+
+      <div class="k-pdp">
+        <div class="k-gal">
+          <div class="main"></div>
+          <div class="k-thumbs">
+            <div class="t on" style="background:#e9d3b3"></div><div class="t" style="background:#d7bd94"></div>
+            <div class="t" style="background:#c98f5c"></div><div class="t" style="background:#a86138"></div>
+          </div>
+        </div>
+        <div class="k-buy">
+          <div class="brandlink">KOSA · Face care</div>
+          <h4>Vitamin C Face Serum — 30ml</h4>
+          <div class="rt">★★★★☆ 4.4 · 1,204 ratings</div>
+          <div class="price">₹649 <s>₹899</s><em>28% off</em></div>
+
+          <div class="k-vary">
+            <h6>Size</h6>
+            <div class="k-pills"><span>15ml</span><span class="on">30ml</span><span>50ml</span></div>
+          </div>
+
+          <div class="k-ctarow">
+            <div class="secondary">Add to cart</div>
+            <div class="primary">Buy now</div>
+          </div>
+
+          <div class="k-accord">
+            <div class="k-arow"><span>Description</span><span class="n">▾</span></div>
+            <div class="k-arow"><span>How to use</span><span class="n">▾</span></div>
+            <div class="k-arow"><span>Ingredients</span><span class="n">▾</span></div>
+            <div class="k-arow"><span>Reviews (1,204)</span><span class="n">▾</span></div>
+          </div>
+        </div>
+      </div>
+
+      <span class="mk" style="top:106px;left:44px">1</span>
+      <span class="mk b" style="top:190px;right:60px">2</span>
+      <span class="mk g" style="top:290px;right:60px">3</span>
+      <span class="mk" style="top:370px;right:60px">4</span>
+      <span class="mk b" style="top:440px;right:60px">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>One large image, four small thumbnails</b> below it. Clicking a thumbnail swaps the large image — the classic gallery pattern, and the first place most beginners reach for JavaScript.<span class="say">before any JS: build it so the thumbnails are just visually distinct. logic comes after structure works.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">Price shows <b>three numbers doing three jobs</b>: the number you'll pay (bold, brand colour), the number you won't (struck through, muted), and the saving (green — the one semantic colour on this whole page).<span class="say">this is sheet 01's contrast lesson, now inside a real buy box.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">The size selector is a row of <b>pill-shaped buttons</b>, not a dropdown — because there are only three options and every option should be visible at a glance, not hidden behind a click.<span class="say">use a dropdown past ~6 options. below that, show everything.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body">Two buttons, <b>different weight</b>: "Add to cart" is an outline, "Buy now" is filled. Same visual hierarchy trick from Sheet 01 — the filled one is the path most people should take, and it looks like it.<span class="say">a secondary action should look secondary. always.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Description, ingredients, and reviews are <b>collapsed by default</b> — an accordion. This page has more information than anyone reads in full; collapsing lets a shopper open only what they personally care about.<span class="say">this is a &lt;details&gt;&lt;summary&gt; tag in disguise, or a button that toggles a class.</span></div></div>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">07 / the about us page</span>
+  <h2>Job: build trust. Nothing here is trying to sell you anything in the next ten seconds.</h2>
+  <p class="lead">This is the one page on the whole site with no funnel. Compare its pacing to the product page above — same brand, completely different rhythm.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/about</div></div>
+    <div class="bwindow k" style="height:640px">
+      <div class="k-nav" style="padding:12px 26px">
+        <div class="k-logo" style="font-size:17px">KOSA</div>
+        <div class="k-links" style="font-size:12px"><span>Shop</span><span>Skin</span><span>Hair</span><span>Body</span><span class="on">About</span></div>
+        <div class="k-icons" style="font-size:13px"><span>⌕</span><span>☻</span><span class="cart">🛒<b>2</b></span></div>
+      </div>
+
+      <div class="k-ahero">
+        <div class="eyebrow">Our story</div>
+        <h4>We started in a Delhi kitchen in 2019</h4>
+      </div>
+
+      <div class="k-story">
+        <div class="im"></div>
+        <p>KOSA began when our founder couldn't find a face wash that didn't need a chemistry degree to understand. So she made one, in a rented kitchen in South Delhi, and gave the first batch to twelve friends. Five years later those twelve friends have become a few hundred thousand — and the label still fits on one page.</p>
+      </div>
+
+      <div class="k-values">
+        <div class="k-val"><div class="ic">🌿</div><div class="t">Clean formulas</div></div>
+        <div class="k-val"><div class="ic">🐇</div><div class="t">Cruelty-free</div></div>
+        <div class="k-val"><div class="ic">🇮🇳</div><div class="t">Made in India</div></div>
+        <div class="k-val"><div class="ic">🔬</div><div class="t">Dermat-tested</div></div>
+      </div>
+
+      <div class="k-tl">
+        <div class="line"></div>
+        <div class="k-tl-row">
+          <div class="k-tl-item"><div class="dot2"></div><b>2019</b>Founded</div>
+          <div class="k-tl-item"><div class="dot2"></div><b>2021</b>1L customers</div>
+          <div class="k-tl-item"><div class="dot2"></div><b>2023</b>Hair care launch</div>
+          <div class="k-tl-item"><div class="dot2"></div><b>2026</b>First store</div>
+        </div>
+      </div>
+
+      <span class="mk" style="top:26px;left:230px">1</span>
+      <span class="mk b" style="top:200px;left:44px">2</span>
+      <span class="mk g" style="top:380px;left:44px">3</span>
+      <span class="mk" style="top:480px;left:44px">4</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">The headline is <b>set in the same serif</b> as the homepage hero — the one recurring signal for "this sentence carries weight" across the whole site. Same tool, different page.<span class="say">a design system is exactly this: the same three or four moves, reused on purpose.</span></div></div>
+    <div class="note b"><div class="n">2</div><div class="body">Story text runs at a <b>generous line-height with a wide image beside it</b> — nobody needs to compare two of these against each other, so there's no grid, no repeated card. One story, told once.<span class="say">not every page needs a grid. some pages need a paragraph.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">Values use a <b>simple icon + one line</b>, four across. No paragraph under each — on this page, brevity signals confidence rather than laziness.<span class="say">restraint is a choice here, not a shortcut.</span></div></div>
+    <div class="note"><div class="n">4</div><div class="body">The timeline is <b>one horizontal line with dots</b> — a single connecting element, four labelled points. It's the only place on the entire site using this pattern, because it's the only place telling a story that happens <em>over time</em>.<span class="say">pick your pattern based on what the content actually is.</span></div></div>
+  </div>
+
+  <div class="card" style="margin-top:30px">
+    <h4>Notice what's missing</h4>
+    <p style="max-width:64ch">No product grid. No "Add to cart." No price anywhere on this page. That absence is deliberate — an About Us page that tries to sell as hard as a product page usually convinces nobody of anything. <span class="hl">Different job, different anatomy, on purpose.</span></p>
+  </div>
+</section>
+
+
+<!-- ============ PART FOUR ============ -->
+<div class="part-break">Part four — putting it together</div>
+
+<section class="chapter">
+  <span class="chapter-num">08 / the map</span>
+  <h2>How the four pages actually connect</h2>
+
+  <figure>
+    <svg viewBox="0 0 900 340" role="img" aria-label="Sitemap diagram showing the homepage connecting to collections, product, cart and about pages through the shared navigation bar">
+      <rect x="30" y="20" width="840" height="26" fill="#fdeee3" stroke="#c0392b" stroke-width="1.4" rx="4"/>
+      <text x="450" y="38" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#c0392b">THE NAV — PRESENT, IDENTICAL, ON EVERY PAGE BELOW</text>
+
+      <g stroke="#b9c1d1" stroke-width="1.3">
+        <line x1="450" y1="46" x2="450" y2="80"/>
+        <line x1="140" y1="80" x2="760" y2="80"/>
+        <line x1="140" y1="80" x2="140" y2="110"/>
+        <line x1="450" y1="80" x2="450" y2="110"/>
+        <line x1="760" y1="80" x2="760" y2="110"/>
+      </g>
+
+      <rect x="365" y="110" width="170" height="46" fill="#fffdf8" stroke="#1b2233" stroke-width="1.6" rx="5"/>
+      <text x="450" y="138" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700">Homepage</text>
+
+      <rect x="55" y="110" width="170" height="46" fill="#eaf1fb" stroke="#2f5fa8" stroke-width="1.6" rx="5"/>
+      <text x="140" y="138" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#2f5fa8">Collections</text>
+
+      <rect x="675" y="110" width="170" height="46" fill="#f2eee6" stroke="#8a7a68" stroke-width="1.6" rx="5"/>
+      <text x="760" y="138" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#6b5d4f">About</text>
+
+      <line x1="140" y1="156" x2="140" y2="200" stroke="#2f5fa8" stroke-width="1.3"/>
+      <rect x="55" y="200" width="170" height="46" fill="#e9f2ec" stroke="#0a8754" stroke-width="1.6" rx="5"/>
+      <text x="140" y="228" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#0a8754">Product page</text>
+
+      <line x1="140" y1="246" x2="140" y2="284" stroke="#0a8754" stroke-width="1.3"/>
+      <rect x="55" y="284" width="170" height="40" fill="#fdeee3" stroke="#c0392b" stroke-width="1.6" rx="5"/>
+      <text x="140" y="308" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="12.5" font-weight="700" fill="#c0392b">Cart → Checkout</text>
+
+      <text x="530" y="200" font-family="Caveat, cursive" font-size="23" fill="#c0392b">the nav is the glue.</text>
+      <text x="530" y="224" font-family="Caveat, cursive" font-size="23" fill="#c0392b">every page trusts it to be there, unchanged.</text>
+    </svg>
+    <figcaption>Four page types, one shared nav. Build the nav once, as its own reusable block, and every page below inherits it — this is the entire argument for components, before you've even learned the word.</figcaption>
+  </figure>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">09 / this week's exercise</span>
+  <h2>Structure first. Style never comes before structure.</h2>
+  <p class="lead">Do not open a design tool yet. This exercise is entirely inside the boilerplate you already have.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:16%">Step</th><th style="width:36%">Do</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><b>1</b></td><td>Open any real Indian D2C homepage. Screenshot it.</td><td>A real target, not an imagined one.</td></tr>
+        <tr><td><b>2</b></td><td>On the screenshot, label every region with a tag name — header, nav, main, section, footer. By hand, on paper.</td><td>Forces you to see structure, not decoration.</td></tr>
+        <tr><td><b>3</b></td><td>Open your boilerplate. Build <em>only</em> the skeleton — empty <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> with empty <code>&lt;section&gt;</code>s inside, <code>&lt;footer&gt;</code>. No CSS. No colours.</td><td>If this doesn't read correctly with zero styling, styling won't save it.</td></tr>
+        <tr><td><b>4</b></td><td>Fill each section with real text and placeholder boxes for images. Still no CSS.</td><td>Content decides layout. Never the other way round.</td></tr>
+        <tr><td><b>5</b></td><td>Only now — add CSS. One property at a time. Screenshot after every single change.</td><td>You'll always know exactly which line broke something.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:14px"><strong>What "done" looks like:</strong> not a pixel-perfect clone. A page that a stranger could look at and correctly guess which part is the header, which part is the footer, and what the page is for — using nothing but your unstyled HTML, read top to bottom.</p>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
