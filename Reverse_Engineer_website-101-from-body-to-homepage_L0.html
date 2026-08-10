@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Website 101 — From &lt;body&gt; to Homepage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,7 @@ body{
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:26px 26px;
   color:var(--ink); font-family:"Newsreader",Georgia,serif; font-size:17px; line-height:1.62;
+  overflow-x:hidden;
 }
 .sheet{max-width:1180px;margin:0 auto;padding:0 24px 130px}
 h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
@@ -49,7 +50,7 @@ ul.notes-list li::before{content:"→";position:absolute;left:0;top:0;color:var(
 table{border-collapse:collapse;width:100%;font-size:14.5px;margin:16px 0}
 th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
 td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
-td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px;overflow-wrap:anywhere}
 
 /* ---- code block ---- */
 .code{background:#161821;color:#d7dae3;border-radius:7px;padding:15px 17px;font-family:"Space Mono",monospace;font-size:12.5px;line-height:1.68;overflow-x:auto;margin:16px 0}
@@ -59,7 +60,7 @@ td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;back
 .browser{position:relative;width:100%;border-radius:13px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff;margin-top:24px}
 .chrome{height:32px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
 .dot{width:8px;height:8px;border-radius:50%}
-.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:19px;font-family:"Space Mono",monospace;font-size:10px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:19px;font-family:"Space Mono",monospace;font-size:10px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .bwindow{position:relative;overflow:hidden}
 
 /* markers + notes */
@@ -193,6 +194,138 @@ td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;back
 .k-tl-item .dot2{width:11px;height:11px;border-radius:50%;background:var(--k-brand);margin:0 auto 8px}
 .k-tl-item b{display:block;font-family:"Space Mono",monospace;font-size:11px}
 
+
+/* ==========================================================================
+   MOBILE LAYER — phones and small tablets.
+   Nothing above is deleted; every rule below only reshapes the same content.
+   ========================================================================== */
+@media (max-width:820px){
+
+  /* --- page frame --- */
+  body{background-size:20px 20px;font-size:16px;line-height:1.6}
+  .sheet{padding:0 16px 72px}
+  .cover{padding:44px 0 16px}
+  .cover .sub{font-size:10.5px;letter-spacing:.18em;margin-bottom:16px}
+  .cover h1{font-size:clamp(30px,8.6vw,46px);max-width:14ch;letter-spacing:-.028em}
+  .cover .deck{font-size:16.5px;margin-top:16px;max-width:none}
+  .chapter{margin-top:58px}
+  .chapter-num{font-size:10px;letter-spacing:.22em}
+  h2{font-size:clamp(23px,6.4vw,31px);max-width:none;line-height:1.1}
+  h3{font-size:17.5px;margin:24px 0 8px}
+  p{max-width:none}
+  p.lead{font-size:17px}
+  .card{padding:18px 17px;margin:18px 0}
+  .card.tilt{transform:none}          /* tilt reads as a rendering bug on narrow screens */
+  .tape{left:20px;width:62px;height:18px;top:-9px}
+  .part-break{margin-top:66px;font-size:10.5px;letter-spacing:.2em}
+  .footnote,figcaption,ul.notes-list{max-width:none}
+  figcaption{font-size:10.5px}
+
+  /* --- dense SVG diagrams: scroll them, don't shrink them to unreadable --- */
+  figure{margin:18px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  figure svg{min-width:620px}
+  figure figcaption{min-width:0;position:sticky;left:0}
+
+  /* --- tables: horizontal scroll beats three crushed columns --- */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:13.5px}
+  table thead,table tbody{display:table;width:100%;min-width:540px}
+  th{font-size:9.5px}
+  td{padding:9px 10px 9px 0}
+
+  .code{font-size:11px;padding:13px 14px;line-height:1.62;border-radius:6px}
+
+  /* --- browser mockups: height comes from content, not a fixed pixel value --- */
+  .browser{border-radius:9px;margin-top:18px}
+  .bwindow{height:auto!important}
+  .chrome{height:28px;padding:0 10px;gap:5px}
+  .dot{width:7px;height:7px}
+  .urlbar{height:17px;font-size:9px;padding:0 8px}
+
+  /* --- the pinned callouts can't follow a reflowed layout, so the numbered
+         notes underneath carry the annotation on mobile --- */
+  .mk{display:none}
+  .notes-grid{gap:0;margin-top:18px}
+  .note{grid-template-columns:26px 1fr;gap:10px;margin-bottom:15px}
+  .note .n{width:22px;height:22px;font-size:15px}
+  .note .body{font-size:15px}
+  .note .body .say{font-size:18px;margin-top:4px}
+
+  /* --- KOSA: nav --- */
+  .k-nav{padding:11px 14px!important;gap:10px}
+  .k-logo{font-size:16px!important}
+  .k-links{font-size:11px!important;gap:13px;flex:1;justify-content:center;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .k-links::-webkit-scrollbar{display:none}
+  .k-links span{white-space:nowrap}
+  .k-icons{font-size:13px!important;gap:13px}
+
+  /* --- KOSA: homepage --- */
+  .k-hero{grid-template-columns:1fr}
+  .k-hero .img{order:-1;height:160px}      /* image leads, exactly as it does on real D2C mobile */
+  .k-hero .txt{padding:26px 18px 30px}
+  .k-hero h3{font-size:25px;max-width:15ch}
+  .k-hero p{font-size:13.5px;max-width:none}
+  .k-cta{margin-top:18px;padding:11px 20px}
+  .k-trust{flex-wrap:wrap;justify-content:center;gap:8px 16px;padding:13px 14px;font-size:10.5px}
+  .k-sec{padding:26px 16px}
+  .k-sec h4{font-size:17px;margin-bottom:14px}
+  .k-cats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .k-cat .im{height:86px}
+  .k-prods{grid-template-columns:repeat(2,1fr);gap:14px}
+  .k-card .im{height:104px}
+  .k-testi{padding:30px 20px}
+  .k-testi q{font-size:16px}
+  .k-news{flex-direction:column;align-items:stretch;text-align:center;gap:13px;padding:22px 18px}
+  .k-news .in{width:100%}
+  .k-news .in input{flex:1;width:auto;min-width:0}
+  .k-foot{grid-template-columns:1fr 1fr;gap:18px 14px;padding:24px 16px}
+
+  /* --- KOSA: collections (PLP) --- */
+  .k-crumb{padding:10px 16px 0}
+  .k-plp-head{padding:12px 16px 0;flex-direction:column;align-items:flex-start;gap:2px}
+  .k-plp-head h4{font-size:19px}
+  .k-plp-body{grid-template-columns:1fr;gap:16px;padding:14px 16px 24px}
+  .k-filt{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;padding-bottom:14px;border-bottom:1px solid var(--k-line)}
+  .k-filt h6{margin-top:0}
+  .k-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .k-gcard .im{height:108px}
+
+  /* --- KOSA: product page (PDP) --- */
+  .k-pdp{grid-template-columns:1fr;gap:20px;padding:18px 16px}
+  .k-gal .main{height:200px}
+  .k-buy h4{font-size:20px}
+  .k-buy .price{font-size:19px}
+  .k-ctarow{gap:9px}
+  .k-ctarow .primary,.k-ctarow .secondary{font-size:13px;padding:12px 8px}
+
+  /* --- KOSA: about --- */
+  .k-ahero{padding:32px 18px}
+  .k-ahero h4{font-size:22px;max-width:18ch}
+  .k-story{grid-template-columns:1fr;gap:16px;padding:26px 16px}
+  .k-story .im{height:150px}
+  .k-values{grid-template-columns:repeat(2,1fr);gap:18px;padding:0 16px 26px}
+  .k-tl{padding:0 16px 26px}
+  .k-tl .line{display:none}                 /* a horizontal rule can't span a stacked grid */
+  .k-tl-row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 10px}
+  .k-tl-item{width:auto}
+}
+
+/* --- small phones (≈360px and under) --- */
+@media (max-width:400px){
+  .sheet{padding:0 14px 64px}
+  .cover h1{font-size:29px}
+  .cover .deck{font-size:15.5px}
+  h2{font-size:22px}
+  .k-links{font-size:10px!important;gap:10px}
+  .k-hero h3{font-size:22px}
+  .k-cats,.k-prods,.k-grid{gap:10px}
+  .k-card .im,.k-gcard .im{height:92px}
+  .k-cat .im{height:76px}
+  .k-foot{grid-template-columns:1fr 1fr;font-size:11.5px}
+  .k-testi q{font-size:15px}
+  .k-thumbs .t{width:40px;height:40px}
+  .code{font-size:10.2px}
+}
+
 @media print{
   body{background:#fff;background-image:none;font-size:11pt}
   .sheet{max-width:none;padding:0}
@@ -200,6 +333,12 @@ td code, li code, p code{font-family:"Space Mono",monospace;font-size:.86em;back
   .chapter{break-inside:avoid-page;margin-top:28px}
   .part-break{break-before:page;margin-top:0}
   .browser{box-shadow:none;break-inside:avoid}
+  .mk{display:grid}
+  figure{overflow:visible}
+  figure svg{min-width:0}
+  table{display:table}
+  table thead{display:table-header-group}
+  table tbody{display:table-row-group;min-width:0}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
