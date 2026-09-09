@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheet 04 — Blinkit, all the way in and all the way out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3; --grid:#e2e6ee; --ink:#1b2233; --pencil:#7d879c;
+  --pen-red:#c0392b; --pen-blue:#2f5fa8; --pen-green:#0a8754;
+  --marker:#ffe27a; --rule:#d8dbe3;
+
+  /* Blinkit tokens — OBSERVED, sampled by eye, approximate */
+  --bk-yellow:#f8cb46;
+  --bk-yellow-deep:#f0b90b;
+  --bk-ink:#1c1c1c;
+  --bk-mute:#7e808c;
+  --bk-line:#e8e8e8;
+  --bk-bg:#f7f7f7;
+  --bk-green:#0c831f;
+  --bk-green-soft:#e8f5ea;
+  --bk-red:#d93c3c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62;
+  overflow-x:hidden}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 150px}
+
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:74px 0 26px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:20px}
+.cover h1{font-size:clamp(34px,7vw,78px);font-weight:800;letter-spacing:-.033em;line-height:.98;max-width:17ch}
+.cover .deck{max-width:60ch;font-size:19px;color:#3b4356;margin-top:22px}
+.chapter{margin-top:96px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(25px,4vw,40px);font-weight:700;letter-spacing:-.027em;line-height:1.06;max-width:25ch}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:67ch} p.lead{font-size:19px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:22px 25px;margin:22px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)} .card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:32px;width:76px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+.part-break{margin:108px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:73ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:63ch}
+svg{max-width:100%;height:auto;display:block}
+ul.nl{list-style:none;padding:0;margin:14px 0;max-width:67ch}
+ul.nl li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.nl li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+ul.tick li::before{content:"✓";font-size:15px;color:var(--pen-green)}
+ul.x li::before{content:"✕";font-size:15px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+
+.grade{display:inline-block;font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.1em;padding:1px 5px;border-radius:2px;vertical-align:middle;font-weight:700}
+.grade.o{background:#e4efe6;color:#0a6b40} .grade.r{background:#e6ecf7;color:#274d87} .grade.i{background:#f5ece0;color:#8a5a00}
+
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0 6px}
+.legend .item{display:flex;align-items:center;gap:9px;font-family:"Space Mono",monospace;font-size:11px}
+.legend .dot{width:15px;height:15px;border-radius:50%;flex:none}
+.legend .dot.r{background:var(--pen-red)} .legend .dot.a{background:var(--pen-blue)} .legend .dot.p{background:var(--pen-green)}
+
+/* ---------- teardown layout ---------- */
+.teardown{display:grid;grid-template-columns:330px 1fr;gap:46px;margin-top:30px;align-items:start}
+.stage{position:relative;justify-self:center;max-width:100%}
+.phone{width:312px;max-width:100%;height:646px;border-radius:32px;border:8px solid #23272f;background:#fff;overflow:hidden;position:relative;box-shadow:0 26px 54px -26px rgba(27,34,51,.6);font-family:"Inter",system-ui,sans-serif}
+.phone.short{height:470px}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:18px;background:#23272f;border-radius:0 0 11px 11px;z-index:9}
+
+.mk{position:absolute;z-index:20;width:24px;height:24px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:17px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+.mk.g{background:var(--pen-green);box-shadow:0 2px 8px rgba(10,135,84,.4)}
+
+.notes{position:relative}
+.note{display:grid;grid-template-columns:30px 1fr;gap:12px;margin-bottom:20px;align-items:start}
+.note .n{width:24px;height:24px;display:grid;place-items:center;margin-top:3px;font-family:"Caveat",cursive;font-size:17px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg)}
+.note.b .n{background:var(--pen-blue)} .note.g .n{background:var(--pen-green)}
+.note .body{font-size:15.5px;line-height:1.54}
+.note .body b{font-weight:600}
+.note .lens{display:block;font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pen-red);margin-bottom:3px}
+.note.b .lens{color:var(--pen-blue)} .note.g .lens{color:var(--pen-green)}
+.note .body .say{display:block;font-family:"Caveat",cursive;font-size:19px;color:var(--pen-red);margin-top:4px;line-height:1.3}
+.note.b .body .say{color:var(--pen-blue)} .note.g .body .say{color:var(--pen-green)}
+.note code{font-size:12px}
+
+.spec-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:24px 0}
+.spec-box{border-top:2px solid var(--ink);padding-top:10px}
+.spec-box .k{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pencil)}
+.spec-box .v{font-family:"Space Mono",monospace;font-size:12.5px;margin-top:3px;line-height:1.6}
+
+.sw-row{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 8px}
+.swx{width:98px;border:1px solid rgba(0,0,0,.08);border-radius:2px;overflow:hidden}
+.swx .chip{height:46px}
+.swx .meta{font-family:"Space Mono",monospace;font-size:8.5px;padding:5px 6px;background:#fff;line-height:1.5}
+
+/* ================= Blinkit reconstruction skin ================= */
+.bk{background:#fff;height:100%;color:var(--bk-ink);font-family:"Inter",sans-serif;overflow:hidden;position:relative}
+.bk .st{display:flex;justify-content:space-between;padding:6px 16px 0;font-size:10px;font-weight:600}
+.bk-head{background:var(--bk-yellow);padding:8px 14px 12px}
+.bk-eta{display:flex;align-items:baseline;gap:6px}
+.bk-eta .big{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.bk-eta .cap{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.72}
+.bk-addr{font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px}
+.bk-addr b{font-weight:600}
+.bk-search{background:#fff;border-radius:9px;padding:9px 12px;margin-top:10px;font-size:11.5px;color:#9b9ba5;display:flex;gap:8px;align-items:center;border:1px solid #efd88a}
+.bk-cats{display:flex;gap:8px;padding:12px 14px 0;overflow:hidden}
+.bk-cat{width:56px;flex:none;text-align:center;font-size:8.5px;line-height:1.25;color:#3a3a3a}
+.bk-cat i{display:block;width:56px;height:56px;border-radius:10px;background:#eef2ff;margin-bottom:4px}
+.bk-cat:nth-child(2) i{background:#fff1e6} .bk-cat:nth-child(3) i{background:#eaf7ee} .bk-cat:nth-child(4) i{background:#fdeef2} .bk-cat:nth-child(5) i{background:#f2eefd}
+.bk-banner{margin:12px 14px 0;height:62px;border-radius:10px;background:linear-gradient(100deg,#2b2f46,#4a3f6b 70%,#6d4a7a);display:flex;align-items:center;padding:0 14px;color:#fff}
+.bk-banner .t{font-size:12px;font-weight:800;letter-spacing:-.01em}
+.bk-banner .s{font-size:9px;opacity:.8;margin-top:2px}
+.bk-secttl{font-size:13px;font-weight:700;margin:14px 14px 8px;display:flex;justify-content:space-between;align-items:baseline}
+.bk-secttl span{font-size:10px;color:var(--bk-green);font-weight:700}
+.bk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 14px}
+.bk-p{position:relative}
+.bk-p .im{height:64px;background:var(--bk-bg);border-radius:8px;position:relative;border:1px solid #f0f0f0}
+.bk-p .im::after{content:"";position:absolute;left:50%;top:9px;transform:translateX(-50%);width:26px;height:44px;border-radius:4px;background:linear-gradient(160deg,#fff,#e8e8e8);border:1px solid #ddd}
+.bk-p .add{position:absolute;right:4px;top:44px;background:#fff;border:1px solid var(--bk-green);color:var(--bk-green);font-size:8.5px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:6px;z-index:2}
+.bk-p .qty{position:absolute;right:4px;top:44px;background:var(--bk-green);color:#fff;font-size:8.5px;font-weight:800;padding:3px 6px;border-radius:6px;display:flex;gap:6px;z-index:2}
+.bk-p .wt{font-size:8.5px;color:var(--bk-mute);margin-top:6px}
+.bk-p .nm{font-size:9.5px;font-weight:500;line-height:1.3;margin-top:2px;height:25px;overflow:hidden}
+.bk-p .pr{font-size:10px;font-weight:700;margin-top:3px}
+.bk-p .pr s{color:var(--bk-mute);font-weight:400;font-size:8.5px;margin-left:3px}
+.bk-cartbar{position:absolute;left:10px;right:10px;bottom:10px;background:var(--bk-green);color:#fff;border-radius:10px;padding:9px 13px;display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;z-index:8}
+.bk-cartbar .l{font-size:9px;font-weight:500;opacity:.92}
+.bk-tab{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--bk-line);display:flex;justify-content:space-around;padding:7px 0 9px;font-size:8.5px;color:var(--bk-mute)}
+.bk-tab div{text-align:center}
+.bk-tab i{display:block;width:17px;height:17px;border-radius:5px;background:#e4e4e8;margin:0 auto 3px}
+.bk-tab .on{color:var(--bk-ink);font-weight:700}
+.bk-tab .on i{background:var(--bk-ink)}
+
+@media (max-width:920px){
+  body{font-size:16px;background-size:22px 22px}
+  .sheet{padding:0 16px 110px}
+  .teardown{grid-template-columns:1fr;gap:28px}
+  .stage{justify-self:start}
+  .chapter{margin-top:64px}
+  .part-break{margin-top:74px}
+  p,p.lead,ul.nl,.footnote{max-width:none}
+  .cover{padding:48px 0 18px}
+  .card{padding:18px 18px}
+  .note{grid-template-columns:26px 1fr;gap:10px}
+  .note .body{font-size:15px}
+}
+@media (max-width:400px){
+  .phone{width:100%;height:600px;border-width:6px;border-radius:26px}
+  .mk{width:21px;height:21px;font-size:15px}
+}
+@media print{
+  body{background:#fff;background-image:none;font-size:10.5pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:26px}
+  .part-break{break-before:page;margin-top:0}
+  .teardown{break-inside:avoid;grid-template-columns:300px 1fr}
+  .phone{box-shadow:none}
+  .tw{overflow:visible} table{min-width:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · product design · sheet 04</div>
+  <h1>Blinkit, all the way in and all the way out</h1>
+  <p class="deck">Sheet 03 ran the three-lens method across ten products at three notes each. This is the opposite move: <strong>one product, maximum resolution</strong> — every screen from cold open to delivered-and-rated, plus the failure states nobody polishes for a demo. And the timing is unusually good, because in January 2026 the single claim this entire interface was built around was taken away from it. Not by a designer. By the Union Ministry of Labour. What a product does when it can no longer say its own promise out loud is the most instructive thing on this sheet.</p>
+  <p style="margin-top:22px"><span class="stamp">Fifteen screens · three audits · every claim graded</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>How to read this sheet</h4>
+  <p>The three-lens method is assumed known from Sheet 03. Markers on every screen are colour-coded to the lens speaking:</p>
+  <div class="legend">
+    <div class="item"><span class="dot r"></span> Red — <b>beginner</b>: what is felt before it can be named</div>
+    <div class="item"><span class="dot a"></span> Blue — <b>academic</b>: the citable principle underneath</div>
+    <div class="item"><span class="dot p"></span> Green — <b>professional</b>: the metric, the ops constraint, the engineering cost</div>
+  </div>
+  <p style="margin-top:14px">Claims carry an evidence grade wherever it matters: <span class="grade o">OBSERVED</span> visible in the shipped interface · <span class="grade r">REPORTED</span> publicly documented, source-backed · <span class="grade i">INFERRED</span> my professional read of the mechanism, not leaked internals. If a line has no tag, it is design reasoning, not a factual claim.</p>
+  <p class="footnote" style="margin-top:12px">Every screen is a <strong>reconstruction built in HTML/CSS from observation</strong> — no screenshots, no scraped assets, no logo or wordmark anywhere. Colours are sampled by eye and are close, not exact. The brand mark inside mockups is rendered as a neutral placeholder. Interface details shift constantly in quick commerce; treat specific ₹ values and screen layouts as a snapshot, not a spec.</p>
+</div>
+
+
+<!-- ================================================= -->
+<div class="part-break">Before anything — what changed</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">00 / the verification pass</span>
+  <h2>The claim this interface was designed to protect no longer exists</h2>
+  <p class="lead">Any teardown of this app written before 2026 is now partly wrong, and the specific way it is wrong is the most valuable thing in it.</p>
+
+  <div class="card">
+    <h4>What the search turned up</h4>
+    <ul class="nl">
+      <li><span class="grade r">REPORTED</span> In January 2026, Blinkit removed the "10-minute delivery" claim from its branding across platforms, changing its tagline from <em>"10,000+ products delivered in 10 minutes"</em> to <em>"30,000+ products delivered at your doorstep."</em></li>
+      <li><span class="grade r">REPORTED</span> The change followed discussions between the Union Ministry of Labour and quick-commerce firms about gig-worker safety, after a nationwide delivery-worker strike over the New Year period, which raised road-accident risk and working-hour pressure from time-bound targets.</li>
+      <li><span class="grade r">REPORTED</span> Critically: <b>the removal applies to the advertising claim, not the deliveries.</b> Orders still arrive in roughly ten to fifteen minutes. The operation did not change. Only what the company is willing to promise in writing did.</li>
+      <li><span class="grade r">REPORTED</span> Blinkit was the first major platform to drop the claim formally; the delivery-time promise remained visible on competitors' store listings at the time of reporting.</li>
+    </ul>
+    <p class="footnote" style="margin-top:12px">This is the cleanest example you will find of a rule from Sheet 03, Uber: <span class="hl">sometimes the interface changes because a crisis did.</span> Design did not decide this. Labour organising and a ministry meeting did.</p>
+  </div>
+
+  <h3>Why this makes Blinkit the right subject for a depth teardown</h3>
+  <p>Most interfaces hide their constraints. This one wears them. The app is the thin visible layer of a physical machine — micro-warehouses, curated stock, dispatch algorithms, riders on two-wheelers — and when any part of that machine moves, you can watch the pixels move with it. The ops-to-interface chain is <em>legible</em> here in a way it simply is not on Notion or Spotify.</p>
+  <p>And now there is a second layer: a product whose entire positioning was a number, that has been told it may no longer say the number, while continuing to deliver in the number. Every screen after this one should be read with one question running underneath it — <strong>how does an interface keep a promise it is not allowed to make?</strong></p>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">The machine behind the screen</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">01 / business model primer</span>
+  <h2>You cannot read this interface without knowing what a dark store is</h2>
+  <p class="lead">One page. Skip it and every subsequent note becomes a guess about aesthetics instead of an explanation of a constraint.</p>
+
+  <figure style="margin-top:26px">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Diagram showing how a dark store network produces the delivery promise rendered in the app">
+      <text x="30" y="24" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c" letter-spacing="1.4">FOUR CONSTRAINTS, ONE NUMBER ON A SCREEN</text>
+
+      <rect x="30" y="44" width="185" height="96" fill="#fffdf8" stroke="#e6e2d8"/>
+      <text x="44" y="68" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">1 · Dark store</text>
+      <text x="44" y="90" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">1,500–4,000 sq ft</text>
+      <text x="44" y="110" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">micro-warehouse, closed</text>
+      <text x="44" y="130" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">to the public</text>
+
+      <rect x="245" y="44" width="185" height="96" fill="#fffdf8" stroke="#e6e2d8"/>
+      <text x="259" y="68" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">2 · Tight radius</text>
+      <text x="259" y="90" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">roughly 1–2 km served</text>
+      <text x="259" y="110" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">per store, two-wheeler</text>
+      <text x="259" y="130" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">reach in single digits</text>
+
+      <rect x="460" y="44" width="185" height="96" fill="#fffdf8" stroke="#e6e2d8"/>
+      <text x="474" y="68" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">3 · Curated SKUs</text>
+      <text x="474" y="90" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">catalogue is national,</text>
+      <text x="474" y="110" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">stock is local — your</text>
+      <text x="474" y="130" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">store carries a subset</text>
+
+      <rect x="675" y="44" width="185" height="96" fill="#fffdf8" stroke="#e6e2d8"/>
+      <text x="689" y="68" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">4 · Dispatch</text>
+      <text x="689" y="90" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">pick, pack and assign</text>
+      <text x="689" y="110" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">a rider — the step that</text>
+      <text x="689" y="130" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">carries the human cost</text>
+
+      <path d="M122,148 L122,182 L444,182 L444,206" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+      <path d="M337,148 L337,182" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+      <path d="M552,148 L552,182" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+      <path d="M767,148 L767,182 L444,182" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+
+      <rect x="330" y="206" width="230" height="52" rx="8" fill="#f8cb46"/>
+      <text x="445" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="800" fill="#1c1c1c">delivery in 11 minutes</text>
+      <text x="445" y="248" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#5a4a12">ONE LINE OF TEXT IN THE APP HEADER</text>
+
+      <text x="30" y="292" font-family="Caveat, cursive" font-size="24" fill="#c0392b">everything above exists so that one line can be true.</text>
+      <text x="30" y="318" font-family="Caveat, cursive" font-size="24" fill="#2f5fa8">the interface is the cheapest part of the product.</text>
+    </svg>
+    <figcaption>The design decisions on every screen that follows are downstream of this diagram, not of a style guide.</figcaption>
+  </figure>
+
+  <h3>The numbers that shape the screens</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:26%">Fact</th><th style="width:12%">Grade</th><th>Why it shows up in the interface</th></tr></thead>
+    <tbody>
+      <tr><td>~1,955 dark stores as of July 2026; management targeting 3,000 by March 2027</td><td><span class="grade r">REPORTED</span></td><td>Serviceability is a coverage map with holes in it. That is why "not delivering to this location yet" is a designed screen and not an error page.</td></tr>
+      <tr><td>Catalogue past 30,000 SKUs; up to ~25,000 available in some locations</td><td><span class="grade r">REPORTED</span></td><td>An information architecture built for a grocery run is now carrying electronics, beauty and pet care. Every navigation compromise on the home screen traces back to this.</td></tr>
+      <tr><td>Store footprints as small as ~1,500 sq ft in space-constrained areas, accepting a narrower catalogue</td><td><span class="grade r">REPORTED</span></td><td>Two users in the same city genuinely see different products. The app cannot promise a national catalogue, so it never shows you one.</td></tr>
+      <tr><td>AOV moved from roughly ₹450 to above ₹650 as high-value categories were added</td><td><span class="grade r">REPORTED</span></td><td>Every upsell rail, every ₹99-away-from-free-delivery nudge, is instrumented against this one number.</td></tr>
+      <tr><td>Handling fee in the ₹4–₹11 band; delivery fee up to ₹30 on smaller orders; surge and rain fees applied situationally; no separate platform fee</td><td><span class="grade r">REPORTED</span></td><td>This is the cart screen's entire design problem, and the subject of the dark-pattern audit later in this sheet.</td></tr>
+      <tr><td>Rider per-order payout reported falling from ₹50 → ₹25 → ₹15 plus a distance component, cited in the 2025 strike</td><td><span class="grade r">REPORTED</span></td><td>The cost of the speed the interface renders. The tip screen at the end of the journey is not a courtesy feature; read it against this row.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="footnote">Figures are as reported at the time of writing and move quarter to quarter. Teach the shape, not the decimals.</p>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 01 — cold open and location</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">02 / the first ten seconds</span>
+  <h2>The app asks for your exact location before it asks for anything else, and it has no choice</h2>
+  <p class="lead">On most apps a location prompt is a convenience. Here it is a gate: without a pin, there is no store, and without a store there is no catalogue, no price and no ETA. The app literally cannot render its home screen.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone short">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:38px 22px 0;text-align:center">
+            <div style="width:60px;height:60px;border-radius:16px;background:var(--bk-yellow);margin:0 auto 18px"></div>
+            <div style="font-size:17px;font-weight:800;letter-spacing:-.02em">Where should we deliver?</div>
+            <div style="font-size:12px;color:var(--bk-mute);margin-top:7px;line-height:1.5">We use your location to show what is<br>in stock near you right now</div>
+            <div style="background:var(--bk-green);color:#fff;border-radius:9px;padding:12px;font-size:13px;font-weight:700;margin-top:22px">Enable location</div>
+            <div style="font-size:12px;color:var(--bk-mute);margin-top:16px;text-decoration:underline">Enter address manually</div>
+          </div>
+          <div style="position:absolute;left:16px;right:16px;bottom:16px;border-top:1px solid var(--bk-line);padding-top:11px;font-size:9.5px;color:var(--bk-mute);text-align:center;line-height:1.5">
+            Availability, price and delivery time<br>vary by exact location
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:26%;left:6%">1</span>
+      <span class="mk b" style="top:57%;right:6%">2</span>
+      <span class="mk g" style="top:44%;left:6%">3</span>
+      <span class="mk g" style="bottom:9%;right:8%">4</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        There is no "skip" and no browse-as-guest. That reads as pushy — every other shopping app lets you look around first — and the reason is invisible from here.
+        <span class="say">why can't I just look?</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        The manual-entry path is present but visually demoted to underlined text against a full-width green button. That is <b>interface interference</b> in the CCPA taxonomy when it is used to obscure a real choice — here it sits on the honest side of the line, because the alternative is offered on the same screen, in the same viewport, without a second tap. Worth teaching precisely because it is a near-miss rather than a violation.
+        <span class="say">demoted is not the same as hidden. the line is one tap.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> Coarse location is not enough. Store assignment happens at a radius of roughly 1–2 km, so a pin that is 800 m off can route the order to the wrong dark store, produce a wrong ETA, or show stock that is not actually reachable. This screen is a precision requirement dressed as a permission dialog.
+        <span class="say">this isn't a permission ask. it's a routing key.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">4</div><div class="body">
+        <span class="lens">professional built it</span>
+        The footer line — price and availability vary by location — is doing legal and expectation work simultaneously. Because stock is per-store, two users in the same neighbourhood can genuinely see different prices, and a product page that promised otherwise would be a misleading-advertisement exposure under Indian consumer law.
+        <span class="say">one small grey line, carrying a compliance load</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Allow browse-before-location with a national catalogue</td><td>Friction drops immediately and conversion on first session probably rises. Then a meaningful share of first orders fail at checkout because the items were never in that user's store. You have traded a small entry cost for a large trust cost, at the worst possible moment in the relationship.</td></tr>
+        <tr><td>Accept coarse (city-level) location instead of a precise pin</td><td>ETA confidence collapses. The header can no longer state a specific number, and the number is the product.</td></tr>
+        <tr><td>Remove the manual-entry option</td><td>Now it is a genuine forced action, and it breaks for anyone whose GPS is unreliable — a real condition in dense Indian urban housing, not an edge case.</td></tr>
+        <tr><td>Move the "varies by location" line to a terms page</td><td>Nothing visibly changes, until the first complaint about a price difference between two users in the same colony. Then the line's absence is the whole argument.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 02 — the home screen</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">03 / the densest surface in the app</span>
+  <h2>Yellow is not a brand decision here. It is a load-bearing one.</h2>
+  <p class="lead">This screen has to carry a time promise, a location, a search entry, a category system built for 2,000 SKUs now holding 30,000, and a live cart — inside roughly 700 vertical pixels. Every choice on it is a density choice.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div class="bk-head">
+            <div class="bk-eta"><span class="cap">Delivery in</span><span class="big">11 minutes</span></div>
+            <div class="bk-addr">📍 <b>Home</b> · Rajpur Road, Dehradun ▾</div>
+            <div class="bk-search">🔍 Search "atta"</div>
+          </div>
+          <div class="bk-cats">
+            <div class="bk-cat"><i></i>Vegetables &amp; Fruits</div>
+            <div class="bk-cat"><i></i>Dairy &amp; Breakfast</div>
+            <div class="bk-cat"><i></i>Munchies</div>
+            <div class="bk-cat"><i></i>Cold Drinks</div>
+            <div class="bk-cat"><i></i>Instant Food</div>
+          </div>
+          <div class="bk-banner">
+            <div><div class="t">Electronics, in minutes</div><div class="s">Earbuds · chargers · cables</div></div>
+          </div>
+          <div class="bk-secttl">Order again <span>See all ›</span></div>
+          <div class="bk-grid">
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">500 ml</div><div class="nm">Amul Taaza Toned Milk</div><div class="pr">₹35</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">5 kg</div><div class="nm">Aashirvaad Shudh Chakki Atta</div><div class="pr">₹279 <s>₹315</s></div></div>
+            <div class="bk-p"><div class="im"></div><div class="qty">− 2 +</div><div class="wt">12 × 70 g</div><div class="nm">Maggi 2-Minute Noodles</div><div class="pr">₹168</div></div>
+          </div>
+          <div class="bk-cartbar"><div><div>2 items</div><div class="l">₹203</div></div><div>View cart ›</div></div>
+          <div class="bk-tab" style="bottom:0">
+            <div class="on"><i></i>Home</div><div><i></i>Categories</div><div><i></i>Print</div><div><i></i>Account</div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:11%;left:6%">1</span>
+      <span class="mk b" style="top:11%;right:6%">2</span>
+      <span class="mk g" style="top:20%;left:6%">3</span>
+      <span class="mk b" style="top:33%;right:6%">4</span>
+      <span class="mk g" style="top:47%;left:6%">5</span>
+      <span class="mk" style="top:62%;right:6%">6</span>
+      <span class="mk g" style="bottom:14%;left:6%">7</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        The eye lands on the number before anything else, every time. Not the logo, not the search bar, not a product. Ask a first-time user what the app is for and they will paraphrase the header back to you.
+        <span class="say">the header is the pitch. everything else is inventory.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        Yellow with near-black text is <b>~13:1 contrast</b>. The same yellow used as <i>text</i> on white is about <b>1.5:1</b> — unusable. So the brand colour can only ever be a surface, never a foreground. That single physical fact about the hue determines the whole layout: the brand can own the header block and nothing else, which is exactly what you see.
+        <span class="say">the palette chose the layout, not the other way round</span>
+      </div></div>
+
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade r">REPORTED</span> Since January 2026 the marketing tagline no longer says ten minutes — but the in-app ETA still renders a live number. Read that split carefully: the <b>promise</b> was withdrawn from advertising, while the <b>estimate</b> stayed in the product. It is now a per-order prediction rather than a brand claim, which is a materially different legal object.
+        <span class="say">a claim you advertise binds you. an estimate you compute doesn't, the same way.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">4</div><div class="body">
+        <span class="lens">academic names it</span>
+        Five category tiles visible, more by horizontal scroll. This is <b>Hick's Law</b> handled by chunking rather than reduction — but notice the tension: the catalogue has grown past 30,000 SKUs while this rail's visible width has not grown at all. The electronics banner sitting directly beneath the grocery rail is the symptom. New categories cannot fit the old IA, so they get promoted as banners instead.
+        <span class="say">when the IA can't grow, the banner is where the overflow goes</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        "Order again" is placed above every merchandised rail. <span class="grade i">INFERRED</span> Repeat purchase in grocery is extraordinarily predictable — the same milk, the same atta, the same week — so the cheapest conversion on the entire screen is a reorder, and it costs nothing in recommendation compute. It sits high because it is the highest-yield block per pixel, not because it is the friendliest.
+        <span class="say">the most valuable rail is usually the least designed one</span>
+      </div></div>
+
+      <div class="note"><div class="n">6</div><div class="body">
+        <span class="lens">beginner feels</span>
+        The ADD button turning into a −/+ stepper in place is the one moment on this screen that reliably produces a small hit of satisfaction. Nobody can explain it; they just tap it again.
+        <span class="say">the control answered me without moving anything</span>
+      </div></div>
+
+      <div class="note g"><div class="n">7</div><div class="body">
+        <span class="lens">professional built it</span>
+        The cart bar floats above the tab bar rather than replacing it, costing roughly 70px of vertical space on a screen already fighting for density. <span class="grade i">INFERRED</span> That cost is accepted because an abandoned cart in quick commerce is not deferred revenue — the session is minutes long, and if the user leaves, the order does not happen later. Persistent visibility is cheaper than recovery.
+        <span class="say">no "we saved your cart" email is coming. the bar is the recovery mechanism.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Type scale observed</div><div class="v">19 · 13 · 11.5 · 10 · 9.5 · 8.5</div></div>
+    <div class="spec-box"><div class="k">Ratio</div><div class="v">≈ 1.15 — tight, marketplace-style</div></div>
+    <div class="spec-box"><div class="k">Products per viewport</div><div class="v">3 across, ~2 rows visible</div></div>
+    <div class="spec-box"><div class="k">Brand yellow coverage</div><div class="v">≈ 18% — header block only</div></div>
+  </div>
+
+  <div class="sw-row">
+    <div class="swx"><div class="chip" style="background:#f8cb46"></div><div class="meta">#F8CB46<br>surface only</div></div>
+    <div class="swx"><div class="chip" style="background:#1c1c1c"></div><div class="meta">#1C1C1C<br>text · 13:1 on yellow</div></div>
+    <div class="swx"><div class="chip" style="background:#0c831f"></div><div class="meta">#0C831F<br>action · 4.9:1 on white</div></div>
+    <div class="swx"><div class="chip" style="background:#7e808c"></div><div class="meta">#7E808C<br>muted meta</div></div>
+    <div class="swx"><div class="chip" style="background:#f7f7f7;border-bottom:1px solid #e6e2d8"></div><div class="meta">#F7F7F7<br>product tile bg</div></div>
+  </div>
+  <p class="footnote">Ratios computed from the sampled hexes above using the standard relative-luminance formula. Sampled by eye, so treat them as indicative — but the <em>direction</em> of the yellow finding (unusable as text, excellent as a surface) holds for any yellow in that region of the space.</p>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Use the brand yellow for the ADD control</td><td>Yellow on white is roughly 1.5:1. The single most-tapped control in the app becomes invisible to anyone in sunlight or with reduced vision. This is why the action colour is green and not the brand colour — a constraint, not a preference.</td></tr>
+        <tr><td>Show 2 products per row instead of 3</td><td>Bigger images, easier tapping, and roughly a third fewer items per scroll. In a basket-building app where users add 8–12 items in a few minutes, that is a direct tax on basket size.</td></tr>
+        <tr><td>Replace the live ETA with "delivered fast"</td><td>The last remaining specific speed signal disappears, and the product becomes indistinguishable from ordinary grocery delivery. A vague claim is not a differentiator — this is precisely the line the company is now walking after January 2026.</td></tr>
+        <tr><td>Move "Order again" below the merchandised rails</td><td>Repeat orders — the cheapest conversions available — now sit behind a scroll. Revenue per session drops without a single visual change anyone would notice.</td></tr>
+        <tr><td>Drop the persistent cart bar</td><td>Cart abandonment stops being visible and starts being silent. In a ten-minute session there is no recovery channel to fall back on.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 03 — search, and its three states</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">04 / where the catalogue's limits become visible</span>
+  <h2>The zero-results screen is the most honest surface in the app</h2>
+  <p class="lead">Search is where a 30,000-SKU national catalogue meets a 1,500 sq ft local store, and the app has to explain the gap without saying "we do not stock that here."</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:10px 14px 10px;border-bottom:1px solid var(--bk-line);display:flex;gap:9px;align-items:center">
+            <span style="font-size:15px">‹</span>
+            <div style="flex:1;background:var(--bk-bg);border-radius:9px;padding:8px 11px;font-size:12px">olive oil<span style="color:var(--bk-mute)">|</span></div>
+          </div>
+          <div style="padding:16px 14px 0">
+            <div style="font-size:12.5px;font-weight:700">No results for "olive oil"</div>
+            <div style="font-size:11px;color:var(--bk-mute);margin-top:5px;line-height:1.55">This may not be available at your store right now. Try a different search or check back later.</div>
+          </div>
+          <div style="padding:18px 14px 0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--bk-mute)">You may also like</div>
+          </div>
+          <div class="bk-grid" style="margin-top:10px">
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">1 L</div><div class="nm">Fortune Sunlite Refined Oil</div><div class="pr">₹149</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">1 L</div><div class="nm">Saffola Gold Blended Oil</div><div class="pr">₹215</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">500 ml</div><div class="nm">Dhara Mustard Oil</div><div class="pr">₹94</div></div>
+          </div>
+          <div style="padding:20px 14px 0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--bk-mute)">Recent searches</div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">
+              <span style="border:1px solid var(--bk-line);border-radius:14px;padding:5px 11px;font-size:10.5px">bread</span>
+              <span style="border:1px solid var(--bk-line);border-radius:14px;padding:5px 11px;font-size:10.5px">curd</span>
+              <span style="border:1px solid var(--bk-line);border-radius:14px;padding:5px 11px;font-size:10.5px">onion</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:20%;left:6%">1</span>
+      <span class="mk b" style="top:20%;right:6%">2</span>
+      <span class="mk g" style="top:31%;left:6%">3</span>
+      <span class="mk b" style="top:52%;right:6%">4</span>
+      <span class="mk g" style="bottom:16%;left:6%">5</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        "Not available at your store right now" lands very differently from "no results." One is the shop's fault and temporary; the other is the user's fault and final. The wording is doing almost all the emotional work on this screen.
+        <span class="say">it's not that I searched wrong. it's that the shop is small.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        A zero-results state that offers substitutes converts a dead end into a branch. This is <b>error recovery</b> under Nielsen's heuristics done properly — but note the sharper version of the principle: the recovery is only credible because the substitutes are <i>in stock at this store</i>. A generic "popular products" rail here would be recovery theatre.
+        <span class="say">recovery only counts if the alternative is actually obtainable</span>
+      </div></div>
+
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> Every zero-result search is a demand signal against a specific dark store. Aggregate enough of them in one pincode and you have a data-driven case for stocking that SKU there. The search box is quietly the cheapest demand-sensing instrument in the whole operation.
+        <span class="say">the failed searches are worth more than the successful ones</span>
+      </div></div>
+
+      <div class="note b"><div class="n">4</div><div class="body">
+        <span class="lens">academic names it</span>
+        Substitutes are shown at three price points spanning roughly ₹94 to ₹215. Whether or not it is intended, that spread creates an <b>anchoring</b> frame: the mid-priced option looks reasonable because it sits between two others. Worth flagging in class as an effect that appears even when nobody designed it in.
+        <span class="say">price ladders create anchors whether you meant them to or not</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        Recent searches persist across sessions and are one-tap. <span class="grade i">INFERRED</span> In grocery the same handful of queries recur weekly, so this list is functionally a second reorder surface — the same logic as "Order again," rebuilt inside search at near-zero cost.
+        <span class="say">two different screens, one insight: groceries repeat</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Say "No results found" with no explanation</td><td>The user concludes the app is small or broken and leaves. The current wording relocates the failure from the catalogue to temporary local stock — which happens to also be true.</td></tr>
+        <tr><td>Show national-catalogue items in results, marked unavailable</td><td>Search becomes a browsing catalogue of things you cannot have. Every unavailable row is a small disappointment, repeated dozens of times per session.</td></tr>
+        <tr><td>Remove the substitute rail</td><td>The session ends at the dead end. A zero-result search with no branch is one of the highest-exit moments in any commerce app.</td></tr>
+        <tr><td>Drop recent searches</td><td>Weekly repeat queries have to be retyped every time, on a phone, often one-handed. Small friction, applied to the highest-frequency action in the app.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 04 — the control that appears 40 times</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">05 / ADD, and the density trade-off</span>
+  <h2>The most important button in the app is deliberately the quietest</h2>
+  <p class="lead">Every CTA instinct taught in a design classroom says make the primary action bold, large and high-contrast. This app breaks all three rules on its primary action, and it is right to.</p>
+
+  <figure style="margin-top:24px">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Comparison of a single loud CTA against the same CTA repeated forty times on one screen">
+      <text x="30" y="22" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c" letter-spacing="1.4">WHY FREQUENCY INVERTS EMPHASIS</text>
+
+      <text x="30" y="52" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">Appears once per screen</text>
+      <rect x="30" y="66" width="180" height="150" fill="#fff" stroke="#e6e2d8"/>
+      <rect x="52" y="150" width="136" height="34" rx="6" fill="#0c831f"/>
+      <text x="120" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#fff">ADD TO CART</text>
+      <text x="30" y="240" font-family="Caveat, cursive" font-size="20" fill="#0a8754">filled. loud. correct.</text>
+
+      <text x="330" y="52" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="700" fill="#1b2233">Appears 40 times per screen</text>
+      <rect x="330" y="66" width="240" height="150" fill="#fff" stroke="#e6e2d8"/>
+      <g>
+        <rect x="342" y="78" width="70" height="40" fill="#f7f7f7"/><rect x="382" y="104" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="424" y="78" width="70" height="40" fill="#f7f7f7"/><rect x="464" y="104" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="506" y="78" width="52" height="40" fill="#f7f7f7"/><rect x="528" y="104" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="342" y="126" width="70" height="40" fill="#f7f7f7"/><rect x="382" y="152" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="424" y="126" width="70" height="40" fill="#f7f7f7"/><rect x="464" y="152" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="506" y="126" width="52" height="40" fill="#f7f7f7"/><rect x="528" y="152" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="342" y="174" width="70" height="34" fill="#f7f7f7"/><rect x="382" y="194" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="424" y="174" width="70" height="34" fill="#f7f7f7"/><rect x="464" y="194" width="28" height="12" rx="3" fill="#0c831f"/>
+        <rect x="506" y="174" width="52" height="34" fill="#f7f7f7"/><rect x="528" y="194" width="28" height="12" rx="3" fill="#0c831f"/>
+      </g>
+      <text x="330" y="240" font-family="Caveat, cursive" font-size="20" fill="#c0392b">filled = a wall of green. nothing findable.</text>
+
+      <line x1="620" y1="60" x2="620" y2="250" stroke="#d8dbe3"/>
+      <text x="650" y="90" font-family="Newsreader, serif" font-size="14" fill="#1b2233">Emphasis is a</text>
+      <text x="650" y="112" font-family="Newsreader, serif" font-size="14" fill="#1b2233">finite budget.</text>
+      <text x="650" y="146" font-family="Newsreader, serif" font-size="14" fill="#1b2233">Spend it 40 times</text>
+      <text x="650" y="168" font-family="Newsreader, serif" font-size="14" fill="#1b2233">and you have spent</text>
+      <text x="650" y="190" font-family="Newsreader, serif" font-size="14" fill="#1b2233">it zero times.</text>
+      <text x="650" y="230" font-family="Caveat, cursive" font-size="21" fill="#2f5fa8">outline. not fill.</text>
+    </svg>
+    <figcaption>The outlined pill is not a weaker version of a filled button. It is the correct answer to a different question — one about repetition, not prominence.</figcaption>
+  </figure>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone short">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:12px 14px 8px;font-size:13px;font-weight:700">Dairy, Bread &amp; Eggs</div>
+          <div class="bk-grid">
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">500 ml</div><div class="nm">Amul Taaza Toned Milk</div><div class="pr">₹35</div></div>
+            <div class="bk-p"><div class="im"></div><div class="qty">− 1 +</div><div class="wt">400 g</div><div class="nm">Britannia Brown Bread</div><div class="pr">₹55</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">6 pcs</div><div class="nm">Farm Fresh Eggs</div><div class="pr">₹62</div></div>
+            <div class="bk-p" style="opacity:.45"><div class="im"></div><div style="position:absolute;right:4px;top:44px;background:#eee;color:#999;font-size:7.5px;font-weight:700;padding:4px 6px;border-radius:6px">SOLD OUT</div><div class="wt">1 L</div><div class="nm">Mother Dairy Full Cream</div><div class="pr">₹75</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">400 g</div><div class="nm">Amul Masti Dahi Cup</div><div class="pr">₹45</div></div>
+            <div class="bk-p"><div class="im"></div><div class="add">ADD</div><div class="wt">100 g</div><div class="nm">Amul Butter Pasteurised</div><div class="pr">₹58</div></div>
+          </div>
+          <div class="bk-cartbar" style="bottom:12px"><div><div>3 items</div><div class="l">₹258</div></div><div>View cart ›</div></div>
+        </div>
+      </div>
+      <span class="mk" style="top:32%;right:6%">1</span>
+      <span class="mk b" style="top:44%;left:6%">2</span>
+      <span class="mk b" style="top:57%;right:6%">3</span>
+      <span class="mk g" style="top:70%;left:6%">4</span>
+      <span class="mk g" style="bottom:8%;right:6%">5</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        Nobody hesitates over ADD. It is small, it is grey-bordered green, it sits in the same place on every tile — and after two taps it stops being read at all and becomes pure muscle memory.
+        <span class="say">I stopped looking at it after the second one</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        Position consistency is doing more work than styling. The control sits at the same offset on every tile, so after the first interaction the user is aiming at a <i>location</i>, not searching for a <i>button</i>. This is the practical half of <b>Fitts's Law</b> that gets forgotten: predictability of position reduces acquisition time nearly as much as target size does.
+        <span class="say">same place every time beats big and inconsistent</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        <span class="lens">academic names it</span>
+        ADD transforms into a stepper <i>in place</i>, without layout shift. The transformation preserves spatial continuity, so the eye never has to re-find anything — and it removes an entire class of error, because there is no separate "quantity" control to get out of sync with the cart.
+        <span class="say">one control, two states, zero layout shift</span>
+      </div></div>
+
+      <div class="note g"><div class="n">4</div><div class="body">
+        <span class="lens">professional built it</span>
+        The sold-out tile is dimmed but <b>not removed</b>. <span class="grade i">INFERRED</span> Removing it would be cleaner, but it would also hide the fact that the store carries this item normally — and it would destroy the layout stability that makes muscle-memory tapping possible. Keeping it is a deliberate trade of visual tidiness for spatial consistency and merchandising signal.
+        <span class="say">the empty shelf still tells you what the shop sells</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        Stock state on these tiles is only as fresh as the last inventory sync. <span class="grade i">INFERRED</span> Every second of sync latency is a window in which a user adds something that was picked off the shelf moments earlier — which is why the out-of-stock-mid-cart flow (Screen 08 below) has to exist as a designed state rather than an error.
+        <span class="say">the interface is always slightly behind the shelf. design for the gap.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">ADD control size</div><div class="v">≈ 62 × 26 px<br>guidance: 44–48 px min</div></div>
+    <div class="spec-box"><div class="k">Verdict</div><div class="v">Fails height guidance</div></div>
+    <div class="spec-box"><div class="k">Instances per viewport</div><div class="v">6–9 visible, 30–40 per scroll session</div></div>
+    <div class="spec-box"><div class="k">Contrast (green on white)</div><div class="v">≈ 4.9:1 — passes AA text</div></div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Fill the ADD pill solid green</td><td>The grid becomes a wall of green rectangles. Product images, prices and pack sizes — the things people actually compare — lose the contrast competition to a control nobody needs help finding.</td></tr>
+        <tr><td>Enlarge ADD to a compliant 48px height</td><td>Accessibility improves measurably. Products per viewport drops, tile proportions break, and the price line gets pushed below the fold on smaller devices. This is a genuine unresolved tension, not a solved problem — see the accessibility audit.</td></tr>
+        <tr><td>Open a quantity modal instead of an in-place stepper</td><td>Adding six items goes from six taps to eighteen taps plus six context switches. Basket size falls immediately.</td></tr>
+        <tr><td>Hide sold-out products entirely</td><td>The grid reflows on every stock change, tile positions shift under the user's thumb mid-scroll, and muscle memory — the whole basis of fast adding — stops working.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 05 — the page nobody opens</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">06 / the product detail page</span>
+  <h2>An entire screen built for a minority of sessions, and correctly so</h2>
+  <p class="lead">In fashion or electronics the PDP is the centre of the product. In grocery it is a reference document that most users skip entirely — and the interesting question is why it still deserves the engineering.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:10px 14px;display:flex;justify-content:space-between;font-size:14px;border-bottom:1px solid var(--bk-line)"><span>‹</span><span style="font-size:12px;color:var(--bk-mute)">Share</span></div>
+          <div style="height:150px;background:var(--bk-bg);position:relative;display:grid;place-items:center">
+            <div style="width:58px;height:104px;border-radius:6px;background:linear-gradient(160deg,#fff,#e8e8e8);border:1px solid #ddd"></div>
+            <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px">
+              <i style="width:5px;height:5px;border-radius:50%;background:var(--bk-ink);display:block"></i>
+              <i style="width:5px;height:5px;border-radius:50%;background:#d5d5d5;display:block"></i>
+              <i style="width:5px;height:5px;border-radius:50%;background:#d5d5d5;display:block"></i>
+            </div>
+          </div>
+          <div style="padding:14px 14px 0">
+            <div style="font-size:14.5px;font-weight:700;line-height:1.28">Aashirvaad Shudh Chakki Whole Wheat Atta</div>
+            <div style="font-size:11px;color:var(--bk-mute);margin-top:4px">5 kg</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:10px">
+              <span style="font-size:17px;font-weight:800">₹279</span>
+              <s style="font-size:12px;color:var(--bk-mute)">₹315</s>
+              <span style="font-size:10.5px;color:var(--bk-green);font-weight:700">11% OFF</span>
+            </div>
+            <div style="font-size:10px;color:var(--bk-mute);margin-top:2px">Inclusive of all taxes</div>
+          </div>
+          <div style="margin:14px 14px 0;border-top:1px solid var(--bk-line);padding-top:12px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bk-mute);margin-bottom:8px">Product details</div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0"><span style="color:var(--bk-mute)">Type</span><span>Whole wheat</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0"><span style="color:var(--bk-mute)">Shelf life</span><span>4 months</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0"><span style="color:var(--bk-mute)">Marketed by</span><span style="text-align:right;max-width:56%">ITC Limited, Kolkata</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0"><span style="color:var(--bk-mute)">Country of origin</span><span>India</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0"><span style="color:var(--bk-mute)">Customer care</span><span style="text-align:right;max-width:56%">care@example.in</span></div>
+          </div>
+          <div class="bk-cartbar" style="bottom:12px;background:#fff;border:1px solid var(--bk-green);color:var(--bk-green)"><div><div style="color:var(--bk-ink)">₹279</div><div class="l" style="color:var(--bk-mute)">5 kg</div></div><div>ADD TO CART</div></div>
+        </div>
+      </div>
+      <span class="mk" style="top:14%;left:6%">1</span>
+      <span class="mk g" style="top:40%;right:6%">2</span>
+      <span class="mk b" style="top:56%;left:6%">3</span>
+      <span class="mk g" style="top:70%;right:6%">4</span>
+      <span class="mk b" style="bottom:9%;left:6%">5</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        Most people arrive here by accident — a mistap on the tile instead of the ADD pill — and immediately hit back. For a weekly-repeat SKU there is nothing here they need.
+        <span class="say">I didn't mean to open this</span>
+      </div></div>
+
+      <div class="note g"><div class="n">2</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade o">OBSERVED</span> "Inclusive of all taxes," country of origin, marketed-by entity and customer-care contact are not UX decisions. They are e-commerce disclosure requirements under Indian consumer rules. This block is the page's actual reason for existing — the design job was to make a legal obligation not feel like one.
+        <span class="say">half this page is compliance wearing a design system</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        <span class="lens">academic names it</span>
+        <b>Tesler's Law</b> — the conservation of complexity — in its cleanest form. Regulatory complexity cannot be deleted; it can only be relocated. Putting it on a page most users skip means the complexity is borne by the system rather than the shopper, which is exactly the right allocation.
+        <span class="say">complexity can't be removed. it can only be moved to where it hurts least.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">4</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> This page earns its keep on the newer, high-consideration categories — electronics, beauty, appliances — where a ₹2,000 purchase genuinely does need specs before a tap. The same template serves a ₹35 milk carton and a pair of earbuds, which is why it feels over-built on the milk.
+        <span class="say">it's not designed for the atta. it's designed for the earbuds.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">5</div><div class="body">
+        <span class="lens">academic names it</span>
+        The sticky footer CTA is <i>outlined</i>, matching the grid pill rather than shouting as a filled primary. That is system consistency chosen over local optimisation — a filled button would convert marginally better on this one screen while teaching users that the button here means something different from the button everywhere else.
+        <span class="say">a design system is a promise you keep even when breaking it would pay</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Delete the PDP for grocery SKUs entirely</td><td>Session speed improves and nobody misses it — until the mandatory disclosures have nowhere to live and the category expansion into electronics has no surface to sell on.</td></tr>
+        <tr><td>Make the whole tile open the PDP, moving ADD inside it</td><td>Adding six items becomes six page loads and six back-taps. The app stops being a basket-builder and becomes a catalogue browser.</td></tr>
+        <tr><td>Move disclosures behind an accordion</td><td>Visually cleaner, and it puts required information one interaction further away. Defensible; also the kind of choice a regulator reads as obstruction. Not worth the saving.</td></tr>
+        <tr><td>Fill the footer CTA solid green</td><td>Conversion on this page probably ticks up. The meaning of "outlined = add" across the rest of the app gets diluted, and the grid — where the volume actually is — pays for it.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 06 — the cart, and the fees</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">07 / the single most scrutinised screen in Indian quick commerce</span>
+  <h2>Where a ₹258 basket becomes ₹307, and how that gets shown</h2>
+  <p class="lead">This is the screen the regulator reads. Everything before it is merchandising; this is disclosure, and Indian consumer law now has a named list of ways to get it wrong.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:11px 14px;font-size:13.5px;font-weight:700;border-bottom:1px solid var(--bk-line)">‹ &nbsp;Your cart</div>
+          <div style="background:var(--bk-green-soft);padding:8px 14px;font-size:10.5px;color:#0a6b1a;font-weight:600">⚡ Delivery in 11 minutes · Rajpur Road</div>
+
+          <div style="padding:10px 14px 0">
+            <div style="display:flex;gap:9px;align-items:center;padding:7px 0"><i style="width:34px;height:34px;background:var(--bk-bg);border-radius:6px;display:block;flex:none"></i>
+              <div style="flex:1"><div style="font-size:11px;font-weight:500;line-height:1.3">Amul Taaza Toned Milk</div><div style="font-size:9px;color:var(--bk-mute)">500 ml</div></div>
+              <div style="background:var(--bk-green);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:6px">− 1 +</div>
+              <div style="font-size:11px;font-weight:700;width:38px;text-align:right">₹35</div>
+            </div>
+            <div style="display:flex;gap:9px;align-items:center;padding:7px 0"><i style="width:34px;height:34px;background:var(--bk-bg);border-radius:6px;display:block;flex:none"></i>
+              <div style="flex:1"><div style="font-size:11px;font-weight:500;line-height:1.3">Britannia Brown Bread</div><div style="font-size:9px;color:var(--bk-mute)">400 g</div></div>
+              <div style="background:var(--bk-green);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:6px">− 1 +</div>
+              <div style="font-size:11px;font-weight:700;width:38px;text-align:right">₹55</div>
+            </div>
+            <div style="display:flex;gap:9px;align-items:center;padding:7px 0"><i style="width:34px;height:34px;background:var(--bk-bg);border-radius:6px;display:block;flex:none"></i>
+              <div style="flex:1"><div style="font-size:11px;font-weight:500;line-height:1.3">Maggi 2-Minute Noodles</div><div style="font-size:9px;color:var(--bk-mute)">12 × 70 g</div></div>
+              <div style="background:var(--bk-green);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:6px">− 1 +</div>
+              <div style="font-size:11px;font-weight:700;width:38px;text-align:right">₹168</div>
+            </div>
+          </div>
+
+          <div style="margin:8px 14px 0;border:1px dashed #d8d8d8;border-radius:8px;padding:9px 11px;font-size:10px;line-height:1.5">
+            <b style="font-size:10.5px">Add ₹42 more</b> <span style="color:var(--bk-mute)">to save ₹30 delivery fee</span>
+          </div>
+
+          <div style="margin:12px 14px 0;border-top:1px solid var(--bk-line);padding-top:10px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bk-mute);margin-bottom:8px">Bill details</div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0"><span>Item total</span><span>₹258</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0"><span>Delivery fee <span style="color:var(--bk-mute)">ⓘ</span></span><span>₹30</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0"><span>Handling charge <span style="color:var(--bk-mute)">ⓘ</span></span><span>₹11</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0"><span>Rain surge fee <span style="color:var(--bk-mute)">ⓘ</span></span><span>₹18</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;padding:8px 0 0;border-top:1px solid var(--bk-line);margin-top:6px"><span>To pay</span><span>₹317</span></div>
+          </div>
+
+          <div class="bk-cartbar" style="bottom:12px"><div><div>₹317</div><div class="l">TOTAL</div></div><div>Proceed to pay ›</div></div>
+        </div>
+      </div>
+      <span class="mk" style="top:16%;left:6%">1</span>
+      <span class="mk b" style="top:47%;right:6%">2</span>
+      <span class="mk" style="top:62%;left:6%">3</span>
+      <span class="mk b" style="top:71%;right:6%">4</span>
+      <span class="mk g" style="top:79%;left:6%">5</span>
+      <span class="mk g" style="bottom:8%;right:6%">6</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        The green ETA strip at the top of the cart is reassurance placed exactly where doubt starts. It also has nothing to do with the cart — it is there to hold attention against the number further down.
+        <span class="say">the promise reappears right before the price does</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        "Add ₹42 more to save ₹30" is a <b>loss-framed</b> threshold nudge — the user is not offered a gain, they are shown a loss they can avert. Framing the identical arithmetic as "spend ₹42, get ₹30 back" would be a worse-performing and more honest sentence. This one is legitimate: the threshold is real, disclosed, and the maths is checkable on the same screen.
+        <span class="say">a nudge you can verify on the same screen isn't a trick</span>
+      </div></div>
+
+      <div class="note"><div class="n">3</div><div class="body">
+        <span class="lens">beginner feels</span>
+        The basket said ₹258. The total says ₹317. That ₹59 gap is where most of the public irritation with this category lives, and no amount of typography design makes an unexpected 23% uplift feel good.
+        <span class="say">I didn't agree to this number</span>
+      </div></div>
+
+      <div class="note b"><div class="n">4</div><div class="body">
+        <span class="lens">academic names it</span>
+        This is the exact configuration the CCPA's 2023 guidelines call <b>drip pricing</b> — costs revealed progressively rather than upfront. Whether this specific implementation crosses the line is genuinely arguable: the fees are itemised, named, tappable for explanation, and shown before payment, which is the honest end of the pattern. What it is not is <i>upfront</i>. The item total was visible on the home screen for the entire session; the ₹59 was not.
+        <span class="say">itemised at the end ≠ disclosed at the start. know which one you built.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade r">REPORTED</span> The fee stack is real and roughly this shape — a handling charge in the ₹4–₹11 band, delivery up to ₹30 on smaller orders, and situational surge or rain fees, with no separate platform fee. Each line is a distinct margin lever that can be tuned independently by city, hour and weather without touching the shelf price of a single SKU.
+        <span class="say">unbundling fees isn't sloppy pricing. it's how you tune margin without touching MRP.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">6</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> The upsell threshold sits at ₹42 away, not ₹150 away. A threshold has to be crossable in one or two taps or it stops being a nudge and becomes a reason to abandon. This number is almost certainly tuned against basket-size distribution, not chosen for roundness.
+        <span class="say">the gap is set by the data, not by the designer</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Item total → to pay</div><div class="v">₹258 → ₹317<br>+22.9%</div></div>
+    <div class="spec-box"><div class="k">Fee lines</div><div class="v">3 named, all itemised</div></div>
+    <div class="spec-box"><div class="k">First disclosure point</div><div class="v">Cart — not home, not tile</div></div>
+    <div class="spec-box"><div class="k">CCPA pattern in play</div><div class="v">Drip pricing (borderline)</div></div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Show estimated fees on the home screen header</td><td>The honest fix, and it costs real money: users see a ₹59 overhead before building a basket, and small orders stop happening. This is why nobody in the category does it, and why the regulator keeps asking.</td></tr>
+        <tr><td>Collapse the three fee lines into one "Other charges ₹59"</td><td>Cleaner, and materially worse. Aggregation is the exact move the drip-pricing guidance targets; itemisation is currently the strongest defence this screen has.</td></tr>
+        <tr><td>Remove the ⓘ tap targets on fee lines</td><td>A named-but-unexplained charge is much harder to defend than a named-and-explained one. The icon is cheap insurance.</td></tr>
+        <tr><td>Raise the free-delivery threshold by ₹100</td><td>AOV rises for the users who cross it, and abandonment rises for those who do not. The threshold is a dial with revenue on both ends, which is exactly why it is tuned rather than chosen.</td></tr>
+        <tr><td>Pre-tick a small "donation" or "tip" add-on</td><td>That is <b>basket sneaking</b> under the CCPA's named list, and it is the pattern a major Indian edtech platform was fined for. Not a grey area.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 07 — payment</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">08 / checkout, and the UPI assumption</span>
+  <h2>The ordering of payment methods is a business decision wearing a list</h2>
+  <p class="lead">There is no neutral order for this list. Whatever sits first will be chosen disproportionately, so the sequence is always someone's decision — the only question is whose interest it serves.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone short">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="padding:11px 14px;font-size:13.5px;font-weight:700;border-bottom:1px solid var(--bk-line)">‹ &nbsp;Payment</div>
+          <div style="padding:12px 14px 0">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bk-mute)">Pay by UPI</div>
+            <div style="border:1.5px solid var(--bk-green);border-radius:9px;padding:10px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;background:var(--bk-green-soft)">
+              <div style="font-size:11.5px;font-weight:600">UPI · kunal@examplebank</div>
+              <div style="width:15px;height:15px;border-radius:50%;background:var(--bk-green)"></div>
+            </div>
+            <div style="border:1px solid var(--bk-line);border-radius:9px;padding:10px 12px;margin-top:7px;font-size:11.5px">Add new UPI ID</div>
+
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bk-mute);margin-top:16px">Cards &amp; wallets</div>
+            <div style="border:1px solid var(--bk-line);border-radius:9px;padding:10px 12px;margin-top:8px;font-size:11.5px">Credit / debit card</div>
+            <div style="border:1px solid var(--bk-line);border-radius:9px;padding:10px 12px;margin-top:7px;font-size:11.5px">Wallets</div>
+
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bk-mute);margin-top:16px">Other</div>
+            <div style="border:1px solid var(--bk-line);border-radius:9px;padding:10px 12px;margin-top:8px;font-size:11.5px;color:var(--bk-mute);display:flex;justify-content:space-between">
+              <span>Cash on delivery</span><span style="font-size:9.5px">Not available</span>
+            </div>
+          </div>
+          <div class="bk-cartbar" style="bottom:12px"><div><div>₹317</div><div class="l">TOTAL</div></div><div>Pay now ›</div></div>
+        </div>
+      </div>
+      <span class="mk" style="top:26%;left:6%">1</span>
+      <span class="mk b" style="top:26%;right:6%">2</span>
+      <span class="mk g" style="top:62%;left:6%">3</span>
+      <span class="mk g" style="top:76%;right:6%">4</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        The saved UPI ID is already selected, so for most people this screen is a single tap on "Pay now." It barely registers as a screen at all.
+        <span class="say">I don't remember choosing anything</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        Pre-selection of a default is <b>choice architecture</b>, and defaults are among the most powerful interventions available — most users never change one. This particular default is defensible because it is <i>the user's own previously chosen method</i>, not a platform-preferred one. Change that single fact and the same UI becomes a manipulation. Teach the pair together.
+        <span class="say">a default set by the user is memory. a default set by the platform is a nudge.</span>
+      </div></div>
+
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> UPI sits first because it settles fast and carries negligible transaction cost compared to cards. In a category where the order dispatches within seconds of payment, settlement latency is not a finance detail — it is an operational input to whether a rider can be assigned immediately.
+        <span class="say">payment rails and dispatch timing are the same problem here</span>
+      </div></div>
+
+      <div class="note g"><div class="n">4</div><div class="body">
+        <span class="lens">professional built it</span>
+        Cash on delivery is shown, greyed, and marked unavailable rather than removed. <span class="grade i">INFERRED</span> COD breaks the model — cash handling adds time at the door, creates reconciliation overhead per rider, and raises refusal risk on a basket already picked and packed. Showing it as disabled answers the question before it is asked, in a market where COD was the default expectation for a decade.
+        <span class="say">visibly disabled beats invisibly absent when the user expects it to be there</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Default to a platform wallet instead of the user's saved UPI</td><td>Wallet balances rise and float improves. It is also the exact moment a defensible default becomes a self-serving one — and the pattern a regulator would name.</td></tr>
+        <tr><td>Remove COD from the list entirely</td><td>Users who expect it assume the app is broken or that they missed it. A disabled row is cheaper than the support ticket.</td></tr>
+        <tr><td>Add a confirmation step after "Pay now"</td><td>Safer for mistaps, and it inserts seconds into a flow where dispatch begins on payment. Every second here is a second of the ETA spent on the interface rather than the road.</td></tr>
+        <tr><td>Bury card payment two taps deeper</td><td>Marginal cost saving, real exclusion of anyone without UPI. Obstruction is a named dark pattern for a reason.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 08 — tracking, and the end of the journey</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">09 / the waiting screen and the peak-end problem</span>
+  <h2>Eleven minutes of nothing to do, engineered into eleven minutes of watching</h2>
+  <p class="lead">This screen has no commercial function. It exists entirely to manage the experience of waiting — which, in a product whose only differentiator is speed, is the product.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bk">
+          <div class="st" style="padding-top:24px"><span>9:41</span><span>▮▮▮ ⌁</span></div>
+          <div style="height:190px;background:repeating-linear-gradient(118deg,#e8e4dc 0 16px,#f2efe9 16px 32px);position:relative">
+            <div style="position:absolute;left:26%;top:34%;width:11px;height:11px;background:var(--bk-ink);border-radius:50% 50% 50% 0;transform:rotate(-45deg)"></div>
+            <div style="position:absolute;left:62%;top:64%;width:11px;height:11px;background:var(--bk-green);border-radius:50% 50% 50% 0;transform:rotate(-45deg)"></div>
+            <svg style="position:absolute;inset:0" viewBox="0 0 300 190" preserveAspectRatio="none"><path d="M82,68 C120,90 150,100 190,124" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-dasharray="5 4"/></svg>
+          </div>
+          <div style="padding:14px 14px 0;text-align:center">
+            <div style="font-size:22px;font-weight:800;letter-spacing:-.02em">7 minutes away</div>
+            <div style="font-size:11px;color:var(--bk-mute);margin-top:3px">Your order has been picked up</div>
+          </div>
+          <div style="margin:16px 14px 0;display:flex;gap:6px">
+            <i style="flex:1;height:4px;border-radius:2px;background:var(--bk-green);display:block"></i>
+            <i style="flex:1;height:4px;border-radius:2px;background:var(--bk-green);display:block"></i>
+            <i style="flex:1;height:4px;border-radius:2px;background:#e2e2e2;display:block"></i>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin:7px 14px 0;font-size:9px;color:var(--bk-mute)">
+            <span>Packed</span><span>Picked up</span><span>Delivered</span>
+          </div>
+          <div style="margin:16px 14px 0;border:1px solid var(--bk-line);border-radius:10px;padding:11px 12px;display:flex;gap:10px;align-items:center">
+            <i style="width:34px;height:34px;border-radius:50%;background:var(--bk-bg);display:block;flex:none"></i>
+            <div style="flex:1"><div style="font-size:11.5px;font-weight:600">Your delivery partner</div><div style="font-size:9.5px;color:var(--bk-mute)">Arriving on a two-wheeler</div></div>
+            <div style="border:1px solid var(--bk-line);border-radius:7px;padding:5px 9px;font-size:10px">Call</div>
+          </div>
+          <div style="margin:10px 14px 0;background:var(--bk-bg);border-radius:10px;padding:10px 12px;font-size:10.5px;line-height:1.5">
+            <b>Add more items?</b> <span style="color:var(--bk-mute)">You can still add to this order for the next 2 minutes</span>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:14%;right:6%">1</span>
+      <span class="mk b" style="top:37%;left:6%">2</span>
+      <span class="mk b" style="top:52%;right:6%">3</span>
+      <span class="mk g" style="top:68%;left:6%">4</span>
+      <span class="mk g" style="bottom:12%;right:6%">5</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner feels</span>
+        People watch this map. Not because it is useful — knowing the rider is 400 m away changes nothing — but because a moving dot converts helpless waiting into observable progress.
+        <span class="say">nothing I do here matters, and I still can't look away</span>
+      </div></div>
+
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        The <b>Zeigarnik effect</b>: incomplete tasks hold attention. A three-segment progress bar makes the order into an unfinished object the mind wants closed. This is also why the countdown is phrased as "7 minutes away" rather than "arriving 9:52" — a shrinking number is an unfinished task; a fixed clock time is an appointment.
+        <span class="say">a shrinking number holds you. a timestamp releases you.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        <span class="lens">academic names it</span>
+        Three states — packed, picked up, delivered — is a deliberate compression of a far more complex pipeline. Showing every real stage would be more transparent and much worse: more stages means more visible stalls, and a stalled bar reads as a failure even when the ETA is intact.
+        <span class="say">granularity you can't keep moving is a liability, not honesty</span>
+      </div></div>
+
+      <div class="note g"><div class="n">4</div><div class="body">
+        <span class="lens">professional built it</span>
+        <span class="grade i">INFERRED</span> The rider is identified by role, not personality — no rating shown, no vehicle number foregrounded, minimal identity. Read this against the reported payout structure and the strike coverage: the interface presents the delivery as a service performed by the platform, not by an individual. That is a positioning choice with real consequences for how the labour behind the speed is perceived.
+        <span class="say">the person carrying the promise is the least designed element on the screen</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        The add-more-items window is the sharpest commercial idea in the app. <span class="grade i">INFERRED</span> Marginal cost of extra items on an already-dispatched order is near zero, so incremental AOV here is close to pure margin — and it exists only because the ops model has a real, definable cutoff before the picker finishes. The offer is bounded by a warehouse event, not by a timer someone invented.
+        <span class="say">the best upsell in the app is a warehouse constraint dressed as a courtesy</span>
+      </div></div>
+    </div>
+  </div>
+
+  <h3>And then the last screen anyone remembers</h3>
+  <p>Rating and tipping appear after delivery, at the point <b>peak–end</b> theory says will disproportionately shape the memory of the whole order. Two things are worth naming in class:</p>
+  <ul class="nl">
+    <li>The <i>peak</i> in a fast delivery is usually the doorbell arriving sooner than expected. The <i>end</i> is this screen. A product that nails delivery and then presents a nagging, guilt-shaped tip prompt has spent its own best moment.</li>
+    <li>A tip prompt with pre-selected amounts sits close to two named CCPA patterns at once — <b>basket sneaking</b> if pre-ticked and added by default, <b>confirm shaming</b> if declining requires tapping something like "No, I don't want to support." Neither is necessary. A row of unselected amounts plus a plain "Skip" is the version that survives an audit.</li>
+  </ul>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Replace the live map with a static "on the way" message</td><td>Engineering cost drops sharply. Perceived wait lengthens, because progress stops being observable — the same eleven minutes now feels longer, and the only differentiator is a feeling.</td></tr>
+        <tr><td>Show "arriving at 9:52" instead of "7 minutes away"</td><td>More precise, less compelling. The countdown is doing psychological work that an absolute time cannot.</td></tr>
+        <tr><td>Expand the tracker from 3 stages to 7</td><td>Every real-world pause becomes a visible stall. Support contacts rise on orders that were never actually late.</td></tr>
+        <tr><td>Pre-select a ₹20 tip</td><td>Tip revenue rises. You have also built basket sneaking on the last screen of the journey, at the exact moment that defines the memory of the order.</td></tr>
+        <tr><td>Remove the add-more window</td><td>Some ops complexity disappears, and so does one of the highest-margin revenue moments in the entire flow.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Screen 09 — the states nobody demos</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">10 / failure, and what it reveals</span>
+  <h2>Design philosophy is most visible where nothing went to plan</h2>
+  <p class="lead">Happy paths are designed by everyone. Failure states are designed by teams that have already been burned, and you can usually date the burn.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:19%">State</th><th style="width:27%">What the screen does</th><th style="width:27%">The principle</th><th>The mechanism underneath</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Item goes out of stock after it is in your cart</b></td>
+        <td>Item is flagged in the cart with a substitute offered rather than silently dropped, and the total recalculates in view.</td>
+        <td><b>Visibility of system status.</b> A silent removal is the worst option available — the user discovers it at the door, when nothing can be done.</td>
+        <td><span class="grade i">INFERRED</span> Direct consequence of inventory-sync latency. The gap between shelf and screen is measured in seconds, and at Blinkit's order volume seconds are thousands of collisions.</td>
+      </tr>
+      <tr>
+        <td><b>Store closed or temporarily unavailable</b></td>
+        <td>Serviceability message with a resume time, not an error page.</td>
+        <td><b>Error prevention</b> over error handling — the browse never starts rather than failing at checkout.</td>
+        <td><span class="grade r">REPORTED</span> During the 2025 rider strike, stores across the NCR appeared as temporarily unavailable in the app. This state is not hypothetical; it has carried a labour dispute.</td>
+      </tr>
+      <tr>
+        <td><b>Surge or rain fee applied</b></td>
+        <td>Named line item in the bill with an ⓘ explanation.</td>
+        <td>Sits inside <b>drip pricing</b> territory; itemisation and explanation are what keep it on the defensible side.</td>
+        <td><span class="grade r">REPORTED</span> Situational fees are a live margin lever across the category and a recurring subject of public criticism and regulatory attention.</td>
+      </tr>
+      <tr>
+        <td><b>Address outside serviceable radius</b></td>
+        <td>Explicit "not delivering here yet" with a notify option — not a zero-results screen.</td>
+        <td><b>Match between system and the real world.</b> The limitation is physical and the copy says so.</td>
+        <td>Dark store coverage is a map with genuine holes. With ~1,955 stores concentrated in and around larger cities, this state is the default experience for most of India's geography.</td>
+      </tr>
+      <tr>
+        <td><b>Poor or intermittent network</b></td>
+        <td>Cached tiles render, stock state and ETA degrade last.</td>
+        <td><b>Graceful degradation</b>, prioritised by what breaks trust fastest.</td>
+        <td><span class="grade i">INFERRED</span> A wrong price is embarrassing. A wrong ETA is existential. Priority ordering under failure tells you what the team believes the product actually is.</td>
+      </tr>
+      <tr>
+        <td><b>Order runs late</b></td>
+        <td>The countdown continues past the estimate rather than resetting or hiding.</td>
+        <td>Honesty under failure — the hardest kind to ship, because the instinct is always to hide the number.</td>
+        <td><span class="grade i">INFERRED</span> Post-January-2026 this is materially easier to defend: an <i>estimate</i> that slips is a miss, whereas an advertised <i>promise</i> that slips starts to look like a misleading claim.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The teaching point worth stopping on</h4>
+    <p>Ask a student to redesign this app and you will get a prettier home screen. <span class="hl">Ask them to design the out-of-stock-mid-cart state and you find out whether they understand the business at all.</span> Every row in the table above is a decision that only makes sense once you know what a dark store is — which is why the primer came first.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Audit one — dark patterns</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">11 / against the Indian taxonomy, not the American one</span>
+  <h2>India has a named list of thirteen. Use it.</h2>
+  <p class="lead">Most UX courses teach dark patterns using Western examples and blog-post terminology. India has something better for a classroom: a government-issued list with legal consequences attached, which means students can be marked against a standard rather than an opinion.</p>
+
+  <div class="card">
+    <h4>The regulatory frame</h4>
+    <ul class="nl">
+      <li><span class="grade r">REPORTED</span> The <b>Guidelines for Prevention and Regulation of Dark Patterns, 2023</b>, notified 30 November 2023 under the Consumer Protection Act, 2019, identify and prohibit thirteen named dark patterns — including false urgency, basket sneaking, confirm shaming, forced action, subscription trap, interface interference, bait and switch, drip pricing and disguised advertisement.</li>
+      <li><span class="grade r">REPORTED</span> In June 2025 the CCPA advised all e-commerce platforms to conduct self-audits within three months and file self-declarations. Around two dozen platforms did so, including quick-commerce operators.</li>
+      <li><span class="grade r">REPORTED</span> Independent audits have been considerably less flattering than the self-declarations. A January 2026 LocalCircles audit reported that all major e-commerce and quick-commerce platforms it tested except one failed its dark-pattern test, and separate reporting notes that several companies which self-declared compliance were fined within months.</li>
+      <li><span class="grade r">REPORTED</span> Penalties under Section 21 of the Consumer Protection Act run to ₹10 lakh for a first violation and up to ₹50 lakh for each subsequent one — which is, bluntly, small enough that paying can be cheaper than fixing. Teach that tension honestly; it is the reason enforcement remains reactive.</li>
+    </ul>
+  </div>
+
+  <h3>The audit</h3>
+  <p>Verdicts below are my read of the interface as reconstructed and described in this sheet, not a legal finding and not a statement about the company's compliance position. The point of the exercise is the <em>method</em>.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:17%">Named pattern</th><th style="width:13%">Verdict</th><th>Reasoning</th></tr></thead>
+    <tbody>
+      <tr><td><b>Drip pricing</b></td><td style="color:var(--pen-red);font-weight:600">Borderline — present in structure</td><td>Fees appear only at cart, after basket-building. Mitigated substantially by itemisation, naming, ⓘ explanations and pre-payment disclosure. The structure is drip; the execution is at the honest end of it. This is the single most defensible criticism of the category and the one to spend class time on.</td></tr>
+      <tr><td><b>False urgency</b></td><td style="color:var(--pen-green);font-weight:600">Largely absent</td><td>The countdowns here are real: the ETA is a computed estimate, and the add-more window closes because a picker finishes. Compare with fabricated "only 2 left!" counters elsewhere. <span class="hl">Urgency backed by a warehouse event is not false urgency.</span></td></tr>
+      <tr><td><b>Basket sneaking</b></td><td style="color:var(--pen-green);font-weight:600">Not observed</td><td>Nothing is added without a tap. This is the pattern to watch on tip and donation prompts, where the temptation to pre-select is highest and where a fine has already landed elsewhere in Indian e-commerce.</td></tr>
+      <tr><td><b>Confirm shaming</b></td><td style="color:var(--pen-green);font-weight:600">Not observed</td><td>Decline paths are neutrally worded. The risk surface is the tip screen; "Skip" is fine, "No, I don't care about my delivery partner" would not be.</td></tr>
+      <tr><td><b>Interface interference</b></td><td style="color:var(--pen-red);font-weight:600">Mild</td><td>Manual address entry demoted to underlined text under a full-width primary button. On the right side of the line because it is same-screen, same-viewport, one tap. A useful example precisely because it is a near-miss rather than a violation — students learn the boundary better from these than from egregious cases.</td></tr>
+      <tr><td><b>Forced action</b></td><td style="color:var(--pen-red);font-weight:600">Structural, and justified</td><td>Location is genuinely mandatory. But note the standard: "technically necessary" is a defence only if the necessity is explained to the user. The app does explain it. Remove that one line of copy and the same requirement becomes indefensible.</td></tr>
+      <tr><td><b>Subscription trap</b></td><td style="color:var(--pen-green);font-weight:600">Not applicable here</td><td>Any membership tier should be audited separately, with attention to cancellation-path depth — the classic failure point and a named pattern in its own right.</td></tr>
+      <tr><td><b>Disguised advertisement</b></td><td style="color:var(--pen-red);font-weight:600">Worth watching</td><td>Ad monetisation is a stated growth lever for the business. Sponsored placements inside a product grid are indistinguishable from organic ones unless explicitly labelled. This is the pattern most likely to become a live issue as ad revenue grows.</td></tr>
+      <tr><td><b>Bait and switch</b></td><td style="color:var(--pen-green);font-weight:600">Not observed</td><td>Out-of-stock is disclosed at tile level and again at cart level rather than substituted silently.</td></tr>
+      <tr><td><b>Nagging</b></td><td style="color:var(--pen-green);font-weight:600">Low in-app</td><td>In-app prompting is restrained. Push notification behaviour is a separate audit surface and outside what can be assessed from screens alone.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The honest summary</h4>
+    <p>This is not a manipulative app. It is a mostly-fair interface with <b>one structural problem</b> — the cost of an order is not knowable until the cart — and that problem is shared across the entire category rather than unique to this product. A student who writes "Blinkit uses dark patterns" has said nothing. A student who writes <span class="hl">"the fee stack is disclosed at cart rather than at browse, which is drip pricing in structure though itemised and explained in execution"</span> has written the sentence a regulator, a founder and an examiner would all accept.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Audit two — accessibility</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">12 / where a yellow brand meets a contrast standard</span>
+  <h2>The palette is not an accident. It is a constraint the team worked around correctly.</h2>
+  <p class="lead">Yellow is one of the hardest brand colours to build an accessible interface from, and tracing how this app handles it teaches contrast better than any abstract explanation of the formula.</p>
+
+  <figure style="margin-top:24px">
+    <svg viewBox="0 0 900 250" role="img" aria-label="Contrast ratio comparison showing yellow as a background versus yellow as text">
+      <text x="30" y="22" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c" letter-spacing="1.4">THE SAME HUE, TWO OPPOSITE OUTCOMES</text>
+
+      <rect x="30" y="44" width="250" height="86" fill="#f8cb46"/>
+      <text x="155" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="800" fill="#1c1c1c">Delivery in 11 minutes</text>
+      <text x="155" y="106" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#5a4a12">NEAR-BLACK ON YELLOW</text>
+      <text x="30" y="154" font-family="Caveat, cursive" font-size="26" fill="#0a8754">≈ 13:1 — excellent</text>
+      <text x="30" y="178" font-family="Newsreader, serif" font-size="13" fill="#3b4356">Passes AA and AAA comfortably.</text>
+
+      <rect x="330" y="44" width="250" height="86" fill="#ffffff" stroke="#e6e2d8"/>
+      <text x="455" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="800" fill="#f8cb46">Delivery in 11 minutes</text>
+      <text x="455" y="106" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#b0b0b0">YELLOW ON WHITE</text>
+      <text x="330" y="154" font-family="Caveat, cursive" font-size="26" fill="#c0392b">≈ 1.5:1 — unusable</text>
+      <text x="330" y="178" font-family="Newsreader, serif" font-size="13" fill="#3b4356">Fails every threshold at every size.</text>
+
+      <rect x="630" y="44" width="240" height="86" fill="#ffffff" stroke="#e6e2d8"/>
+      <rect x="668" y="70" width="164" height="34" rx="6" fill="#ffffff" stroke="#0c831f" stroke-width="1.5"/>
+      <text x="750" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#0c831f">ADD</text>
+      <text x="630" y="154" font-family="Caveat, cursive" font-size="26" fill="#0a8754">≈ 4.9:1 — passes AA</text>
+      <text x="630" y="178" font-family="Newsreader, serif" font-size="13" fill="#3b4356">Which is why the action is green,</text>
+      <text x="630" y="198" font-family="Newsreader, serif" font-size="13" fill="#3b4356">not the brand colour.</text>
+
+      <text x="30" y="234" font-family="Caveat, cursive" font-size="24" fill="#2f5fa8">the brand can own a surface. it can never own a foreground.</text>
+    </svg>
+    <figcaption>Ratios computed from sampled hexes using the standard relative-luminance formula. Sampled by eye, so indicative — but the direction of the finding is robust for any yellow in this region.</figcaption>
+  </figure>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:22%">Check</th><th style="width:14%">Result</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><b>Header text on brand yellow</b></td><td style="color:var(--pen-green);font-weight:600">Pass</td><td>Near-black on yellow, roughly 13:1. Comfortably clears AAA. The correct use of this hue.</td></tr>
+      <tr><td><b>Brand yellow as text</b></td><td style="color:var(--pen-green);font-weight:600">Correctly avoided</td><td>Around 1.5:1 on white. The app does not do this anywhere I could see — which is a discipline many yellow-branded products fail.</td></tr>
+      <tr><td><b>ADD control, green on white</b></td><td style="color:var(--pen-green);font-weight:600">Pass AA</td><td>Roughly 4.9:1. Clears the 4.5:1 normal-text threshold; does not clear AAA at 7:1.</td></tr>
+      <tr><td><b>ADD control tap target</b></td><td style="color:var(--pen-red);font-weight:600">Fail</td><td>Approximately 62 × 26 px against 44 px (iOS) and 48 dp (Android) minimums. The most-tapped control in the app is roughly half the recommended height. This is the sheet's clearest accessibility finding.</td></tr>
+      <tr><td><b>Muted meta text</b></td><td style="color:var(--pen-red);font-weight:600">Marginal</td><td>Grey around <code>#7E808C</code> on white sits near the 4.5:1 line and is used at 8.5–9.5px for pack size and unit info. Small size plus borderline contrast is the most common real-world accessibility failure in dense commerce UIs.</td></tr>
+      <tr><td><b>Dynamic type</b></td><td style="color:var(--pen-blue);font-weight:600">Structurally constrained</td><td>Three-column grids with fixed tile heights have very little room to scale. Large accessibility text sizes will clip or truncate product names well before they break the layout — a density trade-off, not an oversight.</td></tr>
+      <tr><td><b>Screen reader experience</b></td><td style="color:var(--pen-blue);font-weight:600">Not assessable here</td><td>Requires testing on the live app, not from reconstructions. Flag as an open question rather than guessing — the honest answer in an audit is often "we did not test this."</td></tr>
+      <tr><td><b>Colour as sole signal</b></td><td style="color:var(--pen-green);font-weight:600">Mostly avoided</td><td>Out-of-stock uses opacity plus an explicit label, not colour alone. Stepper state changes shape as well as fill. Good practice.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card">
+    <h4>The unresolved tension, stated plainly</h4>
+    <p>Enlarging the ADD control to a compliant 48px would cost roughly one product row per viewport. In a basket-building app, products-per-viewport correlates directly with basket size, which correlates with the AOV number the whole business is measured on. So the accessibility fix has a revenue price tag attached, and it is not a small one.</p>
+    <p style="margin-top:10px">Do not resolve this for students. <span class="hl">Make them argue it.</span> The interesting answers are the ones that refuse the binary — expanding the tappable area beyond the visible pill using invisible padding, for instance, which buys compliance without costing a single pixel of layout. That solution exists, and finding it is a better exam answer than picking a side.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Audit three — thumb zone and density</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">13 / where the hand actually reaches</span>
+  <h2>Frequency of use should decide vertical position. Here, mostly, it does.</h2>
+  <p class="lead">On a 6.5-inch device held one-handed, the reachable arc is a curve — comfortable at the bottom centre, straining at the top corners. Map controls against it and the layout logic becomes obvious.</p>
+
+  <figure style="margin-top:24px">
+    <svg viewBox="0 0 900 380" role="img" aria-label="Thumb reach zones mapped against the app's control positions">
+      <rect x="60" y="30" width="200" height="330" rx="26" fill="#fff" stroke="#23272f" stroke-width="3"/>
+      <path d="M62,215 Q160,120 258,215 L258,357 Q160,357 62,357 Z" fill="#e4efe6"/>
+      <path d="M62,150 Q160,66 258,150 L258,215 Q160,120 62,215 Z" fill="#fdf3d9"/>
+      <path d="M62,33 L258,33 L258,150 Q160,66 62,150 Z" fill="#fbe4e0"/>
+      <text x="160" y="70" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#c0392b" letter-spacing="1">HARD REACH</text>
+      <text x="160" y="180" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#8a5a00" letter-spacing="1">STRETCH</text>
+      <text x="160" y="300" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" fill="#0a6b40" letter-spacing="1">EASY</text>
+
+      <g font-family="Newsreader, serif" font-size="13.5" fill="#1b2233">
+        <text x="300" y="56" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700">Hard reach — top of screen</text>
+        <text x="300" y="82">ETA badge · address · search entry</text>
+        <text x="300" y="104" fill="#5a6377">Read constantly, tapped rarely. Correct placement:</text>
+        <text x="300" y="124" fill="#5a6377">information wants to be high, actions want to be low.</text>
+
+        <text x="300" y="172" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700">Stretch — mid screen</text>
+        <text x="300" y="198">Category tiles · product grid · ADD controls</text>
+        <text x="300" y="220" fill="#5a6377">The genuine compromise. ADD is the highest-frequency</text>
+        <text x="300" y="240" fill="#5a6377">tap in the app and it sits mid-screen, because a grid</text>
+        <text x="300" y="260" fill="#5a6377">has to start somewhere and scroll brings each row</text>
+        <text x="300" y="280" fill="#5a6377">through the easy zone in turn.</text>
+
+        <text x="300" y="326" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700">Easy — bottom of screen</text>
+        <text x="300" y="352">Cart bar · tab bar · primary CTA on every screen</text>
+      </g>
+      <text x="60" y="378" font-family="Caveat, cursive" font-size="20" fill="#2f5fa8">scroll is what rescues the mid-screen grid.</text>
+    </svg>
+    <figcaption>The reach arc is approximate and varies by hand size and grip; treat it as a reasoning tool rather than a measurement.</figcaption>
+  </figure>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:24%">Control</th><th style="width:14%">Zone</th><th style="width:16%">Frequency</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>ETA + address</td><td>Hard reach</td><td>Read every session, tapped rarely</td><td style="color:var(--pen-green)">Correct — information, not action</td></tr>
+      <tr><td>Search entry</td><td>Hard reach</td><td>Moderate</td><td style="color:var(--pen-blue)">Debatable. Justified by <b>Jakob's Law</b>: search lives at the top in every app anyone has ever used, and violating that convention costs more than the reach saves.</td></tr>
+      <tr><td>Category tiles</td><td>Stretch</td><td>Once or twice per session</td><td style="color:var(--pen-green)">Acceptable — low frequency</td></tr>
+      <tr><td>ADD control</td><td>Stretch (rotating through easy on scroll)</td><td style="font-weight:600">Highest in the app</td><td style="color:var(--pen-blue)">The real compromise. Scroll mitigates it; nothing eliminates it. This is what grid density costs.</td></tr>
+      <tr><td>Cart bar</td><td>Easy</td><td>Every session, decisive</td><td style="color:var(--pen-green)">Correct, and unsurprising — it is also the revenue-critical tap</td></tr>
+      <tr><td>Primary CTA (all screens)</td><td>Easy</td><td>Once per screen, always decisive</td><td style="color:var(--pen-green)">Consistent bottom-anchoring across every screen in the flow</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Move search to a bottom tab</td><td>Reach improves genuinely. You have also broken the single most universal convention in mobile commerce, and users will look at the top of the screen anyway. Jakob's Law usually beats ergonomics.</td></tr>
+        <tr><td>Move ADD controls to the bottom edge of each tile</td><td>Marginally better reach, and it collides with the cart bar on the last visible row — the highest-frequency control now overlaps the highest-value one.</td></tr>
+        <tr><td>Make the cart bar dismissible</td><td>Reclaims ~70px of density. Also removes the only cart-recovery mechanism in a session measured in minutes.</td></tr>
+        <tr><td>Two-column grid to bring tiles into easy reach</td><td>Reach and tap targets both improve. Products per viewport drops by a third, and with it basket size. The whole audit collapses into this one trade-off, repeatedly.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Cross-cut — the promise, traced</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">14 / from warehouse to pixel, and back</span>
+  <h2>Follow one number through the whole app and watch how much of the interface exists to defend it</h2>
+  <p class="lead">This is the closing argument. Not "the app is fast" — but that a startling proportion of the design decisions on every screen you have just read are not there to sell you anything. They are there to protect a number.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:20%">Screen</th><th style="width:33%">What it does about the promise</th><th>Sell, inform, or defend?</th></tr></thead>
+    <tbody>
+      <tr><td>Location gate</td><td>Forces a precise pin, because store assignment at 1–2 km resolution is what makes any ETA computable at all</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Home header</td><td>States the live number in the largest type on the screen</td><td style="color:var(--pen-blue);font-weight:600">Inform — and it is also the pitch</td></tr>
+      <tr><td>Category rails</td><td>Constrained to what the local store stocks, so nothing shown can blow the estimate</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Search zero-state</td><td>Explains absence as local and temporary rather than admitting the catalogue is smaller than advertised</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Product grid</td><td>Dense, fast to tap, engineered so a basket can be built in under two minutes</td><td style="color:var(--pen-green);font-weight:600">Sell</td></tr>
+      <tr><td>Sold-out tiles</td><td>Dimmed rather than removed, because reflowing the grid would break the muscle memory that makes fast adding possible</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Cart ETA strip</td><td>Restates the promise at the exact moment the total is about to appear</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Fee block</td><td>Discloses the cost of the speed, at the last possible moment</td><td style="color:var(--pen-green);font-weight:600">Sell</td></tr>
+      <tr><td>Payment</td><td>UPI-first, because settlement latency delays dispatch</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Tracking map</td><td>Makes the wait observable so eleven minutes feels shorter than eleven minutes</td><td style="color:var(--pen-red);font-weight:600">Defend</td></tr>
+      <tr><td>Add-more window</td><td>Bounded by the picker finishing — the constraint sold back as a courtesy</td><td style="color:var(--pen-green);font-weight:600">Sell</td></tr>
+      <tr><td>Late-order state</td><td>Keeps counting past the estimate instead of hiding it</td><td style="color:var(--pen-blue);font-weight:600">Inform</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>Count them</h4>
+    <p>Seven of twelve are defending. Three are selling. Two are informing. <span class="hl">An interface built to sell groceries turns out, on inspection, to be mostly an interface built to keep one number true.</span></p>
+    <p style="margin-top:12px">And then in January 2026 the number was withdrawn from the advertising — while the operation that produces it continued unchanged. So the app now defends a promise it is no longer allowed to make. The in-app estimate persists because an <i>estimate</i> is a different legal object from a <i>claim</i>: one is computed per order and can be missed, the other is advertised to everyone and binds you when it is.</p>
+    <p style="margin-top:12px"><b>The strategic question to leave a class on:</b> if the number can no longer be advertised, what is the positioning? Reliability rather than raw speed? Assortment breadth — the new tagline leads with 30,000+ products, not with minutes? Watch which one the interface starts foregrounding over the next few quarters. The header is where the answer will appear first, and it will appear there before it appears in any press release.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Revision sheet</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">15 / the whole teardown, one table</span>
+  <h2>Every screen, three lenses</h2>
+  <p class="lead">The page to photograph before a viva.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:15%">Screen</th><th style="width:26%">Beginner felt</th><th style="width:27%">Academic named</th><th>Professional built</th></tr></thead>
+    <tbody>
+      <tr><td><b>Location gate</b></td><td>"Why can't I just look?"</td><td>Interface interference (near-miss); forced action, justified</td><td>Precision pin is a routing key for 1–2 km store assignment</td></tr>
+      <tr><td><b>Home screen</b></td><td>Eye lands on the ETA number first, every time</td><td>Hick's Law by chunking; contrast physics dictating layout</td><td>ETA survived as a computed estimate after the advertised claim was withdrawn</td></tr>
+      <tr><td><b>Search zero-state</b></td><td>"It's the shop that's small, not my search"</td><td>Error recovery — credible only because substitutes are in stock</td><td>Failed searches are per-store demand signals</td></tr>
+      <tr><td><b>Product grid / ADD</b></td><td>Stops reading the button after two taps</td><td>Fitts's Law via position consistency; density inverts emphasis</td><td>Sold-out tiles kept to preserve layout stability and muscle memory</td></tr>
+      <tr><td><b>PDP</b></td><td>"I didn't mean to open this"</td><td>Tesler's Law — complexity relocated, not removed</td><td>Half the page is mandatory disclosure; the template exists for electronics</td></tr>
+      <tr><td><b>Cart</b></td><td>"I didn't agree to this number"</td><td>Drip pricing in structure; loss-framed threshold nudge</td><td>Unbundled fees are independently tunable margin levers</td></tr>
+      <tr><td><b>Payment</b></td><td>"I don't remember choosing anything"</td><td>Choice architecture — defensible only because the default is the user's own</td><td>UPI settlement latency is an input to dispatch timing</td></tr>
+      <tr><td><b>Tracking</b></td><td>Can't look away from a map that changes nothing</td><td>Zeigarnik effect; countdown beats timestamp</td><td>Add-more window is a warehouse cutoff sold as a courtesy</td></tr>
+      <tr><td><b>Rating / tip</b></td><td>Relief, then a small ask</td><td>Peak–end; adjacent to basket sneaking and confirm shaming</td><td>Read against reported rider payout structure</td></tr>
+      <tr><td><b>Failure states</b></td><td>Rarely seen, disproportionately remembered</td><td>Visibility of system status; graceful degradation</td><td>Inventory sync latency; store-closed state has carried a labour dispute</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">The exercise</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">16 / rebuild, don't redesign</span>
+  <h2>The assignment, and how to mark it</h2>
+  <p class="lead">Same method as Sheets 02 and 03, with the lens declaration now mandatory and a fourth step that most students will find genuinely hard.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <div class="tw">
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:18%">Step</th><th style="width:38%">Do</th><th>Produces</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Capture</b></td><td>One screen from any quick-commerce app on your own phone. Not the home screen — pick a screen where a decision happens. The cart is the richest.</td><td>A constrained target with a real decision in it.</td></tr>
+        <tr><td><b>2 · Feel it</b></td><td>Before any analysis, write your raw reaction in one sentence, in your own words. Do this first or it is contaminated.</td><td>An honest beginner baseline.</td></tr>
+        <tr><td><b>3 · Name it</b></td><td>Find the citable principle behind that reaction, or a named CCPA pattern. If nothing fits, write "no principle fits — here is what I think is happening instead."</td><td>Vocabulary that transfers to the next screen.</td></tr>
+        <tr><td><b>4 · Follow the metric</b></td><td>What number is this screen instrumented to move? What did it cost to build? What upstream constraint made this the answer?</td><td>The step that separates analysis from opinion.</td></tr>
+        <tr><td><b>5 · Rebuild</b></td><td>Reconstruct the screen in HTML/CSS from a written table of sampled colours and estimated sizes. Never by tracing.</td><td>Every gap in understanding, exposed.</td></tr>
+        <tr><td><b>6 · Break it</b></td><td>Change one token. Screenshot the damage. State which lens notices the break first, and why.</td><td>Proof the system was understood, not described.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <h3>Marking rubric</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th style="width:13%">Band</th><th style="width:26%">Looks like</th><th>The tell</th></tr></thead>
+    <tbody>
+      <tr><td><b>Fail</b></td><td>A prettier redesign with no annotations</td><td>Words like "cleaner", "more modern", "better UX". No mechanism anywhere. They redesigned the surface without reading the system.</td></tr>
+      <tr><td><b>Pass</b></td><td>Accurate rebuild, beginner and academic notes present</td><td>Correctly names two or three principles. Every note is about the user; none is about the business.</td></tr>
+      <tr><td><b>Good</b></td><td>All three lenses, with at least one real professional note</td><td>Connects one visible element to a metric or an ops constraint — and does it without inventing internal numbers.</td></tr>
+      <tr><td><b>Distinction</b></td><td>Step 6 done properly</td><td>Identifies a change that looks harmless and traces a non-obvious downstream failure. "Two-column grid improves accessibility and costs a third of basket size" is a distinction answer.</td></tr>
+      <tr><td><b>Top of class</b></td><td>Finds the trade-off with no clean answer, and refuses to resolve it</td><td>Names a tension where user interest and business interest genuinely conflict, argues both sides honestly, and proposes a third option that dissolves the binary. The invisible-tap-target fix in the accessibility audit is the model.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card">
+    <h4>The one rule to state before the assignment, not after</h4>
+    <p>Rebuilding an interface <b>for study</b> is legitimate and is how designers have always learned. <span class="hl">Shipping a rebuilt interface, or presenting one as your own product design, is not.</span> Draw that line explicitly at the start. Also require that no logos or brand marks appear in submissions — students should reconstruct the system, never the trademark.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Caveats</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">17 / what this sheet is and is not</span>
+  <h2>Say these out loud before teaching from it</h2>
+
+  <ul class="nl">
+    <li>Every screen here is a <b>reconstruction built from observation</b> in my own HTML and CSS. No screenshots, no scraped assets, no logo or wordmark. Colours were sampled by eye and are close, not exact. A student who measures a real value and finds it differs has done the exercise correctly.</li>
+    <li>Contrast ratios were computed from those sampled hexes using the standard relative-luminance formula. The <i>direction</i> of every finding is robust; the second decimal place is not. Re-measure against live values before quoting a number in a deliverable.</li>
+    <li>Claims marked <span class="grade r">REPORTED</span> come from public reporting current at the time of writing. Quick commerce changes fast — fee structures, taglines, category sets and store counts all move quarter to quarter. Re-verify before teaching a specific figure.</li>
+    <li>Claims marked <span class="grade i">INFERRED</span> are my professional read of the mechanism based on how this category of system is generally built. They are <b>not</b> leaked internals and should never be presented as confirmed company specifics. Where I could not verify something — screen reader behaviour is the clearest example — the honest answer in the audit is "not assessed," and that is what it says.</li>
+    <li>The dark-pattern verdicts are a teaching exercise applied to an interface as reconstructed and described here. They are not a legal finding, not an audit of the live product, and not a statement about any company's compliance position.</li>
+    <li>Where a design choice has both a defensible business reason and a real user cost, this sheet says both and leaves the tension open. That is deliberate. <span class="hl">A teardown that resolves every tension has stopped being an analysis and started being an argument.</span></li>
+  </ul>
+
+  <div class="card tilt" style="margin-top:26px">
+    <div class="tape"></div>
+    <h4>Where this sits in the series</h4>
+    <p>Sheet 03 was ten products, three notes each — breadth, to install the method. This is one product, fifteen screens and three audits — depth, to show what the method yields when you refuse to stop at the first interesting observation. <span class="hl">The method is the transferable thing.</span> Blinkit is just the specimen that happened to be on the table in the year its central claim was taken away from it.</p>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website 103 — Usability Heuristics: The Ten-Question Cheat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3; --grid:#e2e6ee; --ink:#1b2233; --pencil:#7d879c;
+  --pen-red:#c0392b; --pen-blue:#2f5fa8; --pen-green:#0a8754;
+  --marker:#ffe27a; --rule:#d8dbe3;
+  /* demo-interface tokens (KOSA, carried over from sheet 00) */
+  --u-ink:#1f1f1f; --u-mute:#6e6e6e; --u-line:#e6e3dd; --u-soft:#f6f4f0;
+  --u-brand:#b5562e; --u-ok:#1a7f4b; --u-bad:#c8102e; --u-warn:#a97a12;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 130px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:74px 0 26px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:20px}
+.cover h1{font-size:clamp(36px,7vw,76px);font-weight:800;letter-spacing:-.032em;line-height:.99;max-width:18ch}
+.cover .deck{max-width:62ch;font-size:19px;color:#3b4356;margin-top:20px}
+.chapter{margin-top:98px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.026em;line-height:1.06;max-width:26ch}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:68ch} p.lead{font-size:18.5px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:22px 25px;margin:22px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)} .card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:32px;width:76px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+.part-break{margin:112px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:74ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:64ch}
+figure{margin:24px 0 0}
+svg{max-width:100%;height:auto;display:block}
+ul.nl{list-style:none;padding:0;margin:14px 0;max-width:70ch}
+ul.nl li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.nl li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+ul.x li::before{content:"✕";font-size:15px}
+ul.tick li::before{content:"✓";font-size:15px;color:var(--pen-green)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:16px 0}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+.codeblock{background:#161821;color:#d7dae3;border-radius:7px;padding:15px 17px;font-family:"Space Mono",monospace;font-size:12.5px;line-height:1.68;overflow-x:auto;margin:16px 0}
+.codeblock code{background:none;padding:0;font-size:1em}
+.codeblock .tag{color:#7fc8ff}.codeblock .attr{color:#f0b86e}.codeblock .str{color:#9fdc8f}.codeblock .cmt{color:#7d879c}.codeblock .prop{color:#c8a0ff}
+
+/* ---- browser mockup ---- */
+.browser{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff;margin-top:22px}
+.chrome{height:30px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
+.dot{width:8px;height:8px;border-radius:50%}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:18px;font-family:"Space Mono",monospace;font-size:10px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.bwindow{position:relative;overflow:hidden}
+
+/* ---- markers + margin notes ---- */
+.mk{position:absolute;z-index:20;width:25px;height:25px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+.mk.g{background:var(--pen-green);box-shadow:0 2px 8px rgba(10,135,84,.4)}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 30px;margin-top:26px}
+@media (max-width:820px){.notes-grid{grid-template-columns:1fr}}
+.note{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;margin-bottom:6px}
+.note .n{width:24px;height:24px;display:grid;place-items:center;margin-top:2px;font-family:"Caveat",cursive;font-size:17px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg)}
+.note.b .n{background:var(--pen-blue)} .note.g .n{background:var(--pen-green)}
+.note .body{font-size:15.5px;line-height:1.5}
+.note .body .say{display:block;font-family:"Caveat",cursive;font-size:19px;color:var(--pen-red);margin-top:3px;line-height:1.3}
+.note.b .body .say{color:var(--pen-blue)} .note.g .body .say{color:var(--pen-green)}
+
+/* ---- heuristic tag ---- */
+.hx{font-family:"Space Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;background:#1b2233;color:#fff;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.hx.r{background:var(--pen-red)}.hx.b{background:var(--pen-blue)}.hx.g{background:var(--pen-green)}
+
+/* ---- demo interface (KOSA) ---- */
+.u{font-family:"Inter",system-ui,sans-serif;color:var(--u-ink);background:#fff;font-size:13px}
+.u-nav{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--u-line)}
+.u-logo{font-weight:800;font-size:16px;letter-spacing:.02em}
+.u-links{display:flex;gap:16px;font-size:11.5px;color:var(--u-mute)}
+.u-ic{display:flex;gap:13px;font-size:12px;color:var(--u-mute)}
+
+/* A/B split */
+.ab{display:grid;grid-template-columns:1fr 1fr}
+.ab>div{padding:0}
+.ab .pane{border-right:1px solid var(--u-line);min-height:100%}
+.ab .pane:last-child{border-right:0}
+.lbl{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.lbl.bad{background:#fdeee3;color:var(--pen-red);border-bottom:1px solid #f0d8cc}
+.lbl.good{background:#e9f2ec;color:var(--pen-green);border-bottom:1px solid #cfe4d7}
+.pad{padding:16px 18px 20px}
+@media (max-width:760px){.ab{grid-template-columns:1fr}.ab .pane{border-right:0;border-bottom:1px solid var(--u-line)}
+  /* stacked panes make pixel-anchored markers point at the wrong panel — the numbered notes below carry the same information */
+  .bwindow .mk{display:none}}
+
+/* status / tracker */
+.u-h{font-size:14px;font-weight:700;margin:0 0 3px}
+.u-sub{font-size:11px;color:var(--u-mute);margin-bottom:12px}
+.u-spin{border:1px solid var(--u-line);border-radius:8px;padding:26px;text-align:center;color:var(--u-mute);font-size:12px;background:var(--u-soft)}
+.u-spin .ring{width:26px;height:26px;border-radius:50%;border:3px solid #ddd8cf;border-top-color:var(--u-mute);margin:0 auto 10px}
+.u-step{display:flex;gap:11px;margin-bottom:0}
+.u-step .rail{display:flex;flex-direction:column;align-items:center;width:16px}
+.u-step .bead{width:11px;height:11px;border-radius:50%;background:var(--u-ok);flex-shrink:0}
+.u-step .bead.now{background:#fff;border:3px solid var(--u-brand);width:13px;height:13px}
+.u-step .bead.next{background:#fff;border:2px solid #d8d3ca}
+.u-step .wire{width:2px;flex:1;background:#dcd7ce;min-height:22px}
+.u-step .wire.done{background:var(--u-ok)}
+.u-step .txt{padding-bottom:14px}
+.u-step .txt b{font-size:12px;display:block}
+.u-step .txt span{font-size:10.5px;color:var(--u-mute);font-variant-numeric:tabular-nums}
+.u-eta{margin-top:6px;border:1px dashed #cfc9be;padding:8px 11px;font-size:11px;border-radius:6px;background:#fffdf6}
+
+/* generic bits */
+.u-btn{display:inline-block;background:var(--u-ink);color:#fff;font-size:12px;font-weight:600;padding:9px 16px;border-radius:6px;text-align:center}
+.u-btn.ghost{background:#fff;color:var(--u-ink);border:1.5px solid var(--u-ink)}
+.u-btn.wide{display:block}
+.u-btn.quiet{background:none;color:var(--u-mute);font-weight:500;padding:9px 0;border:0}
+.u-row{display:flex;gap:9px;align-items:center}
+.u-note{font-size:10.5px;color:var(--u-mute);margin-top:7px}
+.u-field{margin-bottom:11px}
+.u-field label{display:block;font-size:10.5px;font-weight:600;color:#4a4a4a;margin-bottom:4px}
+.u-field .in{border:1px solid var(--u-line);border-radius:5px;padding:8px 10px;font-size:12px;color:#3a3a3a;background:#fff}
+.u-field .in.err{border-color:var(--u-bad);background:#fdf4f5}
+.u-field .in.ok{border-color:#c9e2d3}
+.u-field .in.ghost{color:#b3aea6}
+.u-field .hint{font-size:10px;color:var(--u-mute);margin-top:4px}
+.u-field .msg{font-size:10.5px;color:var(--u-bad);margin-top:4px;font-weight:600}
+.u-field .msgok{font-size:10.5px;color:var(--u-ok);margin-top:4px;font-weight:600}
+.u-err{border-radius:7px;padding:12px 14px;font-size:11.5px;line-height:1.55}
+.u-err.hard{background:#161821;color:#e8b4b8;font-family:"Space Mono",monospace;text-align:center;padding:30px 14px}
+.u-err.soft{background:#fdf4f5;border:1px solid #f0cdd2;color:#3a2a2c}
+.u-err.soft b{display:block;font-size:13px;margin-bottom:5px;color:var(--u-bad)}
+.u-toast{background:#1f1f1f;color:#fff;border-radius:7px;padding:10px 13px;font-size:11.5px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.u-toast u{color:#8ecfff;text-decoration:none;font-weight:700;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em}
+.u-modal{border:1px solid var(--u-line);border-radius:9px;padding:16px;box-shadow:0 12px 30px -18px rgba(0,0,0,.5);background:#fff}
+.u-modal .t{font-size:13.5px;font-weight:700;margin-bottom:5px}
+.u-modal .d{font-size:11.5px;color:var(--u-mute);line-height:1.5}
+.u-pill{border:1px solid var(--u-line);border-radius:15px;padding:5px 11px;font-size:11px;display:inline-block}
+.u-pill.on{background:var(--u-ink);color:#fff;border-color:var(--u-ink)}
+.u-sum div{display:flex;justify-content:space-between;font-size:11.5px;padding:5px 0;font-variant-numeric:tabular-nums}
+.u-sum div.tot{border-top:1px solid var(--u-line);margin-top:5px;padding-top:8px;font-weight:700;font-size:13px}
+.u-sum div.hid{color:var(--u-bad)}
+.u-pay{border:1px solid var(--u-line);border-radius:9px;padding:14px;background:var(--u-soft)}
+.u-pay .who{font-size:14px;font-weight:700}
+.u-pay .vpa{font-family:"Space Mono",monospace;font-size:10.5px;color:var(--u-mute);margin-top:2px}
+.u-pay .amt{font-size:22px;font-weight:800;margin-top:9px;font-variant-numeric:tabular-nums}
+.u-card{border:1px solid var(--u-line);border-radius:8px;padding:11px}
+.u-card .im{height:64px;border-radius:6px;background:linear-gradient(140deg,#e3cba6,#c98f5c 60%,#a86138);margin-bottom:8px}
+.u-card .nm{font-size:11.5px;font-weight:600;line-height:1.3}
+.u-card .pr{font-size:11.5px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+.u-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.u-clutter{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.u-clutter span{font-size:8.5px;border:1px solid #e3ded4;background:#fffaf0;padding:2px 5px;border-radius:3px;color:#8a7a68}
+.u-strip{background:var(--u-brand);color:#fff;font-size:10px;text-align:center;padding:5px;font-weight:600}
+.u-timer{background:#fff3f3;color:var(--u-bad);font-size:10px;text-align:center;padding:5px;font-weight:700;font-family:"Space Mono",monospace}
+.u-side{border-left:1px solid var(--u-line);padding-left:14px}
+.u-mini{font-size:10.5px;color:var(--u-mute);line-height:1.6}
+.u-kbd{font-family:"Space Mono",monospace;font-size:9.5px;border:1px solid #d8d3ca;border-bottom-width:2px;border-radius:4px;padding:1px 5px;background:#fff}
+
+/* scoring sheet */
+.score td{font-size:13.5px}
+.sev{font-family:"Space Mono",monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;color:#fff}
+.sev0{background:#9aa3b4}.sev1{background:#7d879c}.sev2{background:var(--pen-blue)}.sev3{background:#d07d1e}.sev4{background:var(--pen-red)}
+
+@media print{
+  body{background:#fff;background-image:none;font-size:11pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:28px}
+  .part-break{break-before:page;margin-top:0}
+  .browser{box-shadow:none;break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · website 103 · sheet b</div>
+  <h1>Ten questions that find what's broken</h1>
+  <p class="deck">Sheet 00 gave you the skeleton. Sheet A gave you spacing and hierarchy. Both taught you to <em>build</em>. This one teaches you to <em>judge</em> — including your own page, which is much harder, because you already know where everything is. Ten questions, written in 1994, that still work on interfaces nobody had imagined then.</p>
+  <p style="margin-top:20px"><span class="stamp">Nielsen's 10 · use them on your own page first</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>Where the ten came from, and why the pedigree matters</h4>
+  <p style="max-width:66ch">Jakob Nielsen and Rolf Molich published the method in 1990. Four years later Nielsen cut the list to ten by <strong>factor-analysing 249 documented usability problems</strong> and keeping the principles with the most explanatory power over that corpus. That is not a list of things an expert felt strongly about. It is a compression: given 249 real ways interfaces had failed real people, these ten categories accounted for the most variance.</p>
+  <p style="max-width:66ch;margin-top:12px">This is why they've outlived the interfaces they were written for. <span class="hl">They describe mismatches between humans and machines, not features of any screen.</span> "Visibility of system status" applies identically to a 1994 dialog box, a Blinkit rider moving on a map, and an AI assistant streaming a half-finished sentence at you.</p>
+  <p class="footnote" style="margin-top:12px">The ten names below are Nielsen's. Everything else in this notebook — the screens, the failures, the arguments, the Indian examples — is mine, rebuilt for teaching. The demo brand <strong>KOSA</strong> is the same fictional D2C store from sheet 00, so we can point at exact pixels without pretending we audited someone's live checkout this morning.</p>
+</div>
+
+
+<!-- ============ PART ONE ============ -->
+<div class="part-break">Part one — the sheet itself</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">01 / the ten</span>
+  <h2>A cheat sheet is only useful if it's phrased as a question</h2>
+  <p class="lead">Nielsen's names are labels for categories. Labels don't find bugs. <strong>Questions find bugs.</strong> So here is the sheet twice — his name on the left, the sentence you actually say out loud while staring at a screen in the middle.</p>
+
+  <table>
+    <thead><tr><th style="width:4%">#</th><th style="width:22%">Nielsen's name</th><th style="width:37%">The question you actually ask</th><th>What the failure looks like</th></tr></thead>
+    <tbody>
+      <tr><td><b>1</b></td><td><b>Visibility of system status</b></td><td>Right now, does the screen tell me what it's doing — and roughly how long it'll take?</td><td>A spinner with no text. A payment page that goes blank. No confirmation after you click.</td></tr>
+      <tr><td><b>2</b></td><td><b>Match between the system and the real world</b></td><td>Are these the <em>user's</em> words, or my database's?</td><td>"Transaction failed: gateway error 502." "Invalid SKU." "WL 27."</td></tr>
+      <tr><td><b>3</b></td><td><b>User control and freedom</b></td><td>If I got here by mistake, how do I leave without damage?</td><td>A popup with no visible close. No undo. No back. A newsletter modal that reappears.</td></tr>
+      <tr><td><b>4</b></td><td><b>Consistency and standards</b></td><td>Does this behave like the same thing behaves everywhere else — including on <em>other</em> sites?</td><td>Cart icon on the left. One action called Remove, Delete and Trash on three screens.</td></tr>
+      <tr><td><b>5</b></td><td><b>Error prevention</b></td><td>Could I have made this mistake <em>impossible</em>, instead of catching it after?</td><td>A free-text pincode box. A one-click permanent delete with no confirm.</td></tr>
+      <tr><td><b>6</b></td><td><b>Recognition rather than recall</b></td><td>Am I asking someone to remember something the screen already knows?</td><td>Coupon code announced on the banner, then never shown again at the coupon field.</td></tr>
+      <tr><td><b>7</b></td><td><b>Flexibility and efficiency of use</b></td><td>Is there a fast path for the person doing this for the fiftieth time?</td><td>Retyping the same address every order. No saved cards. No search. No repeat-order.</td></tr>
+      <tr><td><b>8</b></td><td><b>Aesthetic and minimalist design</b></td><td>Is anything on this screen competing with the one thing that matters?</td><td>Three CTAs, a spin-the-wheel popup, a sticky WhatsApp button and a chat bubble, together.</td></tr>
+      <tr><td><b>9</b></td><td><b>Help users recognise, diagnose and recover from errors</b></td><td>Does the message say what happened, why, and what to do — with the fix attached?</td><td>"Something went wrong." "Error." A red border and no sentence.</td></tr>
+      <tr><td><b>10</b></td><td><b>Help and documentation</b></td><td>Can a stuck person find the answer <em>at the moment they're stuck</em>, without leaving the page?</td><td>Help hidden in the footer. A 40-question FAQ that doesn't cover the actual question.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h4>Why they're vague, and why that's the point</h4>
+    <p style="max-width:66ch">Students always ask for the specific version — "how many pixels", "which exact words". There isn't one, deliberately. A <em>heuristic</em> is a rule of thumb: broad enough to apply to a screen its author never saw, narrow enough to still be falsifiable on a given page. The moment you write "the cart icon must be 24px in the top right", the rule dies with the next interface generation.</p>
+    <p style="max-width:66ch;margin-top:12px">So the ten are not a spec. They're <span class="hl">a set of angles to look from</span>. The skill you're building is not memorising them — it's being able to look at your own checkout and say <em>"this fails 5 and 9, severity 3"</em> in a sentence your client can act on.</p>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">02 / the method</span>
+  <h2>Two passes, three evaluators, twenty minutes each</h2>
+  <p class="lead">A heuristic evaluation is a procedure, not a vibe. Run it wrong and you get ten opinions. Run it right and you get a ranked, actionable defect list before you've spent a rupee on users.</p>
+
+  <h3>The procedure</h3>
+  <ul class="nl">
+    <li><b>Pick one task, not "the site".</b> "Buy a 30ml serum, guest checkout, UPI." Heuristics evaluate a <em>path</em>. A site is not a path.</li>
+    <li><b>Pass one — flow.</b> Walk the task end to end, once, without stopping to write. You are learning the shape of the thing. Resist annotating.</li>
+    <li><b>Pass two — elements.</b> Walk it again slowly, screen by screen, running all ten questions against each screen. Write every finding, even ones you're unsure about.</li>
+    <li><b>Evaluate alone. Merge later.</b> This is the rule people break. If three of you discuss while evaluating, you converge, and you'll all miss the same things. Independence is where the coverage comes from.</li>
+    <li><b>Write findings in one sentence each:</b> <em>what you saw + which heuristic + severity + one suggested fix.</em> Anything longer is a report nobody reads.</li>
+    <li><b>Severity-rate after merging</b>, not while finding. Rating as you go makes you argue with yourself instead of looking.</li>
+  </ul>
+
+  <h3>Nielsen's severity scale — use it exactly as written</h3>
+  <table class="score">
+    <thead><tr><th style="width:12%">Rating</th><th style="width:30%">Means</th><th>Do what about it</th></tr></thead>
+    <tbody>
+      <tr><td><span class="sev sev0">0</span></td><td>Not a usability problem</td><td>Nothing. Keeping 0s in your sheet is honest — it shows you considered and rejected it.</td></tr>
+      <tr><td><span class="sev sev1">1</span></td><td>Cosmetic only</td><td>Fix if there's spare time before ship. Never blocks.</td></tr>
+      <tr><td><span class="sev sev2">2</span></td><td>Minor problem</td><td>Low priority. Batch these into a cleanup sprint.</td></tr>
+      <tr><td><span class="sev sev3">3</span></td><td>Major problem</td><td>High priority. Fix before launch.</td></tr>
+      <tr><td><span class="sev sev4">4</span></td><td>Usability catastrophe</td><td>Imperative. Ship date moves if this doesn't get fixed.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Severity is not "how ugly". It's a product of three things: <strong>how often</strong> it happens, <strong>how badly</strong> it hurts when it does, and <strong>how persistent</strong> it is — can the user learn their way past it, or do they hit it every single time? A tiny annoyance on the checkout button that 100% of buyers hit every order outranks a broken layout on a page nobody visits.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="Curve showing the proportion of usability problems found rising with the number of independent evaluators, flattening after about five, with a wide variance band">
+      <line x1="90" y1="330" x2="860" y2="330" stroke="#1b2233" stroke-width="1.6"/>
+      <line x1="90" y1="40" x2="90" y2="330" stroke="#1b2233" stroke-width="1.6"/>
+      <text x="90" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">1</text>
+      <text x="244" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">2</text>
+      <text x="398" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">3</text>
+      <text x="552" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">4</text>
+      <text x="706" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">5</text>
+      <text x="840" y="365" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">6+</text>
+      <text x="400" y="390" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" letter-spacing="2" fill="#7d879c">INDEPENDENT EVALUATORS</text>
+      <text x="78" y="46" text-anchor="end" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">100%</text>
+      <text x="78" y="127" text-anchor="end" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">75%</text>
+      <text x="78" y="214" text-anchor="end" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">50%</text>
+      <text x="78" y="272" text-anchor="end" font-family="Space Mono, monospace" font-size="10.5" fill="#7d879c">35%</text>
+      <line x1="90" y1="122" x2="860" y2="122" stroke="#d8dbe3" stroke-dasharray="3 4"/>
+      <line x1="90" y1="268" x2="860" y2="268" stroke="#d8dbe3" stroke-dasharray="3 4"/>
+
+      <path d="M90,268 C180,215 260,175 398,150 C520,130 640,120 860,108" fill="none" stroke="#2f5fa8" stroke-width="2.6"/>
+      <path d="M90,300 C190,250 280,215 398,192 C520,172 640,160 860,145" fill="none" stroke="#b9c1d1" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <path d="M90,232 C180,180 260,140 398,116 C520,98 640,88 860,76" fill="none" stroke="#b9c1d1" stroke-width="1.4" stroke-dasharray="5 4"/>
+
+      <circle cx="90" cy="268" r="5.5" fill="#c0392b"/>
+      <circle cx="706" cy="122" r="5.5" fill="#c0392b"/>
+      <text x="104" y="262" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#c0392b">one evaluator ≈ 35%</text>
+      <text x="600" y="105" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#c0392b">five ≈ 75%</text>
+
+      <text x="470" y="228" font-family="Caveat, cursive" font-size="24" fill="#2f5fa8">the solid line is the average.</text>
+      <text x="470" y="252" font-family="Caveat, cursive" font-size="24" fill="#2f5fa8">the dashed lines are what you</text>
+      <text x="470" y="276" font-family="Caveat, cursive" font-size="24" fill="#2f5fa8">actually get on any given tuesday.</text>
+
+      <text x="120" y="330" font-family="Space Mono, monospace" font-size="9.5" fill="#7d879c"></text>
+      <text x="742" y="308" font-family="Newsreader, serif" font-size="13" fill="#5a6377" font-style="italic">flat after five —</text>
+      <text x="742" y="325" font-family="Newsreader, serif" font-size="13" fill="#5a6377" font-style="italic">spend the money on users instead</text>
+    </svg>
+    <figcaption>Nielsen's own aggregate: a single evaluator catches roughly a third of the problems in an interface; five independent evaluators catch about three quarters. The curve flattens sharply after that — which is the entire argument for "three to five people, then stop."</figcaption>
+  </figure>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The honest version of that curve — grade the evidence, don't just quote it</h4>
+    <p style="max-width:68ch">That 35%/75% shape comes from a mathematical model Nielsen and Landauer fitted in 1993, averaged over their own case studies. It is a <strong>planning estimate, not a law of nature</strong>, and three findings should keep you humble about it:</p>
+    <table style="margin-top:14px">
+      <thead><tr><th style="width:26%">Finding</th><th>What it actually showed</th></tr></thead>
+      <tbody>
+        <tr><td><b>Faulkner, 2003</b><br>(user testing, not HE)</td><td>60 users tested; random sets of 5 drawn 100 times. The average set found 85% of known problems — but individual sets ranged from <b>99% down to 55%</b>. Ten users lifted the worst case to ~80%; twenty users to ~95%. The average was fine. The <em>variance</em> was the story.</td></tr>
+        <tr><td><b>Spool &amp; Schroeder, 2001;<br>Perfetti &amp; Landesman</b></td><td>On large, complex e-commerce sites, five users were nowhere near 85%. In one study roughly a third of the issues had surfaced after five users, and serious ones were still appearing at eighteen.</td></tr>
+        <tr><td><b>The evaluator effect</b><br>(Hertzum &amp; Jacobsen)</td><td>Across a set of published studies, any two evaluators inspecting the same interface with the same heuristics agreed on as little as 5% and at best about 65% of findings. Same screen, same ten rules, largely different lists.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:12px"><strong>What to teach from this:</strong> heuristic evaluation is a cheap, fast sweep that finds a lot of real problems and misses a lot of real problems. It tells you what looks broken. <span class="hl">It cannot tell you what users actually do, and it cannot tell you what any of it costs you in rupees.</span> It is the thing you run before you spend money on testing — never the thing you run instead.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART TWO ============ -->
+<div class="part-break">Part two — status and language</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">03 / heuristics 1 &amp; 2</span>
+  <h2>A spinner is a promise. Most spinners are lying.</h2>
+  <p class="lead">These two travel together because they fail together. Heuristic 1 says the screen must keep telling you what's happening. Heuristic 2 says it must do that in <em>your</em> language, not the server's. A page can satisfy the first and still fail the second — that's what an error code is: perfect visibility of a status nobody can read.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/orders/KO-48812</div></div>
+    <div class="bwindow u">
+      <div class="ab">
+        <div class="pane">
+          <div class="lbl bad"><span>Fails 1 and 2</span><span>✕</span></div>
+          <div class="pad">
+            <div class="u-h">Order KO-48812</div>
+            <div class="u-sub">Status</div>
+            <div class="u-spin"><div class="ring"></div>Processing…</div>
+            <div style="margin-top:14px" class="u-err hard">TXN_FAILED<br>gateway_err 502<br>ref: 9f21c0a</div>
+            <div class="u-note">Please try again or contact support.</div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="lbl good"><span>Passes 1 and 2</span><span>✓</span></div>
+          <div class="pad">
+            <div class="u-h">Order KO-48812 · 2 items</div>
+            <div class="u-sub">Placed today, 11:04 AM</div>
+            <div class="u-step"><div class="rail"><div class="bead"></div><div class="wire done"></div></div><div class="txt"><b>Order confirmed</b><span>Today, 11:04 AM</span></div></div>
+            <div class="u-step"><div class="rail"><div class="bead"></div><div class="wire done"></div></div><div class="txt"><b>Packed at Bhiwandi warehouse</b><span>Today, 4:20 PM</span></div></div>
+            <div class="u-step"><div class="rail"><div class="bead now"></div><div class="wire"></div></div><div class="txt"><b>Left Bhiwandi, moving to Dehradun</b><span>Yesterday's dispatches took 2 days</span></div></div>
+            <div class="u-step"><div class="rail"><div class="bead next"></div></div><div class="txt"><b>Out for delivery</b><span>Expected Fri 15 Aug</span></div></div>
+            <div class="u-eta"><b>Payment didn't go through on your first try.</b><br>Your bank didn't confirm it. <b>No money was taken</b> — if anything was debited it returns within 3 working days. We've kept this order open for 30 minutes.<br><span style="display:inline-block;margin-top:7px" class="u-btn">Pay with UPI instead</span></div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:96px;left:14px">1</span>
+      <span class="mk" style="top:184px;left:14px">2</span>
+      <span class="mk g" style="top:64px;left:52%">3</span>
+      <span class="mk g" style="top:150px;left:52%">4</span>
+      <span class="mk b" style="top:224px;left:52%">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">"Processing…" is <b>status without information</b>. It doesn't say what is being processed, whether it's progressing, or when it stops. A spinner that could plausibly run forever teaches people to reload — and reloading a payment page is how double-charges happen.<span class="say">an indeterminate spinner is the interface shrugging at you.</span></div></div>
+    <div class="note"><div class="n">2</div><div class="body">The error is <b>the server talking to its own logs</b>. "Gateway", "502" and a reference hash are real, useful facts — for an engineer. For a buyer holding a phone at 11pm, this reads as: <em>my money is gone and nobody will tell me anything.</em><span class="say">the words on screen belong to the reader, not the writer.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">Four states, each with a <b>timestamp and a place name</b>. Notice the current step is drawn differently from both the finished ones and the future one — three visual states, because there are genuinely three kinds of step.<span class="say">"where is it" is answered by naming a city, not a status code.</span></div></div>
+    <div class="note g"><div class="n">4</div><div class="body">The estimate <b>says where it came from</b> — "yesterday's dispatches took 2 days". A confident wrong ETA destroys more trust than an honest range. This is visibility of status extended to visibility of <em>uncertainty</em>.<span class="say">tell them how sure you are. it costs one line.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">The failure message answers the three things the user is actually asking, in order: <b>what happened, is my money safe, what do I do now</b> — and the "what do I do now" is a button, not a sentence. Same event as panel one. Completely different experience.<span class="say">every error message needs a verb the reader can press.</span></div></div>
+  </div>
+
+  <h3>Translating system language into human language</h3>
+  <p>This is a drill worth doing in class with real screenshots. The left column is what Indian interfaces genuinely say; the right column is the same fact, told to the person who has to act on it.</p>
+  <table>
+    <thead><tr><th style="width:34%">What the system says</th><th>What the user needed to hear</th></tr></thead>
+    <tbody>
+      <tr><td><code>WL 27 / RLWL</code> on a train booking</td><td>"You're 27th in the waiting list. On this train, waitlists this long cleared about 6 times out of 10 last month." The code is precise <em>and</em> unreadable — so show both.</td></tr>
+      <tr><td><code>In transit at hub</code></td><td>"Reached Dehradun. Out for delivery tomorrow morning."</td></tr>
+      <tr><td><code>Invalid input in field 3</code></td><td>"Pincode should be 6 digits — you've entered 5."</td></tr>
+      <tr><td><code>Collect request initiated</code></td><td>"Open your UPI app and approve the ₹1,199 request from KOSA. It expires in 5 minutes."</td></tr>
+      <tr><td><code>Out of stock</code></td><td>"Sold out in 30ml. The 50ml is available, or we'll SMS you when this is back — usually 2 weeks."</td></tr>
+      <tr><td><code>Session expired</code></td><td>"You were away a while, so we signed you out to keep your account safe. Your cart is saved."</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Notice what the good column keeps doing: it converts a <em>state</em> into a <em>consequence</em>. Nobody wants to know the state. They want to know what it means for them, and what they can do next.</p>
+
+  <div class="card">
+    <h4>The three time limits behind heuristic 1</h4>
+    <p style="max-width:66ch">Nielsen's response-time thresholds are the mechanism underneath "keep the user informed", and they haven't moved since the 1960s because they're properties of human attention, not of hardware:</p>
+    <table style="margin-top:12px">
+      <thead><tr><th style="width:16%">Delay</th><th style="width:30%">What it feels like</th><th>What the interface owes you</th></tr></thead>
+      <tbody>
+        <tr><td><b>0.1 s</b></td><td>Instant — the click caused it</td><td>Nothing. Just don't be slower.</td></tr>
+        <tr><td><b>1 s</b></td><td>Noticeable, but thought is unbroken</td><td>No indicator needed, but the transition shouldn't be jarring.</td></tr>
+        <tr><td><b>10 s</b></td><td>The edge of attention — people leave or switch tabs</td><td>A <em>determinate</em> indicator: percentage, step count, or "3 of 5". A spinner is not enough past this point.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:12px">Practical rule for the kind of connections your users actually have: anything you expect to take more than a second gets a state on screen; anything past ten seconds gets a progress indicator that <em>moves and can be read</em>. <span class="hl">If you can't measure progress, say what's happening in words and change the words as it goes.</span> "Checking stock" → "Reserving your item" → "Confirming with your bank" is three honest sentences and it beats every spinner on earth.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART THREE ============ -->
+<div class="part-break">Part three — exits and expectations</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">04 / heuristics 3 &amp; 4</span>
+  <h2>Undo beats "Are you sure?". Familiar beats clever.</h2>
+  <p class="lead">Heuristic 3 is about the exit: people wander into things by accident and need a way out that costs them nothing. Heuristic 4 is about expectations: the same word and the same icon should mean the same thing on your page as they do on every other page your user has ever opened.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/account/addresses</div></div>
+    <div class="bwindow u">
+      <div class="ab">
+        <div class="pane">
+          <div class="lbl bad"><span>Fails 3 and 4</span><span>✕</span></div>
+          <div class="pad">
+            <div class="u-modal" style="margin-bottom:14px">
+              <div class="t">🎁 Get 10% off your first order!</div>
+              <div class="d">Enter your email to unlock the code.</div>
+              <div class="u-field" style="margin-top:9px"><div class="in ghost">your@email.com</div></div>
+              <span class="u-btn wide">UNLOCK MY DISCOUNT</span>
+              <div class="u-note" style="text-align:center">No thanks, I don't like saving money</div>
+            </div>
+            <div class="u-modal">
+              <div class="t">Are you sure?</div>
+              <div class="d">This action cannot be undone.</div>
+              <div class="u-row" style="margin-top:11px"><span class="u-btn" style="flex:1;text-align:center">OK</span><span class="u-btn ghost" style="flex:1;text-align:center">Cancel</span></div>
+            </div>
+            <div class="u-note">Buttons on this flow, in order: <b>Trash</b> → <b>Delete</b> → <b>OK</b>.</div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="lbl good"><span>Passes 3 and 4</span><span>✓</span></div>
+          <div class="pad">
+            <div class="u-modal" style="margin-bottom:14px">
+              <div class="u-row" style="justify-content:space-between;align-items:flex-start"><div class="t">10% off your first order</div><span style="color:#9a9a9a;font-size:14px">✕</span></div>
+              <div class="d">Add your email and we'll send the code. One email a week, unsubscribe any time.</div>
+              <div class="u-field" style="margin-top:9px"><div class="in ghost">your@email.com</div></div>
+              <div class="u-row"><span class="u-btn" style="flex:1;text-align:center">Send me the code</span><span class="u-btn quiet" style="flex:1;text-align:center">Not now</span></div>
+            </div>
+            <div class="u-h">Saved addresses</div>
+            <div class="u-sub">2 saved</div>
+            <div class="u-card" style="margin-bottom:9px"><div class="u-row" style="justify-content:space-between"><div><b style="font-size:12px">Home</b><div class="u-mini">Rajpur Road, Dehradun 248001</div></div><span class="u-mini" style="font-weight:600">Remove</span></div></div>
+            <div class="u-toast">Address removed.<u>Undo</u></div>
+            <div class="u-note">Buttons on this flow, in order: <b>Remove</b> → <b>Remove</b> → <b>Remove</b>.</div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:36px;left:14px">1</span>
+      <span class="mk" style="top:186px;left:14px">2</span>
+      <span class="mk g" style="top:36px;left:52%">3</span>
+      <span class="mk g" style="top:236px;left:52%">4</span>
+      <span class="mk b" style="top:292px;left:52%">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">A popup with <b>no close control</b> and an escape line that insults you for declining. There are two exits: comply, or leave the site. That second one is the one people take.<span class="say">"no thanks, i don't like saving money" is a named offence in india — we get to that in chapter 09.</span></div></div>
+    <div class="note"><div class="n">2</div><div class="body"><b>"Are you sure?" is a speed bump, not a safety net.</b> People confirm reflexively — after the fortieth dialog, the click is muscle memory. And <em>OK</em> / <em>Cancel</em> describe nothing: at a glance you can't tell which one deletes.<span class="say">if the button doesn't name the action, the dialog is decoration.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">Two exits: the <b>✕</b> in the expected corner and a plain <b>"Not now"</b>. The offer is stated without theatre, and the cost of saying yes is disclosed <em>before</em> you say it. Also: it doesn't come back next visit.<span class="say">an exit the user can see is worth more than the extra 2% signups.</span></div></div>
+    <div class="note g"><div class="n">4</div><div class="body"><b>Undo instead of confirm.</b> The action happens immediately — no interruption for the 98% who meant it — and stays reversible for a few seconds for the 2% who didn't. You've moved the cost from the common case to the rare one.<span class="say">confirmations tax everyone. undo taxes only the mistake.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">One action, <b>one word, every screen</b>: Remove. The broken flow calls the same thing Trash, then Delete, then OK — three vocabularies for one idea, which forces the user to re-learn on every screen.<span class="say">a product's words are its signposting. pick one and never swap it.</span></div></div>
+  </div>
+
+  <h3>The two kinds of consistency — and which one wins</h3>
+  <table>
+    <thead><tr><th style="width:22%">Kind</th><th style="width:33%">What it means</th><th>Where students get it wrong</th></tr></thead>
+    <tbody>
+      <tr><td><b>Internal</b></td><td>Your own site agrees with itself: same button style, same word for the same action, same date format, same spacing scale.</td><td>Building each page separately. By page four, the primary button has three different paddings and two different greens.</td></tr>
+      <tr><td><b>External</b></td><td>Your site agrees with the rest of the internet: cart at top right, logo goes home, ✕ closes, hamburger opens navigation, back goes back.</td><td>Treating a convention as a chance to be original. Moving the cart to the left is not a design decision, it's a tax on every visitor.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h4>Jakob's Law, and why originality is expensive here</h4>
+    <p style="max-width:66ch">Nielsen's own one-liner: <span class="hl">users spend most of their time on <em>other</em> sites.</span> Every expectation your visitor arrives with was built somewhere else — on Amazon, on WhatsApp, on a UPI app. Your interface is being read through habits you didn't create and can't reset.</p>
+    <p style="max-width:66ch;margin-top:12px">So conventions are not a lack of imagination. They're free comprehension, and you get to spend your originality on the parts that actually differentiate you — the photography, the copy, the product itself. The layout of the cart icon is not where a D2C brand wins.</p>
+    <p class="footnote" style="margin-top:12px"><b>The India-specific one your students will miss:</b> number formatting. <code>₹1,19,900</code> is the Indian grouping; <code>₹119,900</code> is the Western one. Getting this wrong on a price makes an otherwise polished page feel subtly foreign — and it's a one-line fix with <code>toLocaleString('en-IN')</code>. Same for dates: <b>15/08/2026</b> reads as 15 August here and as nothing at all in the US. If a number can be misread, spell the month.</p>
+  </div>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>When you must confirm instead of offering undo</h4>
+    <p style="max-width:66ch">Undo is the default, but it needs the action to be reversible. Money that has left an account, an SMS that has been sent, a booking that released a seat back to the pool — none of these can be pulled back, so they get a real confirmation. When you write one, three rules:</p>
+    <ul class="nl tick" style="margin-top:10px">
+      <li><b>Name the consequence, not the action.</b> "Cancel this order? The ₹1,199 refund reaches your bank in 5–7 days" beats "Are you sure?"</li>
+      <li><b>Label the buttons with verbs.</b> "Cancel order" and "Keep order" — never OK/Cancel, which in a cancellation dialog is genuinely ambiguous in both directions.</li>
+      <li><b>Make the safe choice the easy one</b> — but don't hide the destructive one. Hiding it is a dark pattern; de-emphasising it is good design. The difference is whether a determined user can still find it in one look.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ============ PART FOUR ============ -->
+<div class="part-break">Part four — prevention and memory</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">05 / heuristics 5 &amp; 6</span>
+  <h2>The best error message is the one that was impossible to trigger</h2>
+  <p class="lead">Heuristic 5 says stop the mistake before it happens. Heuristic 6 says stop making people carry things in their head from one screen to the next. Together they're the two most profitable heuristics on a checkout page, because both of them are measured directly in abandoned carts.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/checkout</div></div>
+    <div class="bwindow u">
+      <div class="ab">
+        <div class="pane">
+          <div class="lbl bad"><span>Fails 5 and 6</span><span>✕</span></div>
+          <div class="pad">
+            <div class="u-field"><label>Address</label><div class="in ghost">Type your full address</div></div>
+            <div class="u-row" style="gap:8px">
+              <div class="u-field" style="flex:1"><label>City</label><div class="in ghost">City</div></div>
+              <div class="u-field" style="flex:1"><label>State</label><div class="in ghost">State</div></div>
+            </div>
+            <div class="u-field"><label>Pincode</label><div class="in err">2480</div><div class="msg">Invalid</div></div>
+            <div class="u-field"><label>Coupon code</label><div class="in ghost">Enter code</div></div>
+            <div class="u-field"><label>UPI ID</label><div class="in ghost">name@bank</div></div>
+            <span class="u-btn wide">PAY ₹1,199</span>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="lbl good"><span>Passes 5 and 6</span><span>✓</span></div>
+          <div class="pad">
+            <div class="u-field"><label>Deliver to</label>
+              <div class="u-card" style="padding:8px 10px"><b style="font-size:11.5px">Home · Rajpur Road, Dehradun 248001</b><div class="u-mini">Used for your last 3 orders</div></div>
+              <div class="hint">Or <b>add a new address</b></div>
+            </div>
+            <div class="u-field"><label>Pincode</label><div class="in ok">248001</div><div class="msgok">Dehradun, Uttarakhand · delivers in 2–3 days</div></div>
+            <div class="u-field"><label>Offers</label>
+              <div class="u-row" style="flex-wrap:wrap;gap:6px"><span class="u-pill on">FIRST10 · −₹120 ✓ applied</span><span class="u-pill">BANK5 · needs HDFC card</span></div>
+              <div class="hint">Applicable offers are shown first. Nothing to remember or type.</div>
+            </div>
+            <div class="u-pay">
+              <div class="u-mini">Paying to</div>
+              <div class="who">KOSA Retail Pvt Ltd</div>
+              <div class="vpa">kosaretail@hdfcbank</div>
+              <div class="amt">₹1,079</div>
+              <div class="u-mini" style="margin-top:4px">₹1,199 − ₹120 (FIRST10). Inclusive of all taxes.</div>
+            </div>
+            <span class="u-btn wide" style="margin-top:11px">Pay ₹1,079</span>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:60px;left:14px">1</span>
+      <span class="mk" style="top:212px;left:14px">2</span>
+      <span class="mk g" style="top:118px;left:52%">3</span>
+      <span class="mk g" style="top:182px;left:52%">4</span>
+      <span class="mk b" style="top:260px;left:52%">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body"><b>Free text where a constraint belongs.</b> A typed State field will collect "UK", "Uttrakhand", "uttarakhand" and "Uttaranchal" inside a week. A picker makes all four impossible. The rule: if the set of valid answers is finite and known, <em>never</em> accept typing.<span class="say">every text box is a promise to handle every possible string. don't make promises.</span></div></div>
+    <div class="note"><div class="n">2</div><div class="body">The banner upstairs said <b>"USE CODE FIRST10"</b>. Three screens later the cart asks you to reproduce it from memory. This is the single most common recall failure on Indian D2C sites, and it is measured in abandoned carts, not in style points.<span class="say">if your interface told them something, your interface should remember it.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">One pincode fills city and state, then <b>volunteers the delivery estimate</b>. The system already knows this mapping. Asking a human to supply information the machine holds is the definition of a recall failure.<span class="say">ask for the one thing only they know. derive the rest.</span></div></div>
+    <div class="note g"><div class="n">4</div><div class="body">Offers are <b>shown as choices, with the reason they don't apply</b> stated next to the ones that don't. Recognition beats recall: seeing "needs HDFC card" takes no memory, and it kills the "why isn't my code working" support ticket.<span class="say">a list you can read beats a code you must recall. every time.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Before any money moves, the screen states <b>who is being paid, in human-readable words</b> — plus the exact amount and how the discount was arrived at. This one control prevents the most expensive error in Indian digital payments: paying the right amount to the wrong person.<span class="say">verify against a name, never against a number.</span></div></div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="Four stages at which a user mistake can be stopped, from making it impossible through defaults, warnings, and finally recovery, with cost rising left to right">
+      <text x="30" y="26" font-family="Space Mono, monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#7d879c">FOUR PLACES TO STOP A MISTAKE — CHEAPEST ON THE LEFT</text>
+
+      <rect x="30" y="52" width="190" height="120" fill="#e9f2ec" stroke="#0a8754" stroke-width="1.6" rx="6"/>
+      <text x="46" y="78" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#0a8754">1 · CONSTRAIN</text>
+      <text x="46" y="102" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700" fill="#1b2233">Make it impossible</text>
+      <text x="46" y="126" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Picker instead of text box.</text>
+      <text x="46" y="144" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Date picker with past</text>
+      <text x="46" y="162" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">dates greyed out.</text>
+
+      <rect x="240" y="52" width="190" height="120" fill="#eaf1fb" stroke="#2f5fa8" stroke-width="1.6" rx="6"/>
+      <text x="256" y="78" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#2f5fa8">2 · DEFAULT</text>
+      <text x="256" y="102" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700" fill="#1b2233">Pre-choose right</text>
+      <text x="256" y="126" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Last used address.</text>
+      <text x="256" y="144" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Country = India.</text>
+      <text x="256" y="162" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Cheapest shipping first.</text>
+
+      <rect x="450" y="52" width="190" height="120" fill="#fff8e8" stroke="#a97a12" stroke-width="1.6" rx="6"/>
+      <text x="466" y="78" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#a97a12">3 · WARN IN PLACE</text>
+      <text x="466" y="102" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700" fill="#1b2233">Catch at the field</text>
+      <text x="466" y="126" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">"Pincode needs 6 digits"</text>
+      <text x="466" y="144" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">shown as they type —</text>
+      <text x="466" y="162" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">not after they submit.</text>
+
+      <rect x="660" y="52" width="210" height="120" fill="#fdeee3" stroke="#c0392b" stroke-width="1.6" rx="6"/>
+      <text x="676" y="78" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#c0392b">4 · RECOVER</text>
+      <text x="676" y="102" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="700" fill="#1b2233">Clean up after</text>
+      <text x="676" y="126" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">Undo, refunds, support</text>
+      <text x="676" y="144" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">tickets, apology emails.</text>
+      <text x="676" y="162" font-family="Newsreader, serif" font-size="12.5" fill="#3b4356">This is heuristic 9.</text>
+
+      <path d="M30,196 L870,196" stroke="#1b2233" stroke-width="1.4"/>
+      <path d="M862,190 L872,196 L862,202 Z" fill="#1b2233"/>
+      <text x="30" y="220" font-family="Space Mono, monospace" font-size="10.5" fill="#0a8754">₹0 — costs one line of code</text>
+      <text x="640" y="220" font-family="Space Mono, monospace" font-size="10.5" fill="#c0392b">₹₹₹ — costs a human being's time</text>
+
+      <text x="30" y="264" font-family="Caveat, cursive" font-size="26" fill="#c0392b">most teams live at box 3 and 4.</text>
+      <text x="30" y="290" font-family="Caveat, cursive" font-size="26" fill="#c0392b">the money is all in box 1 and 2.</text>
+    </svg>
+    <figcaption>Heuristic 5 is not "write good validation messages" — validation is already box three. It's the discipline of asking, for every field on the page, whether the wrong answer could simply have been made unavailable.</figcaption>
+  </figure>
+
+  <div class="card">
+    <h4>Two different failures wearing the same red border</h4>
+    <p style="max-width:66ch">Don Norman's distinction is the one that makes heuristic 5 usable, because the two kinds of error need opposite fixes:</p>
+    <table style="margin-top:12px">
+      <thead><tr><th style="width:16%">Type</th><th style="width:32%">What happened</th><th>What fixes it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Slip</b></td><td>Right intention, wrong execution. They meant 248001, typed 24801. They meant Remove on item two, tapped item three.</td><td>Physical and structural fixes: bigger targets, spacing between destructive and safe actions, input masks, pickers, undo.</td></tr>
+        <tr><td><b>Mistake</b></td><td>Wrong intention. They believed COD was available, believed the coupon stacked, believed "Save" also submitted the order.</td><td>Language and feedback fixes: clearer labels, showing consequences before the action, better help. No amount of validation catches a mistake.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:12px">Diagnosing which one you're looking at decides where the fix goes. A team that treats every error as a slip just keeps adding red borders to a page whose <em>model</em> is what confused people.</p>
+  </div>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The memory number everyone quotes, and what it actually supports</h4>
+    <p style="max-width:66ch">Someone in your class will say "seven plus or minus two". Miller's 1956 paper is real, but it's about immediate recall of unrelated items in a lab, and it has been stretched to justify everything from menu length to nav items — none of which it says. Later work puts the working-memory span closer to <strong>four chunks</strong>, and it varies with the person, the material and whether they're distracted.</p>
+    <p style="max-width:66ch;margin-top:12px">So don't teach a number. Teach the operational version, which is <em>much</em> stronger and needs no citation: <span class="hl">any piece of information a user has to carry from screen A to screen B in their head is a design defect</span> — a coupon code, an order ID, a price they were quoted, an OTP, the name of the plan they chose. Carry it for them, on screen, at the moment it's needed. On a phone, where switching to the SMS app to read an OTP destroys the page state, this is not a nicety.</p>
+  </div>
+</section>
+
+
+<!-- ============ PART FIVE ============ -->
+<div class="part-break">Part five — speed, calm, and failure</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">06 / heuristics 7 &amp; 8</span>
+  <h2>Fast for the fiftieth visit. Calm for the first one.</h2>
+  <p class="lead">These two look like opposites and aren't. Heuristic 7 wants shortcuts for experts; heuristic 8 wants nothing on screen that competes with the task. The resolution is the same in both directions: <strong>the fast path exists but stays out of the way until someone reaches for it.</strong></p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/products/vitamin-c-serum</div></div>
+    <div class="bwindow u">
+      <div class="ab">
+        <div class="pane">
+          <div class="lbl bad"><span>Fails 7 and 8</span><span>✕</span></div>
+          <div class="u-strip">🎁 MEGA SALE · FLAT 40% OFF · CODE: BIG40 · SHOP NOW</div>
+          <div class="u-timer">⏱ OFFER ENDS IN 00:04:51 — HURRY!</div>
+          <div class="pad" style="padding-top:12px">
+            <div class="u-h">Vitamin C Face Serum 30ml</div>
+            <div class="u-row" style="gap:6px;margin-top:9px"><span class="u-btn" style="flex:1;text-align:center;font-size:10.5px">ADD TO CART</span><span class="u-btn" style="flex:1;text-align:center;font-size:10.5px">BUY NOW</span><span class="u-btn ghost" style="flex:1;text-align:center;font-size:10.5px">WISHLIST</span></div>
+            <div class="u-clutter"><span>✓ 100% Natural</span><span>✓ Dermat Tested</span><span>✓ Cruelty Free</span><span>✓ Made in India</span><span>✓ No Parabens</span><span>✓ FDA Approved</span><span>✓ Vegan</span><span>✓ Free Shipping</span><span>✓ 4.8★ 12k Reviews</span><span>✓ Best Seller</span><span>✓ Fast Delivery</span><span>✓ Easy Returns</span></div>
+            <div class="u-modal" style="margin-top:11px;padding:9px"><div class="t" style="font-size:11.5px">🎡 Spin the wheel to win!</div><div class="u-mini">Only 3 spins left today</div></div>
+            <div class="u-row" style="justify-content:space-between;margin-top:10px"><span class="u-mini">💬 Chat with us</span><span class="u-mini">📱 WhatsApp us</span><span class="u-mini">📞 Call us</span></div>
+            <div class="u-note">Returning customer? Same six screens as everyone else.</div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="lbl good"><span>Passes 7 and 8</span><span>✓</span></div>
+          <div class="pad">
+            <div class="u-h">Vitamin C Face Serum 30ml</div>
+            <div class="u-mini" style="margin-top:3px">10% L-ascorbic acid · for dullness and uneven tone</div>
+            <div class="u-row" style="margin-top:10px;align-items:baseline;gap:8px"><b style="font-size:19px">₹1,079</b><span class="u-mini">₹1,199 · save ₹120</span></div>
+            <span class="u-btn wide" style="margin-top:10px">Add to cart</span>
+            <div class="u-row" style="justify-content:space-between;margin-top:9px"><span class="u-mini">Delivers to 248001 by Fri 15 Aug</span><span class="u-mini">Returns in 7 days</span></div>
+            <div class="u-card" style="margin-top:13px;background:var(--u-soft)">
+              <div class="u-mini" style="text-transform:uppercase;letter-spacing:.1em;font-size:9px;font-weight:700">Because you've ordered this before</div>
+              <div class="u-row" style="justify-content:space-between;margin-top:7px;align-items:center"><b style="font-size:12px">Buy it again · 1-tap UPI</b><span class="u-btn" style="font-size:11px;padding:7px 12px">Reorder</span></div>
+              <div class="u-mini" style="margin-top:6px">Last ordered 3 Jun · Home, Dehradun · kosaretail@hdfcbank</div>
+            </div>
+            <div class="u-row" style="margin-top:11px;gap:8px"><span class="u-mini">Press <span class="u-kbd">/</span> to search</span><span class="u-mini">Subscribe &amp; save 10%</span></div>
+            <div class="u-note">First-timer sees a clean page. Regular sees a one-tap path.</div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:8px;left:14px">1</span>
+      <span class="mk" style="top:150px;left:14px">2</span>
+      <span class="mk g" style="top:72px;left:52%">3</span>
+      <span class="mk g" style="top:196px;left:52%">4</span>
+      <span class="mk b" style="top:296px;left:52%">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">Five things are competing to be the most urgent element: a sale strip, a countdown, three equal-weight buttons, twelve badges and a wheel. <b>When everything shouts, the page has no primary action</b> — and the user's actual task, deciding whether to buy this serum, has nowhere quiet to happen.<span class="say">count the things asking for attention. more than two and you have a fight, not a page.</span></div></div>
+    <div class="note"><div class="n">2</div><div class="body">There is <b>no fast path anywhere</b>. Someone on their fourth reorder walks the identical six screens as a stranger — address, payment, OTP, all of it. Every one of those screens is a chance to lose them, and they've already proven they want the product.<span class="say">your repeat customers are the cheapest revenue you have. stop making them queue.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body"><b>One primary action</b>, one filled button, everything else demoted to text. Price, delivery date and return window sit near it because they're the three facts that actually gate the decision. Nothing else is on screen at that moment.<span class="say">minimalist doesn't mean empty. it means nothing competes.</span></div></div>
+    <div class="note g"><div class="n">4</div><div class="body">The accelerator: <b>reorder with saved address and saved payment</b>, shown only to someone who has ordered before. A first-timer never sees this block, so it costs them no attention — which is exactly how heuristic 7 and heuristic 8 stop contradicting each other.<span class="say">shortcuts for experts, invisible to novices. that's the whole trick.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">Trust is carried by <b>two specific facts</b> — a delivery date and a return window — instead of twelve generic badges. Specific beats numerous: "delivers Friday" is checkable, "100% Natural" is noise your reader has learned to skip.<span class="say">badges are what a page says when it has nothing concrete to offer.</span></div></div>
+  </div>
+
+  <h3>What "aesthetic and minimalist" actually claims</h3>
+  <p>Nielsen's original wording is an argument about <em>relative</em> visibility, not about taste: content that is irrelevant or rarely needed shouldn't share the screen with content that matters, because attention is finite and every extra element takes a share of it. Rephrased for a design review, the heuristic is:</p>
+  <ul class="nl">
+    <li><b>It is not "use less colour" or "add more whitespace".</b> A dense Bloomberg terminal can pass this heuristic; a page with three fonts and one sentence can fail it.</li>
+    <li><b>It is a question about competition at a moment.</b> Pick the user's task at that screen. Now list everything visible that isn't serving it. That list is your finding.</li>
+    <li><b>The fix is usually sequencing, not deletion.</b> Most "clutter" is information someone genuinely needs — just not now. Move it behind an accordion, a second step, or a "see all offers" link. This is progressive disclosure, and it is how you satisfy 7 and 8 at once.</li>
+  </ul>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The best argument against this chapter — make the class defend it</h4>
+    <p style="max-width:66ch">Open Flipkart, Nykaa or Myntra next to a US or European store in the same category. Ours are denser, by a lot: bank offers, EMI options, exchange value, COD availability, delivery date by pincode, coupon stacks, and the statutory block we found in sheet A. A Western design critic calls this cluttered. Conversion data in India does not agree.</p>
+    <p style="max-width:66ch;margin-top:12px">The honest reading is that most of that density is <strong>load-bearing information in a market with real price sensitivity, real delivery uncertainty and a real trust deficit</strong> — a delivery date and a COD badge are not decoration, they're the deciding facts. But some of it is genuinely unmanaged accumulation: four teams each adding their strip, nobody removing.</p>
+    <p class="footnote" style="margin-top:12px"><b>The discussion question:</b> given the same heuristic, how do you tell load-bearing density from accumulated clutter? <span class="hl">One workable test: could you delete this element and would any buyer's decision change?</span> Then make them apply it to a real page and defend each keep. That argument is worth more than the rule.</p>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">07 / heuristics 9 &amp; 10</span>
+  <h2>Errors don't apologise. They explain, and they attach the fix.</h2>
+  <p class="lead">Heuristic 9 is the safety net under 5 — when prevention fails, the message has to do real work. Heuristic 10 is the last resort, and the one everybody builds first and worst: a help page nobody can find, answering questions nobody asked.</p>
+
+  <div class="browser">
+    <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">kosa.in/checkout/payment</div></div>
+    <div class="bwindow u">
+      <div class="ab">
+        <div class="pane">
+          <div class="lbl bad"><span>Fails 9 and 10</span><span>✕</span></div>
+          <div class="pad">
+            <div class="u-err soft" style="background:#fdf4f5"><b>⚠ Something went wrong</b>Please try again later.</div>
+            <div class="u-field" style="margin-top:13px"><label>Full name</label><div class="in ghost">Enter your name</div></div>
+            <div class="u-field"><label>UPI ID</label><div class="in ghost">name@bank</div></div>
+            <div class="u-field"><label>Address</label><div class="in ghost">Enter your address</div></div>
+            <div class="u-note" style="color:var(--u-bad)">All fields cleared after the error.</div>
+            <span class="u-btn wide" style="margin-top:9px">TRY AGAIN</span>
+            <div class="u-note" style="text-align:center;margin-top:14px;border-top:1px solid var(--u-line);padding-top:9px">Home · About · Careers · Privacy · <b>Help</b> · Terms</div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="lbl good"><span>Passes 9 and 10</span><span>✓</span></div>
+          <div class="pad">
+            <div class="u-err soft">
+              <b>Your bank didn't approve this payment</b>
+              This usually happens when the daily UPI limit is reached, or the app timed out. <b>No money has left your account.</b> If ₹1,079 was debited, banks reverse it within 3 working days.
+              <div class="u-row" style="margin-top:9px"><span class="u-btn" style="font-size:11px;padding:8px 13px">Try UPI again</span><span class="u-btn ghost" style="font-size:11px;padding:8px 13px">Pay by card</span></div>
+              <div class="u-mini" style="margin-top:8px">Order KO-48812 is held for 30 minutes. Reference 9f21c0a — quote this if you contact us.</div>
+            </div>
+            <div class="u-field" style="margin-top:13px"><label>Full name</label><div class="in ok">Kunal V.</div></div>
+            <div class="u-field"><label>UPI ID <span style="color:#9a9a9a;font-weight:400">· what's this?</span></label><div class="in ok">kunal@okhdfcbank</div><div class="hint">Looks like <b>yourname@bank</b>. Find it on the home screen of your UPI app.</div></div>
+            <div class="u-card" style="margin-top:11px;background:var(--u-soft);padding:9px 11px"><b style="font-size:11.5px">Payment stuck? Talk to us on WhatsApp</b><div class="u-mini">Opens with order KO-48812 already attached.</div></div>
+          </div>
+        </div>
+      </div>
+      <span class="mk" style="top:24px;left:14px">1</span>
+      <span class="mk" style="top:196px;left:14px">2</span>
+      <span class="mk g" style="top:34px;left:52%">3</span>
+      <span class="mk g" style="top:150px;left:52%">4</span>
+      <span class="mk b" style="top:262px;left:52%">5</span>
+    </div>
+  </div>
+
+  <div class="notes-grid">
+    <div class="note"><div class="n">1</div><div class="body">"Something went wrong. Please try again later." <b>Zero of the three jobs done.</b> The reader learns nothing about what failed, whether their money is safe, or what would make the next attempt work. "Later" is not an instruction.<span class="say">if the message would fit on any error on any site, it's not a message.</span></div></div>
+    <div class="note"><div class="n">2</div><div class="body"><b>The form cleared itself.</b> This is the cruellest failure in the notebook — it converts a two-second retry into starting over, on a phone, with a keyboard. Never discard user input on error. Never.<span class="say">their typing belongs to them. your bug doesn't get to delete it.</span></div></div>
+    <div class="note g"><div class="n">3</div><div class="body">The three-part shape: <b>what happened → why it usually happens → what to do, as buttons.</b> Note the second line is the one people are actually panicking about, and it's in bold: no money has left your account.<span class="say">answer the money question before they ask it.</span></div></div>
+    <div class="note g"><div class="n">4</div><div class="body">Input <b>preserved and validated in place</b>, and the help for "UPI ID" sits <em>at the field</em> — one line, with a real example, at the exact moment of confusion. That is what heuristic 10 looks like when it's done properly.<span class="say">help that lives in the footer is help for the company, not the user.</span></div></div>
+    <div class="note b"><div class="n">5</div><div class="body">The human channel is <b>contextual</b>: it opens with the order already attached, so nobody types "hi" and waits. The technical reference is present but demoted to small text — useful to support, invisible to everyone else.<span class="say">keep the error code. just stop making it the headline.</span></div></div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 320" role="img" aria-label="A well-formed error message dissected into five labelled parts: plain-language cause, reassurance about money, primary and secondary actions, and a demoted reference code">
+      <rect x="230" y="40" width="440" height="196" fill="#fdf4f5" stroke="#e0b6bd" stroke-width="1.4" rx="8"/>
+      <text x="252" y="72" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#c8102e">Your bank didn't approve this payment</text>
+      <text x="252" y="98" font-family="Inter, sans-serif" font-size="12" fill="#3a2a2c">This usually happens when the daily UPI limit is</text>
+      <text x="252" y="116" font-family="Inter, sans-serif" font-size="12" fill="#3a2a2c">reached, or the app timed out.</text>
+      <text x="252" y="140" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#3a2a2c">No money has left your account.</text>
+      <rect x="252" y="158" width="106" height="30" fill="#1f1f1f" rx="5"/>
+      <text x="305" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="600" fill="#fff">Try UPI again</text>
+      <rect x="366" y="158" width="100" height="30" fill="#fff" stroke="#1f1f1f" stroke-width="1.4" rx="5"/>
+      <text x="416" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="600" fill="#1f1f1f">Pay by card</text>
+      <text x="252" y="212" font-family="Space Mono, monospace" font-size="9.5" fill="#8a7a80">Order KO-48812 · reference 9f21c0a</text>
+
+      <text x="30" y="70" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#c0392b">1 · WHAT HAPPENED</text>
+      <text x="30" y="88" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">In their words. No codes,</text>
+      <text x="30" y="105" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">no blame, no "oops".</text>
+      <path d="M182,74 C206,72 222,70 246,68" fill="none" stroke="#c0392b" stroke-width="1.3"/>
+
+      <text x="30" y="146" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#2f5fa8">2 · WHY, PROBABLY</text>
+      <text x="30" y="164" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">The likely cause, hedged</text>
+      <text x="30" y="181" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">honestly with "usually".</text>
+      <path d="M182,150 C206,132 222,118 246,108" fill="none" stroke="#2f5fa8" stroke-width="1.3"/>
+
+      <text x="700" y="80" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#0a8754">3 · THE MONEY</text>
+      <text x="700" y="98" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">The one thing they're</text>
+      <text x="700" y="115" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">actually afraid of,</text>
+      <text x="700" y="132" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">answered unprompted.</text>
+      <path d="M694,92 C660,110 630,126 606,136" fill="none" stroke="#0a8754" stroke-width="1.3"/>
+
+      <text x="700" y="176" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#c0392b">4 · THE WAY OUT</text>
+      <text x="700" y="194" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">A verb they can press —</text>
+      <text x="700" y="211" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">and an alternative route.</text>
+      <path d="M694,182 C640,180 560,178 480,176" fill="none" stroke="#c0392b" stroke-width="1.3"/>
+
+      <text x="700" y="248" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#7d879c">5 · THE CODE, DEMOTED</text>
+      <text x="700" y="266" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">Kept for support. Small,</text>
+      <text x="700" y="283" font-family="Newsreader, serif" font-size="12.5" fill="#5a6377">grey, out of the way.</text>
+      <path d="M694,254 C620,240 520,224 440,214" fill="none" stroke="#7d879c" stroke-width="1.3"/>
+
+      <text x="30" y="286" font-family="Caveat, cursive" font-size="26" fill="#c0392b">five parts. no apology anywhere.</text>
+    </svg>
+    <figcaption>The apology is the part beginners always include and the part that helps least. "We're sorry for the inconvenience" costs a line and delivers nothing; the reader wants the fix, not the feeling.</figcaption>
+  </figure>
+
+  <h3>Rewrite drill — run this on your own project</h3>
+  <table>
+    <thead><tr><th style="width:30%">What it says now</th><th>What it should say</th></tr></thead>
+    <tbody>
+      <tr><td>Invalid email</td><td>"This address is missing an @. Did you mean kunal@gmail.com?"</td></tr>
+      <tr><td>Payment failed</td><td>"Your card was declined by the bank. Nothing was charged. Try another card, or pay by UPI."</td></tr>
+      <tr><td>Coupon not valid</td><td>"FIRST10 works on your first order only. You have BANK5 available on this cart — apply it?"</td></tr>
+      <tr><td>Delivery not available</td><td>"We don't deliver to 248001 yet. Nearest pickup point is 4 km away, or we'll SMS you when we start."</td></tr>
+      <tr><td>Error 404</td><td>"That product page is gone — it may have sold out permanently. Here are three similar serums."</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Every rewrite above does the same three things and nothing else: names the cause in the reader's language, removes the fear, and hands over a next step. If a message you've written can't be split into those three parts, it isn't finished.</p>
+
+  <div class="card">
+    <h4>The help ladder — build it top down, not bottom up</h4>
+    <ul class="nl" style="margin-top:6px">
+      <li><b>Rung 0 — no help needed.</b> The label and the field explain themselves. Always try this first; every rung below is a tax.</li>
+      <li><b>Rung 1 — inline hint.</b> One line under the field, with a real example. "Looks like yourname@bank."</li>
+      <li><b>Rung 2 — contextual help.</b> A "what's this?" that opens next to the confusion, not on a new page that loses their form.</li>
+      <li><b>Rung 3 — searchable documentation.</b> Task-titled, not feature-titled: "Cancel an order" beats "Order management". Concrete steps, short.</li>
+      <li><b>Rung 4 — a human.</b> In India this is usually WhatsApp or a phone number, and that's fine — the design work is making it <em>contextual</em>, so the conversation opens with the order attached instead of "hi".</li>
+    </ul>
+    <p class="footnote" style="margin-top:12px">Most teams build rung 3 first, in a hurry, from the feature list. That's why FAQ pages answer "What is KOSA Rewards?" and never "Why was I charged twice?" <span class="hl">Write help from your support inbox, not from your sitemap.</span></p>
+  </div>
+</section>
+
+
+<!-- ============ PART SIX ============ -->
+<div class="part-break">Part six — using it on your own work</div>
+
+<section class="chapter" style="margin-top:32px">
+  <span class="chapter-num">08 / the audit</span>
+  <h2>A finding is one sentence. Anything longer is a document nobody opens.</h2>
+  <p class="lead">The output of a heuristic evaluation is not an essay and not a redesign. It's a ranked list where every line has four parts, and a developer can start work from any row without asking you a question.</p>
+
+  <div class="codeblock">
+<span class="cmt">// the shape of every finding, no exceptions</span>
+<span class="prop">WHERE</span>   Checkout, payment step, mobile
+<span class="prop">WHAT</span>    Coupon code from the homepage banner must be retyped from memory
+<span class="prop">WHICH</span>   H6 recognition rather than recall <span class="cmt">(also H5)</span>
+<span class="prop">HOW BAD</span> 3 — major. Hits every first-time buyer, every order.
+<span class="prop">FIX</span>     Show applicable offers as a tappable list, pre-applied where valid
+  </div>
+
+  <h3>A worked audit — KOSA guest checkout, mobile, one pass</h3>
+  <table class="score">
+    <thead><tr><th style="width:24%">What I saw</th><th style="width:19%">Heuristic</th><th style="width:9%">Sev</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Payment screen shows an indeterminate spinner for 9–14 s with no text</td><td><span class="hx r">H1</span> status</td><td><span class="sev sev4">4</span></td><td>Named stages that change: "Reserving item" → "Confirming with bank". Reload guard on the page.</td></tr>
+      <tr><td>Failure shows <code>gateway_err 502</code> and no plain sentence</td><td><span class="hx r">H2</span> <span class="hx b">H9</span></td><td><span class="sev sev4">4</span></td><td>Three-part message; keep the code in 10px grey for support.</td></tr>
+      <tr><td>Form clears all fields after a failed payment</td><td><span class="hx b">H9</span> <span class="hx g">H3</span></td><td><span class="sev sev4">4</span></td><td>Preserve state on error. Never re-render a blank form.</td></tr>
+      <tr><td>Coupon must be recalled from the homepage banner</td><td><span class="hx r">H6</span></td><td><span class="sev sev3">3</span></td><td>Offer list, applicable ones marked and pre-applied.</td></tr>
+      <tr><td>State is a free-text field</td><td><span class="hx b">H5</span></td><td><span class="sev sev3">3</span></td><td>Derive city and state from pincode; make the field read-only.</td></tr>
+      <tr><td>Newsletter popup has no visible close on 360px screens</td><td><span class="hx g">H3</span></td><td><span class="sev sev3">3</span></td><td>Visible ✕, dismiss on back gesture, don't re-arm for 30 days.</td></tr>
+      <tr><td>Same action labelled Trash / Delete / Remove across three screens</td><td><span class="hx b">H4</span></td><td><span class="sev sev2">2</span></td><td>One verb, documented in the component library.</td></tr>
+      <tr><td>Help link only in the footer, 4 scrolls below the failure</td><td><span class="hx r">H10</span></td><td><span class="sev sev2">2</span></td><td>Contextual WhatsApp entry at the failure, order ID attached.</td></tr>
+      <tr><td>Twelve trust badges above the fold</td><td><span class="hx b">H8</span></td><td><span class="sev sev1">1</span></td><td>Two specific facts — delivery date, return window. Delete the rest.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Nine findings, twenty-five minutes, no users, no budget. Three of them are severity 4 and would each independently cost real orders. <span class="hl">This is why the method survives despite everything wrong with it</span> — the ratio of what it costs to what it catches is unmatched by anything else you can do before launch.</p>
+
+  <div class="card">
+    <h4>The blank sheet — print this, one per screen</h4>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:5%">#</th><th style="width:30%">Ask this at this screen</th><th style="width:10%">Pass?</th><th style="width:30%">Finding</th><th style="width:10%">Sev</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Does it say what's happening and how long?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>2</td><td>Whose words are these — theirs or the server's?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>3</td><td>How do I leave without damage?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>4</td><td>Does it behave like everywhere else?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>5</td><td>Could this mistake have been impossible?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>6</td><td>Am I asking them to remember something?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>7</td><td>Where's the fast path for a regular?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>8</td><td>What here competes with the task?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>9</td><td>Do errors say what, why and what now?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+        <tr><td>10</td><td>Can a stuck person get unstuck here?</td><td>☐ ☐</td><td></td><td>0–4</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:12px">Ten questions × one screen × twenty minutes. A five-screen checkout is one afternoon. Do it on paper the first three times — laptops make people fix things mid-audit, and fixing mid-audit is how you stop finding things.</p>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">09 / the limits</span>
+  <h2>A page can score ten out of ten and still be predatory</h2>
+  <p class="lead">This is the chapter that separates a student who has memorised ten rules from a designer who understands what they measure. The heuristics are about <em>usability</em>. Usability is amoral — it makes whatever the interface intends easier to achieve, including things intended against the user.</p>
+
+  <h3>First: the ten contradict each other, on purpose</h3>
+  <table>
+    <thead><tr><th style="width:26%">Tension</th><th>How it shows up, and the usual resolution</th></tr></thead>
+    <tbody>
+      <tr><td><span class="hx b">H8</span> minimalism vs <span class="hx r">H1</span> status and <span class="hx r">H10</span> help</td><td>Every status line, hint and help affordance is another element on screen. Resolution: show state and help <em>at the moment they're needed</em>, not permanently.</td></tr>
+      <tr><td><span class="hx b">H5</span> prevention vs <span class="hx g">H7</span> efficiency</td><td>Confirmations protect novices and tax experts. Resolution: undo instead of confirm; confirm only what's irreversible.</td></tr>
+      <tr><td><span class="hx b">H4</span> consistency vs improvement</td><td>Every genuine interface improvement violates a convention on the day it ships. Resolution: break a convention only when the gain is large and obvious, and never on the checkout.</td></tr>
+      <tr><td><span class="hx g">H3</span> freedom vs the business</td><td>Easy exits reduce short-term conversion. Resolution: this is a real trade-off with real money on both sides — and it is where design becomes an ethical question rather than a technical one.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">When two heuristics disagree, that's not a bug in the list. It's the list telling you that you've reached an actual design decision — the kind that needs a judgement, a stated reason, and preferably a measurement.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <h4>The uncomfortable finding — the best discussion question in this notebook</h4>
+    <p style="max-width:66ch">Take the cluttered panel from chapter 06 and audit it honestly. That countdown timer? <strong>Outstanding visibility of system status</strong> — precise, live, unambiguous. The pre-ticked shipping insurance? Excellent efficiency of use, fewer taps. "No thanks, I don't like saving money"? Perfectly clear feedback about what the button does. Fees revealed only at the last step? Each individual step is beautifully minimal.</p>
+    <p style="max-width:66ch;margin-top:12px">Every one of those is a dark pattern, and <span class="hl">not one of them is caught by the ten heuristics.</span> Nielsen's list assumes the designer and the user want the same outcome. When they don't, usability becomes the instrument of extraction rather than the defence against it.</p>
+    <p style="max-width:66ch;margin-top:12px"><b>Ask the class:</b> if a design scores well on all ten and still leaves the buyer worse off, what exactly were the ten measuring? There's a real answer — they measure friction, not intent — but make them arrive at it themselves.</p>
+  </div>
+
+  <h3>In India this is no longer only an ethics question</h3>
+  <p>The Central Consumer Protection Authority issued the <strong>Guidelines for Prevention and Regulation of Dark Patterns, 2023</strong> under the Consumer Protection Act, 2019, notified on 30 November 2023. Annexure 1 specifies <strong>thirteen</strong> named dark patterns, and in June 2026 the CCPA advised e-commerce platforms to self-audit against them within three months. Your students will build for this jurisdiction.</p>
+  <table>
+    <thead><tr><th style="width:26%">Named in the Guidelines</th><th style="width:34%">What it looks like on a page</th><th>Which heuristic it fakes</th></tr></thead>
+    <tbody>
+      <tr><td><b>False urgency</b></td><td>"Only 2 left!" when stock is full; a timer that resets on reload</td><td>Fakes <span class="hx r">H1</span> — status about a state that isn't real</td></tr>
+      <tr><td><b>Basket sneaking</b></td><td>Insurance or a donation added to the cart without being asked</td><td>Fakes <span class="hx g">H7</span> — "efficiency" nobody requested</td></tr>
+      <tr><td><b>Confirm shaming</b></td><td>"No thanks, I like paying full price"</td><td>Fakes <span class="hx b">H9</span> — clear labels, hostile intent</td></tr>
+      <tr><td><b>Drip pricing</b></td><td>Fees, handling and platform charges appearing only at the last step</td><td>Fakes <span class="hx b">H8</span> — each screen minimal, the total concealed</td></tr>
+      <tr><td><b>Forced action · subscription trap</b></td><td>Signup demanded to view a price; easy to start, three screens to cancel</td><td>Directly violates <span class="hx g">H3</span></td></tr>
+      <tr><td><b>Interface interference · trick wording</b></td><td>The decline option styled as background text; double negatives in a checkbox</td><td>Weaponises <span class="hx b">H4</span> — your habits used against you</td></tr>
+      <tr><td><b>Bait and switch · disguised ads · nagging</b></td><td>Advertised item unavailable at checkout; ads dressed as content; the same modal on every visit</td><td>Violates <span class="hx b">H4</span> and <span class="hx g">H3</span> outright</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">The Guidelines also name SaaS billing and rogue malware, which are less relevant to a first web project. <span class="hl">This is not legal advice and the list evolves</span> — the point for a design class is that in India, deceptive interface design is now a consumer-protection matter with a regulator attached, not merely a matter of taste.</p>
+
+  <div class="card">
+    <h4>The eleventh question — add it to your sheet</h4>
+    <p style="max-width:66ch">After the ten, ask one more, and ask it about every element you couldn't defend on usability grounds:</p>
+    <p style="max-width:60ch;margin-top:10px;font-family:'Caveat',cursive;font-size:26px;color:var(--pen-red);line-height:1.25">"If the buyer could see exactly why we put this here, would they still be glad we did?"</p>
+    <p class="footnote" style="margin-top:12px">A delivery date survives that question. A saved address survives it. A resetting countdown does not. It isn't in Nielsen's list because Nielsen was answering a different question in 1994 — but it belongs on the sheet you hand your students in 2026.</p>
+  </div>
+</section>
+
+
+<section class="chapter">
+  <span class="chapter-num">10 / this week's exercise</span>
+  <h2>Audit your own page. That's the hard part and the whole point.</h2>
+  <p class="lead">Auditing someone else's site is entertainment. Auditing the page you built last week, and writing severity 4 next to something you were proud of, is the skill.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:16%">Step</th><th style="width:40%">Do</th><th>You'll learn</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Scope</b></td><td>Write your task in one sentence: "Buy one 30ml serum, guest checkout, UPI, on a 360px phone." Tape it above your screen.</td><td>That heuristics evaluate a path, not a website.</td></tr>
+        <tr><td><b>2 · Two passes</b></td><td>Walk it once with no notes. Walk it again with the blank sheet from chapter 08, one sheet per screen. On paper.</td><td>That you see completely different things the second time.</td></tr>
+        <tr><td><b>3 · Swap</b></td><td>Two classmates audit your page while you audit theirs. <b>No talking until all three are finished.</b> Then merge the lists.</td><td>Your own evaluator effect — count how many findings only one of you caught.</td></tr>
+        <tr><td><b>4 · Rank</b></td><td>Severity-rate the merged list 0–4. Sort. Fix only the 4s and 3s this week. Leave the 1s and 2s written down and unfixed.</td><td>That ranking is the deliverable, and that unfixed-but-known beats fixed-at-random.</td></tr>
+        <tr><td><b>5 · Re-audit</b></td><td>After the fixes, run the same sheet again and count the <em>new</em> problems your fixes introduced.</td><td>That every fix is also a change, and changes break things. Nobody does this step. Do it.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:14px"><strong>What "done" looks like:</strong> not a page that passes all ten — no shipped page does. A single ranked page of findings where every line names what you saw, which heuristic, a severity, and a fix a developer could start on. <span class="hl">And at least two severity-3-or-above findings on parts of the page you designed yourself and liked.</span> If your own page came out clean, you audited it wrong.</p>
+  </div>
+
+  <h3>Source note</h3>
+  <ul class="nl">
+    <li><b>The ten heuristics</b> are Jakob Nielsen's, developed with Rolf Molich (1990) and cut to ten in 1994 by factor-analysing 249 documented usability problems. Names as published; the questions, examples and arguments here are mine.</li>
+    <li><b>The evaluator curve</b> follows the model in Nielsen &amp; Landauer (1993). The counter-evidence is Faulkner (2003) on sample variance in user testing, Spool &amp; Schroeder (2001) and Perfetti &amp; Landesman on complex e-commerce, and Hertzum &amp; Jacobsen on the evaluator effect. Treat the curve as a planning estimate.</li>
+    <li><b>Slips versus mistakes</b> is Norman's distinction. The working-memory point deliberately avoids "7±2" (Miller, 1956) because later estimates are lower and the number is routinely over-applied.</li>
+    <li><b>The dark patterns list</b> is from the CCPA's Guidelines for Prevention and Regulation of Dark Patterns, 2023, notified 30 November 2023 under the Consumer Protection Act, 2019, with a CCPA self-audit advisory to e-commerce platforms in June 2026. Regulations change — check the current text before teaching it as settled.</li>
+    <li><b>KOSA is fictional</b>, carried over from sheet 00. Every screen here is my reconstruction of patterns common to Indian D2C checkouts. No live site was inspected for this sheet — unlike sheet A, where the numbers were read off beminimalist.co directly. Send students to inspect real checkouts themselves; that's where the findings get interesting.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

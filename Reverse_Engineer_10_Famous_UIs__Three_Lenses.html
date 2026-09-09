@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reverse-Engineering Famous UIs — Sheet 03</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&family=Poppins:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3; --grid:#e2e6ee; --ink:#1b2233; --pencil:#7d879c;
+  --pen-red:#c0392b; --pen-blue:#2f5fa8; --pen-green:#0a8754;
+  --marker:#ffe27a; --rule:#d8dbe3;
+
+  --nf-bg:#141414; --nf-red:#e50914;
+  --az-navy:#131921; --az-orange:#ffa41c; --az-yellow:#ffd814; --az-link:#007185;
+  --gg-blue:#4285f4; --gg-red:#ea4335; --gg-yellow:#fbbc05; --gg-green:#34a853; --gg-border:#dfe1e5; --gg-grey:#f8f9fa;
+  --ap-bg:#fbfbfd; --ap-ink:#1d1d1f; --ap-mute:#86868b;
+  --ab-pink:#ff385c; --ab-ink:#222222; --ab-mute:#717171; --ab-line:#ebebeb;
+  --du-green:#58cc02; --du-gold:#ffc800; --du-line:#e5e5e5;
+  --cr-bg:#0c0c10; --cr-gold:#e8c15c; --cr-purple:#8b7cf6; --cr-mute:#8a8a92;
+  --wa-green:#25d366; --wa-dark:#075e54; --wa-bg:#efeae2;
+  --ub-bg:#000000; --ub-line:#2b2b2b;
+  --sw-orange:#fc8019; --sw-purple:#7c4fe0; --sw-lime:#c1f11d; --sw-ink:#2c2c2c; --sw-bg:#fff8f0;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:26px 26px;color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;line-height:1.62}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 150px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:78px 0 28px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:22px}
+.cover h1{font-size:clamp(38px,7.2vw,80px);font-weight:800;letter-spacing:-.032em;line-height:.98;max-width:18ch}
+.cover .deck{max-width:60ch;font-size:19.5px;color:#3b4356;margin-top:22px}
+.chapter{margin-top:104px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(27px,4.1vw,40px);font-weight:700;letter-spacing:-.027em;line-height:1.06;max-width:25ch}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:67ch} p.lead{font-size:19px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:23px 26px;margin:23px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)} .card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:33px;width:77px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+.part-break{margin:116px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:73ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:63ch}
+svg{max-width:100%;height:auto;display:block}
+ul.nl{list-style:none;padding:0;margin:14px 0;max-width:67ch}
+ul.nl li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.nl li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+ul.tick li::before{content:"✓";font-size:15px;color:var(--pen-green)}
+ul.x li::before{content:"✕";font-size:15px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:17px 0}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+code{font-family:"Space Mono",monospace;font-size:.86em;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+
+.legend{display:flex;flex-wrap:wrap;gap:24px;margin:22px 0 6px}
+.legend .item{display:flex;align-items:center;gap:9px;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.03em}
+.legend .dot{width:16px;height:16px;border-radius:50%;flex:none}
+.legend .dot.r{background:var(--pen-red)} .legend .dot.a{background:var(--pen-blue)} .legend .dot.p{background:var(--pen-green)}
+
+.phone{width:340px;height:706px;border-radius:34px;border:9px solid #23272f;background:#fff;overflow:hidden;position:relative;box-shadow:0 26px 54px -26px rgba(27,34,51,.6);font-family:"Inter",system-ui,sans-serif}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:20px;background:#23272f;border-radius:0 0 12px 12px;z-index:9}
+
+.browser{position:relative;border-radius:11px;overflow:hidden;border:1px solid #d7d3c6;box-shadow:0 24px 50px -26px rgba(27,34,51,.55);background:#fff}
+.chrome{height:28px;background:#ececea;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid #ddd9cd}
+.dot{width:8px;height:8px;border-radius:50%}
+.urlbar{flex:1;margin-left:8px;background:#fff;border-radius:5px;height:17px;font-family:"Space Mono",monospace;font-size:9.5px;color:#8892a6;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e0d3}
+.bwindow{position:relative;overflow:hidden}
+
+.teardown{display:grid;grid-template-columns:340px 1fr;gap:50px;margin-top:32px;align-items:start}
+.teardown.wide{grid-template-columns:520px 1fr}
+@media (max-width:920px){.teardown,.teardown.wide{grid-template-columns:1fr;gap:32px}}
+.stage{position:relative;justify-self:center;width:100%}
+
+.mk{position:absolute;z-index:20;width:25px;height:25px;display:grid;place-items:center;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg);box-shadow:0 2px 8px rgba(192,57,43,.45)}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+.mk.g{background:var(--pen-green);box-shadow:0 2px 8px rgba(10,135,84,.4)}
+
+.notes{position:relative}
+.note{display:grid;grid-template-columns:32px 1fr;gap:12px;margin-bottom:21px;align-items:start}
+.note .n{width:25px;height:25px;display:grid;place-items:center;margin-top:3px;font-family:"Caveat",cursive;font-size:18px;font-weight:700;color:#fff;background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg)}
+.note.b .n{background:var(--pen-blue)} .note.g .n{background:var(--pen-green)}
+.note .body{font-size:15.5px;line-height:1.53}
+.note .body b{font-weight:600}
+.note .lens{display:block;font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pen-red);margin-bottom:4px}
+.note.b .lens{color:var(--pen-blue)} .note.g .lens{color:var(--pen-green)}
+.note .body .say{display:block;font-family:"Caveat",cursive;font-size:19.5px;color:var(--pen-red);margin-top:4px;line-height:1.3}
+.note.b .body .say{color:var(--pen-blue)} .note.g .body .say{color:var(--pen-green)}
+.note code{font-family:"Space Mono",monospace;font-size:12px;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+
+.spec-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0}
+.spec-box{border-top:2px solid var(--ink);padding-top:10px}
+.spec-box .k{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pencil)}
+.spec-box .v{font-family:"Space Mono",monospace;font-size:12.5px;margin-top:3px;line-height:1.6}
+
+.sw-row{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 8px}
+.sw{width:100px;border:1px solid rgba(0,0,0,.08);border-radius:2px;overflow:hidden}
+.sw .chip{height:48px}
+.sw .meta{font-family:"Space Mono",monospace;font-size:8.5px;padding:5px 6px;background:#fff;line-height:1.5}
+
+/* ===== product skins — abstract reconstructions, no logos or brand marks ===== */
+.nf{background:var(--nf-bg);color:#fff;height:100%;font-family:"Inter",sans-serif;overflow:hidden}
+.nf-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;position:relative;z-index:2}
+.nf-logo{color:var(--nf-red);font-weight:800;font-size:17px;letter-spacing:-.01em}
+.nf-links{display:flex;gap:13px;font-size:10.5px;color:#d2d2d2}
+.nf-hero{height:186px;background:linear-gradient(100deg,#4a2c1c,#211714 55%,var(--nf-bg) 95%);position:relative;margin-top:-40px;padding-top:52px;padding-left:22px}
+.nf-badge{font-size:10px;font-weight:700;color:#e5e5e5;letter-spacing:.04em}
+.nf-title{font-size:26px;font-weight:800;margin-top:6px;letter-spacing:-.015em}
+.nf-cta{display:flex;gap:8px;margin-top:13px}
+.nf-btn{padding:6px 15px;border-radius:3px;font-size:11.5px;font-weight:700}
+.nf-btn.play{background:#fff;color:#000}
+.nf-btn.info{background:rgba(109,109,110,.65);color:#fff}
+.nf-rowtitle{font-size:13px;font-weight:700;margin:18px 0 8px 22px}
+.nf-row{display:flex;gap:6px;padding:0 22px}
+.nf-card{width:96px;height:54px;border-radius:3px;position:relative;flex:none}
+.nf-card .top10{position:absolute;left:3px;bottom:3px;font-size:8px;font-weight:800;background:#000;padding:1px 4px;border-radius:2px}
+.nf-card .prog{position:absolute;left:0;bottom:0;height:2.5px;width:60%;background:var(--nf-red)}
+
+.az{background:#fff;color:#0f1111;font-family:"Inter",sans-serif;height:100%;font-size:12px}
+.az-top{background:var(--az-navy);color:#fff;display:flex;align-items:center;gap:16px;padding:9px 18px;font-size:10.5px}
+.az-crumb{padding:8px 18px 0;font-size:10px;color:var(--az-link)}
+.az-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:14px 18px}
+.az-gal{height:170px;background:#f7f7f7;border:1px solid #eee}
+.az-title{font-size:15.5px;font-weight:600;line-height:1.3}
+.az-stars{color:var(--az-orange);font-size:11px;margin-top:5px}
+.az-price{font-size:19px;font-weight:600;margin-top:10px}
+.az-price s{font-size:11px;color:#565959;font-weight:400;margin-left:6px}
+.az-prime{display:inline-block;background:var(--az-navy);color:#00a8e1;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;margin-top:6px}
+.az-box{border:1px solid #d5d9d9;border-radius:6px;padding:12px;margin-top:12px}
+.az-btn{width:100%;text-align:center;border-radius:16px;padding:8px;font-size:12px;font-weight:600;margin-top:8px}
+.az-btn.cart{background:var(--az-yellow)}
+.az-btn.buy{background:var(--az-orange);color:#fff}
+
+.gg{background:#fff;height:100%;font-family:"Inter",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.gg-logo{font-size:48px;font-weight:700;letter-spacing:-.02em}
+.gg-logo span:nth-child(1){color:var(--gg-blue)} .gg-logo span:nth-child(2){color:var(--gg-red)} .gg-logo span:nth-child(3){color:var(--gg-yellow)} .gg-logo span:nth-child(4){color:var(--gg-blue)} .gg-logo span:nth-child(5){color:var(--gg-green)} .gg-logo span:nth-child(6){color:var(--gg-red)}
+.gg-box{width:76%;max-width:420px;border:1px solid var(--gg-border);border-radius:24px;padding:11px 18px;margin-top:22px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:#3c4043;box-shadow:0 1px 6px rgba(32,33,36,.08)}
+.gg-btns{display:flex;gap:9px;margin-top:20px}
+.gg-btn{background:var(--gg-grey);border:1px solid var(--gg-grey);border-radius:4px;padding:8px 15px;font-size:11.5px;color:#3c4043}
+.gg-links{position:absolute;bottom:0;left:0;right:0;background:#f2f2f2;display:flex;justify-content:space-between;padding:10px 16px;font-size:9.5px;color:#70757a}
+
+.ap{background:var(--ap-bg);color:var(--ap-ink);height:100%;font-family:"Inter",sans-serif;text-align:center;position:relative}
+.ap-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:center;gap:20px;padding:10px 0;font-size:9.5px;color:#6e6e73;background:rgba(251,251,253,.85)}
+.ap-eyebrow{font-size:11px;color:#6e6e73;margin-top:58px}
+.ap-h1{font-size:42px;font-weight:700;letter-spacing:-.03em;margin-top:6px}
+.ap-sub{font-size:14.5px;color:var(--ap-mute);margin-top:8px}
+.ap-cta{display:inline-block;margin-top:18px;background:#0071e3;color:#fff;font-size:12px;font-weight:500;padding:9px 22px;border-radius:20px}
+.ap-swatches{display:flex;justify-content:center;gap:8px;margin-top:28px}
+.ap-swatches span{width:16px;height:16px;border-radius:50%;display:block;border:1px solid #ddd}
+
+.ab{background:#fff;height:100%;font-family:"Inter",sans-serif;color:var(--ab-ink)}
+.ab-search{margin:14px 16px 0;border:1px solid var(--ab-line);border-radius:26px;padding:11px 15px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-size:12px}
+.ab-search b{display:block;font-size:13px}
+.ab-search span{color:var(--ab-mute);font-size:11px}
+.ab-cardimg{margin:16px 16px 0;height:168px;border-radius:13px;background:linear-gradient(135deg,#e7c9a9,#c98b62 60%,#a5623c);position:relative}
+.ab-heart{position:absolute;top:10px;right:10px;font-size:15px;color:#fff}
+.ab-badge{position:absolute;top:10px;left:10px;background:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px}
+.ab-info{padding:10px 16px 0;display:flex;justify-content:space-between}
+.ab-info .nm{font-size:13.5px;font-weight:600}
+.ab-info .rt{font-size:12px}
+.ab-loc{font-size:12px;color:var(--ab-mute);padding:2px 16px 0}
+.ab-price{font-size:13px;font-weight:700;padding:6px 16px 0}
+.ab-price span{font-weight:400;color:var(--ab-mute)}
+
+.du{background:var(--du-line);height:100%;font-family:"Outfit",sans-serif;color:#3c3c3c;position:relative}
+.du-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#fff;font-size:12px;font-weight:700}
+.du-flame{color:#ff9600}
+.du-path{padding:30px 0;display:flex;flex-direction:column;align-items:center;gap:24px}
+.du-node{width:54px;height:54px;border-radius:50%;background:#dcdcdc;border-bottom:5px solid #c7c7c7;display:grid;place-items:center;font-size:19px;color:#fff}
+.du-node.done{background:var(--du-green);border-bottom-color:#3d9e00}
+.du-node.next{background:var(--du-gold);border-bottom-color:#e6a600;transform:scale(1.15)}
+
+.cr{background:var(--cr-bg);height:100%;font-family:"Bricolage Grotesque",sans-serif;color:#fff;padding-top:18px}
+.cr-top{display:flex;justify-content:space-between;padding:0 20px;font-size:11px;color:var(--cr-mute)}
+.cr-coins{font-size:11px;color:var(--cr-gold);font-weight:700}
+.cr-card{margin:20px 20px 0;height:140px;border-radius:16px;background:linear-gradient(135deg,#2a1f45,#141018 70%);position:relative;overflow:hidden;padding:16px}
+.cr-card::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(139,124,246,.35),transparent 60%)}
+.cr-chip{width:26px;height:19px;border-radius:4px;background:linear-gradient(135deg,var(--cr-gold),#a9822f);position:relative;z-index:1}
+.cr-num{font-size:13px;letter-spacing:.1em;margin-top:34px;font-family:"Space Mono",monospace;position:relative;z-index:1}
+.cr-cta{margin:22px 20px 0;background:linear-gradient(90deg,var(--cr-purple),#5a4fd6);text-align:center;padding:13px;border-radius:12px;font-size:12.5px;font-weight:700}
+.cr-reward{margin:14px 20px 0;border:1px solid #232028;border-radius:10px;padding:11px 13px;font-size:11px;color:#c9c6d1;display:flex;justify-content:space-between}
+
+.wa{background:var(--wa-bg);height:100%;font-family:"Inter",sans-serif;color:#111}
+.wa-top{background:var(--wa-dark);color:#fff;padding:12px 16px;font-size:14px;font-weight:600}
+.wa-chat{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(0,0,0,.05);align-items:center}
+.wa-av{width:40px;height:40px;border-radius:50%;background:#c8bfae;flex:none}
+.wa-chat .b{flex:1}
+.wa-chat .nm{font-size:13.5px;font-weight:600;display:flex;justify-content:space-between}
+.wa-chat .nm time{font-size:10px;color:#8a8a8a;font-weight:400}
+.wa-chat .msg{font-size:12px;color:#5f6a6a;margin-top:2px;display:flex;justify-content:space-between;align-items:center}
+.wa-chat .tick{color:#53bdeb;font-size:11px}
+.wa-badge{background:var(--wa-green);color:#fff;font-size:9.5px;border-radius:50%;width:17px;height:17px;display:grid;place-items:center;font-weight:700}
+
+.ub{background:#e5e0d8;height:100%;position:relative;font-family:"Inter",sans-serif;overflow:hidden}
+.ub-map{position:absolute;inset:0;background:repeating-linear-gradient(120deg,#d8d2c6 0 18px,#e5e0d8 18px 36px)}
+.ub-pin{position:absolute;width:12px;height:12px;background:#000;border-radius:50% 50% 50% 0;transform:rotate(-45deg)}
+.ub-sheet{position:absolute;left:0;right:0;bottom:0;background:var(--ub-bg);color:#fff;border-radius:16px 16px 0 0;padding:18px}
+.ub-input{border:1px solid var(--ub-line);border-radius:9px;padding:11px 13px;font-size:12.5px;margin-bottom:8px;color:#eaeaea}
+.ub-opt{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--ub-line);font-size:12px}
+.ub-opt .price{font-weight:700}
+.ub-cta{background:#fff;color:#000;text-align:center;padding:13px;border-radius:9px;font-size:13px;font-weight:700;margin-top:10px}
+
+.sw{background:var(--sw-bg);height:100%;font-family:"Poppins",sans-serif;color:var(--sw-ink)}
+.sw-top{background:var(--sw-purple);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.sw-timer{background:var(--sw-lime);color:#1c1c1c;font-size:11px;font-weight:800;padding:3px 9px;border-radius:12px}
+.sw-cats{display:flex;gap:10px;padding:12px 16px;overflow:hidden}
+.sw-cat{width:50px;text-align:center;font-size:9px}
+.sw-cat i{width:50px;height:50px;border-radius:12px;background:#ffe4cf;display:block;margin-bottom:4px}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+.sw-card{background:#fff;border-radius:10px;padding:8px;position:relative}
+.sw-card .im{height:62px;background:#fdf0e4;border-radius:8px}
+.sw-card .nm{font-size:10.5px;font-weight:600;margin-top:6px}
+.sw-card .pr{font-size:11px;font-weight:700;margin-top:3px}
+.sw-card .add{position:absolute;bottom:8px;right:8px;border:1.5px solid var(--sw-orange);color:var(--sw-orange);font-size:9px;font-weight:800;padding:3px 9px;border-radius:6px;background:#fff}
+
+@media print{
+  body{background:#fff;background-image:none;font-size:11pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:28px}
+  .part-break{break-before:page;margin-top:0}
+  .teardown{break-inside:avoid}
+  .phone,.browser{box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · product design · sheet 03</div>
+  <h1>Reverse-engineering famous UIs — the three people looking at one screen</h1>
+  <p class="deck">Earlier today you asked what a beginner, an academic and a working professional would each notice looking at the same Netflix screen. That answer was a paragraph. This is the same idea, formalised into a method, then run against <strong>ten real products</strong> — full teardowns, colour-coded by which of the three lenses is speaking. This is the Builder Stack way of studying design: you don't admire the screen, you take it apart and put it back together until you understand every decision in it.</p>
+  <p style="margin-top:24px"><span class="stamp">Ten teardowns · three lenses each · logos deliberately absent</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>How to read this sheet</h4>
+  <p style="max-width:66ch">Every numbered marker on every screen is colour-coded to the lens that notices it. <span class="hl">Same colour code, all ten teardowns</span> — once you've internalised it here, you can run it on any app on your phone.</p>
+  <div class="legend">
+    <div class="item"><span class="dot r"></span> Red — what a <b>beginner</b> feels, before they can name why</div>
+    <div class="item"><span class="dot a"></span> Blue — what an <b>academic</b> names, with a citable principle</div>
+    <div class="item"><span class="dot p"></span> Green — what a <b>professional</b> sees, the metric and machinery underneath</div>
+  </div>
+  <p class="footnote" style="margin-top:10px">Every screen below is a teaching <strong>reconstruction</strong> — my own CSS, built from observation, not from any company's source or screenshots. Colours and proportions are close, not exact. No logos or copyrighted marks appear anywhere in this sheet; the point is always the system, never the mark.</p>
+</div>
+
+
+<!-- ================================================= -->
+<div class="part-break">Method — before the teardowns</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">00 / the three lenses</span>
+  <h2>Same screen. Three trained eyes. Three different products.</h2>
+  <p class="lead">This isn't "some people notice more than others." It's that <strong>each lens is structurally blind to what the other two see</strong> — and knowing your own blind spot is most of what separates a working designer from a student.</p>
+
+  <table>
+    <thead><tr><th style="width:14%">Lens</th><th style="width:30%">What it notices</th><th style="width:28%">Native vocabulary</th><th>Where it's blind</th></tr></thead>
+    <tbody>
+      <tr><td><b style="color:var(--pen-red)">Beginner</b></td><td>Friction and delight, in the moment. Reacts to the screen, doesn't interrogate it.</td><td>"This is confusing." "I like this." "Why did that happen?"</td><td>Can't say <i>why</i> something works or fails — only <i>that</i> it does. No theory, no system.</td></tr>
+      <tr><td><b style="color:var(--pen-blue)">Academic</b></td><td>The named pattern underneath — which heuristic, which law, which bias is being used on them.</td><td>Hick's Law, Fitts's Law, Jakob's Law, Von Restorff, Gestalt, loss aversion, anchoring.</td><td>Can correctly diagnose a decision and still be wrong about <i>why it shipped</i> — theory doesn't know the budget, the deadline, or the metric it was built to move.</td></tr>
+      <tr><td><b style="color:var(--pen-green)">Professional</b></td><td>The instrumented mechanism — which number this screen exists to move, and what it cost engineering to build.</td><td>A/B test, conversion, retention, buy-box, dispatch, churn, north-star metric.</td><td>Their own conditioning. They ship more of whatever already tested well — which is exactly why so many products, built by different companies, start to converge on the same answers.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote" style="margin-top:6px">Notice the shape of that table: each row's blind spot is basically "what the other two rows are good at." That's not a coincidence — it's why real product teams are built as trios of exactly these instincts, not one person doing all three.</p>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown one — the flagship example</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">01 / streaming — Netflix</span>
+  <h2>The interface that decides for you before you've decided anything</h2>
+  <p class="lead">This is the screen from this morning's question, done properly. Six annotations, two per lens, on a browse page most people have opened a thousand times without once asking why it's built this way.</p>
+
+  <div class="teardown wide">
+    <div class="stage">
+      <div class="browser">
+        <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">netflix.com/browse</div></div>
+        <div class="bwindow nf" style="height:400px">
+          <div class="nf-nav">
+            <div class="nf-logo">STREAM</div>
+            <div class="nf-links"><span>Home</span><span>Series</span><span>Films</span><span>My List</span></div>
+          </div>
+          <div class="nf-hero">
+            <div class="nf-badge">STREAM ORIGINAL SERIES</div>
+            <div class="nf-title">Crimson Harbour</div>
+            <div class="nf-cta">
+              <div class="nf-btn play">▶ Play</div>
+              <div class="nf-btn info">ⓘ More Info</div>
+            </div>
+          </div>
+          <div class="nf-rowtitle">Continue Watching for Kunal</div>
+          <div class="nf-row">
+            <div class="nf-card" style="background:linear-gradient(135deg,#6b4a3a,#2c1c14)"><div class="prog"></div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#3a4a5a,#141c24)"><div class="prog" style="width:30%"></div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#5a3a4a,#241418)"><div class="prog" style="width:85%"></div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#4a5a3a,#1c2414)"></div>
+          </div>
+          <div class="nf-rowtitle">Top 10 in India Today</div>
+          <div class="nf-row">
+            <div class="nf-card" style="background:linear-gradient(135deg,#3a3a4a,#141418)"><div class="top10">1</div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#4a3a2a,#241814)"><div class="top10">2</div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#2a3a4a,#141c24)"><div class="top10">3</div></div>
+            <div class="nf-card" style="background:linear-gradient(135deg,#4a2a3a,#241418)"><div class="top10">4</div></div>
+          </div>
+        </div>
+        <span class="mk" style="top:15%;left:38%">1</span>
+        <span class="mk" style="top:34%;left:9%">2</span>
+        <span class="mk b" style="top:53%;right:8%">3</span>
+        <span class="mk b" style="top:74%;left:9%">4</span>
+        <span class="mk g" style="top:44%;left:22%">5</span>
+        <span class="mk g" style="top:5%;right:22%">6</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        The backdrop autoplays with sound within seconds of the page loading. Nobody chose that — the page chose it for them, and most people can't say why it feels intrusive, only that it does.
+        <span class="say">the loudest thing on the page decided itself</span>
+      </div></div>
+
+      <div class="note"><div class="n">2</div><div class="body">
+        <span class="lens">beginner sees</span>
+        The thin red sliver under a "continue watching" tile is the fastest recognition moment on the entire screen — before a single title is read, the eye already knows which one to click.
+        <span class="say">relief, not choice — that's the whole trick</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        <span class="lens">academic names it</span>
+        Twenty-plus rows look like infinite choice, but each row is capped at what fits one screen width before scrolling — roughly six tiles. This is <b>Hick's Law</b> in practice: decision time scales with what's <i>visible</i>, not with catalogue size. Choice is chunked, never eliminated.
+        <span class="say">chunk the choice — don't pretend to remove it</span>
+      </div></div>
+
+      <div class="note b"><div class="n">4</div><div class="body">
+        <span class="lens">academic names it</span>
+        The black "1" numeral chip is the only pure-black element on a warm backdrop — isolated by contrast from everything around it. Textbook <b>Von Restorff effect</b>: the one thing that looks like nothing else is the one thing you remember.
+        <span class="say">make exactly one thing look unlike the rest</span>
+      </div></div>
+
+      <div class="note g"><div class="n">5</div><div class="body">
+        <span class="lens">professional built it</span>
+        Every thumbnail on a real account is chosen for that account specifically — Netflix has publicly documented running artwork selection as a live optimisation problem, not a fixed poster per title.
+        <span class="say">the poster is a running experiment, not an asset</span>
+      </div></div>
+
+      <div class="note g"><div class="n">6</div><div class="body">
+        <span class="lens">professional built it</span>
+        Row order — and which rows even exist — is re-ranked per session by a recommendation model. "Continue Watching" is pinned high by convention, but the sequence after it is not the same screen for any two accounts.
+        <span class="say">no two people are looking at the same homepage</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Frame</div><div class="v">Desktop browse, dark UI</div></div>
+    <div class="spec-box"><div class="k">Thumbnail format</div><div class="v">16:9 — unusual; most catalogues use 2:3 posters</div></div>
+    <div class="spec-box"><div class="k">Rows above the fold</div><div class="v">≈ 2.5</div></div>
+    <div class="spec-box"><div class="k">Brand red coverage</div><div class="v">&lt; 2% of pixels</div></div>
+  </div>
+
+  <div class="sw-row">
+    <div class="sw"><div class="chip" style="background:#141414"></div><div class="meta">#141414<br>background</div></div>
+    <div class="sw"><div class="chip" style="background:#e50914"></div><div class="meta">#E50914<br>brand · rare</div></div>
+    <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #eee"></div><div class="meta">#FFFFFF<br>primary CTA</div></div>
+    <div class="sw"><div class="chip" style="background:#b3b3b3"></div><div class="meta">#B3B3B3<br>secondary text</div></div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Remove hero autoplay</td><td>Fewer "why did that start" complaints, but a real, measurable drop in discovery of new titles — this trade-off is why it hasn't been removed.</td></tr>
+        <tr><td>Sort rows alphabetically instead of algorithmically</td><td>The catalogue's depth becomes invisible again. It stops feeling personal and starts feeling like a static library.</td></tr>
+        <tr><td>Make the Top 10 badge brand-red</td><td>It stops reading as an objective ranking and starts reading as an ad. Trust in the signal collapses.</td></tr>
+        <tr><td>Ship one fixed poster per title, no personalisation</td><td>Click-through drops — this is the literal, documented reason the personalised-artwork system exists.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown two — the buy box</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">02 / marketplace — Amazon product page</span>
+  <h2>The one box on the page that was never going to move</h2>
+  <p class="lead">Everything above, below and around the buy box is negotiable. The buy box itself, its position, and its contents are not — because it is the single highest-value few square centimetres in e-commerce.</p>
+
+  <div class="teardown wide">
+    <div class="stage">
+      <div class="browser">
+        <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">amazon.in/dp/...</div></div>
+        <div class="bwindow az" style="height:340px">
+          <div class="az-top"><span>☰ All</span><span>Deliver to Dehradun 248001</span><span style="margin-left:auto">Cart</span></div>
+          <div class="az-crumb">Electronics › Audio › Headphones</div>
+          <div class="az-body">
+            <div class="az-gal"></div>
+            <div>
+              <div class="az-title">WireSound Pro Over-Ear Wireless Headphones, 40H Battery</div>
+              <div class="az-stars">★★★★☆ 4.2 · 18,432 ratings</div>
+              <div class="az-price">₹2,499<s>₹5,999</s></div>
+              <div class="az-prime">✓ prime</div>
+              <div class="az-box">
+                <div style="font-size:11px;color:#007600">In stock</div>
+                <div style="font-size:11px;margin-top:4px">Delivery <b>Tomorrow, 9am–1pm</b></div>
+                <div class="az-btn cart">Add to Cart</div>
+                <div class="az-btn buy">Buy Now</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="mk" style="top:12%;right:8%">1</span>
+        <span class="mk b" style="top:30%;left:6%">2</span>
+        <span class="mk g" style="top:62%;right:8%">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        First instinct on landing: scroll past everything and look for the star rating and the review count. Nobody reads the title fully — the number of ratings functions as the entire trust decision, made in under a second.
+        <span class="say">18,432 people already decided this for me</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        The buy box stays fixed in the top-right scan zone regardless of how long the description below runs — this is the <b>serial position effect</b> deployed structurally: the highest-value action is placed where attention lands first and lingers longest, every single time, on every product.
+        <span class="say">position the money where the eye starts, not where the content ends</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        That box isn't static content — it's the output of a live "Buy Box" eligibility algorithm running across every seller offering this product, scoring price, stock, delivery speed and seller rating in real time. The UI shows one seller's offer; the backend just ran an auction to decide which one.
+        <span class="say">the button is simple. the decision behind it isn't.</span>
+      </div></div>
+    </div>
+  </div>
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Primary CTA</div><div class="v">Orange · "Buy Now"</div></div>
+    <div class="spec-box"><div class="k">Secondary CTA</div><div class="v">Pale yellow · "Add to Cart"</div></div>
+    <div class="spec-box"><div class="k">Trust stack</div><div class="v">Stars → Prime badge → delivery promise</div></div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown three — the empty page</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">03 / search — Google homepage</span>
+  <h2>The most expensive blank page on the internet</h2>
+  <p class="lead">Nothing here is an accident, and nothing here is unfinished. Every element that could have been added was tested, and removed.</p>
+
+  <div class="teardown wide">
+    <div class="stage">
+      <div class="browser">
+        <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">google.com</div></div>
+        <div class="bwindow gg" style="height:280px">
+          <div class="gg-logo"><span>S</span><span>e</span><span>a</span><span>r</span><span>c</span><span>h</span></div>
+          <div class="gg-box">🔍 Search or type a URL</div>
+          <div class="gg-btns"><div class="gg-btn">Search</div><div class="gg-btn">I'm Feeling Lucky</div></div>
+          <div class="gg-links"><span>India</span><span>About · Advertising · Privacy · Terms</span></div>
+        </div>
+        <span class="mk" style="top:20%;left:20%">1</span>
+        <span class="mk b" style="top:50%;left:50%;transform:translateX(-50%)">2</span>
+        <span class="mk g" style="bottom:10%;right:10%">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        "It's just... empty." No beginner articulates it as a design decision — it registers as speed and calm, the opposite reaction a beginner has to a marketplace homepage.
+        <span class="say">nothing to figure out is itself the feature</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        <b>Hick's Law</b> taken to its logical extreme: one input, one action. There's no navigation to parse, no rows to scan — decision time approaches zero because the number of visible choices approaches one.
+        <span class="say">the fastest UI is the one with nothing to choose</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        Google's own internal design lore is that even logo size and whitespace amount were A/B tested against load-time and click behaviour — the "simplicity" is one of the most heavily instrumented empty pages ever shipped, not an absence of decisions.
+        <span class="say">every removed pixel here was tested before it was removed</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown four — friction as luxury</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">04 / marketing — Apple product page</span>
+  <h2>Slowing you down on purpose, and calling it premium</h2>
+  <p class="lead">Put this next to Amazon's page from Teardown Two. Same medium — a page that wants you to buy something — and an almost perfectly opposite set of answers.</p>
+
+  <div class="teardown wide">
+    <div class="stage">
+      <div class="browser">
+        <div class="chrome"><span class="dot" style="background:#e0645a"></span><span class="dot" style="background:#e0b84f"></span><span class="dot" style="background:#6fbf6f"></span><div class="urlbar">apple.com/shop</div></div>
+        <div class="bwindow ap" style="height:340px">
+          <div class="ap-nav"><span>Overview</span><span>Tech Specs</span><span>Compare</span><span>Buy</span></div>
+          <div class="ap-eyebrow">Introducing</div>
+          <div class="ap-h1">Pro. Beyond fast.</div>
+          <div class="ap-sub">The most capable model yet.</div>
+          <div class="ap-cta">Buy</div>
+          <div class="ap-swatches"><span style="background:#1d1d1f"></span><span style="background:#e3e4e5"></span><span style="background:#8a7a5c"></span><span style="background:#2b3a4a"></span></div>
+        </div>
+        <span class="mk" style="top:30%;left:50%;transform:translateX(-50%)">1</span>
+        <span class="mk b" style="top:65%;left:50%;transform:translateX(-50%)">2</span>
+        <span class="mk g" style="top:88%;left:50%;transform:translateX(-50%)">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        It feels expensive before a single spec is read — just from the size of the type and the amount of empty space around it. Nobody says "this is a whitespace decision," they say "this feels premium."
+        <span class="say">air, priced as luxury</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        One CTA, not a comparison grid — the opposite move from Amazon's stacked trust signals. This is the <b>aesthetic-usability effect</b> at work: reducing visible choice doesn't just simplify, it makes the product feel more capable than a spec sheet ever could.
+        <span class="say">confidence needs no second button</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        The comparison table exists — but it's one click away, never the first thing shown. That's a deliberate positioning choice: Apple doesn't want to compete on spec-for-spec comparison, because that's a game a cheaper competitor can win. The page is engineered to sell a feeling first and justify it with numbers only if you go looking.
+        <span class="say">hide the spec sheet until someone asks for it</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown five — trust, stacked</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">05 / marketplace — Airbnb listing card</span>
+  <h2>Selling a stranger's spare room requires more trust signals than any of the others</h2>
+  <p class="lead">No other product on this sheet has a harder trust problem — you're being asked to hand over money to sleep in a private home you've never seen. Every extra signal on this card exists because of that one fact.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="ab">
+          <div class="ab-search"><b>Dehradun</b><span>Any week · Add guests</span></div>
+          <div class="ab-cardimg">
+            <div class="ab-badge">Superhost</div>
+            <div class="ab-heart">♡</div>
+          </div>
+          <div class="ab-info"><div class="nm">Cottage near Rajpur Road</div><div class="rt">★ 4.91</div></div>
+          <div class="ab-loc">28 km away · Mountain view</div>
+          <div class="ab-price">₹4,200 <span>night</span></div>
+        </div>
+        <span class="mk" style="top:34%;left:8%">1</span>
+        <span class="mk b" style="top:22%;right:8%">2</span>
+        <span class="mk g" style="top:58%;left:8%">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        "Superhost" reads as reassuring immediately, without knowing what it takes to earn it — the badge does the entire job of the explanation it's replacing.
+        <span class="say">a badge is a paragraph, compressed</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        Rating, review count, and Superhost status are three separate trust signals stacked on one small card — deliberate <b>social proof</b> layering, because a single signal (just a star rating) isn't enough for a purchase this high-risk.
+        <span class="say">the riskier the purchase, the more proof it needs stacked</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        The heart icon isn't just "save for later" — every save, view and booking on a listing feeds Airbnb's search-ranking model. The card is a data-collection surface disguised as a browsing surface.
+        <span class="say">even not-booking is a signal they're recording</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown six — the reward that never arrives on schedule</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">06 / edtech — Duolingo skill path</span>
+  <h2>A learning app, engineered like a slot machine</h2>
+  <p class="lead">Say that plainly to a room and someone will object. Then walk through the mechanics with them — the objection usually stops halfway through.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="du">
+          <div class="du-top"><span>Unit 4</span><span class="du-flame">🔥 47</span></div>
+          <div class="du-path">
+            <div class="du-node done">✓</div>
+            <div class="du-node done">✓</div>
+            <div class="du-node next">★</div>
+            <div class="du-node">🔒</div>
+            <div class="du-node">🔒</div>
+          </div>
+        </div>
+        <span class="mk" style="top:14%;right:15%">1</span>
+        <span class="mk b" style="top:55%;left:50%;transform:translateX(-50%)">2</span>
+        <span class="mk g" style="top:14%;right:15%;margin-top:22px">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        The streak flame produces real anxiety before the user can name why — missing a day feels like losing something, even though nothing tangible existed to lose.
+        <span class="say">it's a number, and it can still make you feel bad</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        XP, gems and surprise bonus rewards are a <b>variable-ratio reinforcement schedule</b> — the same mechanism behind slot machines. Unpredictable rewards produce more repeat behaviour than a fixed, predictable one, which is precisely why the reward amount is never quite the same twice.
+        <span class="say">predictable rewards get ignored. random ones get chased.</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        The streak system isn't just a motivation feature — "Streak Freeze" is a paid product. Loss aversion engineered into the free experience becomes the exact anxiety a paid feature is sold to resolve.
+        <span class="say">the fear is free. the relief has a price.</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown seven — status, not safety</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">07 / fintech — CRED dashboard</span>
+  <h2>Breaking the one rule every fintech app follows</h2>
+  <p class="lead">Fintech convention says: reassure with blue, calm, and restraint — money apps are supposed to feel <i>safe</i>. This one is dark, maximalist, and gold. It broke the convention on purpose.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="cr">
+          <div class="cr-top"><span>Good evening, Kunal</span><span class="cr-coins">● 2,140 coins</span></div>
+          <div class="cr-card"><div class="cr-chip"></div><div class="cr-num">•••• •••• •••• 4471</div></div>
+          <div class="cr-cta">Pay a bill, earn coins</div>
+          <div class="cr-reward"><span>Spin the wheel</span><span>3 left today</span></div>
+        </div>
+        <span class="mk" style="top:8%;right:10%">1</span>
+        <span class="mk b" style="top:28%;left:50%;transform:translateX(-50%)">2</span>
+        <span class="mk g" style="top:62%;left:50%;transform:translateX(-50%)">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        "Why is a bill-payment app this fancy" is the first honest reaction most people have — the interface is doing more emotional work than the task requires, and it's noticeable before it's understood.
+        <span class="say">paying a credit card bill shouldn't feel like this. that's the point.</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        Access historically gated by credit score turns the product into an <b>in-group signal</b> — exclusivity as onboarding. Combined with a dark, gold-accented palette instead of trustworthy blue, the app is visually arguing "status," not "safety."
+        <span class="say">every other fintech app is trying to calm you down. this one wants to impress you.</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        Bill payment alone doesn't make money. The coins-and-spin layer exists to convert an unprofitable utility into an engagement platform that can be monetised through commerce and lending — variable rewards borrowed directly from the Duolingo playbook, aimed at a completely different business problem.
+        <span class="say">the game isn't decoration. it's the business model.</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown eight — the app that never redesigns</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">08 / messaging — WhatsApp chat list</span>
+  <h2>Zero learning curve, because it borrowed everyone else's</h2>
+  <p class="lead">This is the plainest screen on this sheet, and the hardest to improve without breaking something — because none of its choices were made in isolation.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="wa">
+          <div class="wa-top">Chats</div>
+          <div class="wa-chat"><div class="wa-av"></div><div class="b">
+            <div class="nm">Ma'am UPES <time>9:41</time></div>
+            <div class="msg"><span class="tick">✓✓</span><span>Lecture slides shared</span></div>
+          </div></div>
+          <div class="wa-chat"><div class="wa-av"></div><div class="b">
+            <div class="nm">Batch 2027 <time>9:12</time></div>
+            <div class="msg"><span>Typing…</span><span class="wa-badge">3</span></div>
+          </div></div>
+          <div class="wa-chat"><div class="wa-av"></div><div class="b">
+            <div class="nm">Amma <time>Yesterday</time></div>
+            <div class="msg"><span>📷 Photo</span></div>
+          </div></div>
+        </div>
+        <span class="mk" style="top:22%;right:12%">1</span>
+        <span class="mk b" style="top:35%;left:12%">2</span>
+        <span class="mk g" style="top:35%;right:10%">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        The blue double-tick is trusted instantly and universally, with zero explanation ever given inside the app itself.
+        <span class="say">nobody was ever taught this. everybody just knows it.</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        This is <b>Jakob's Law</b> made literal: users spend most of their time on other apps, so a well-designed app inherits the mental model everyone already has rather than fighting to teach a new one. Tick marks, the mic icon, the camera icon — none of it needed onboarding because none of it is original anymore.
+        <span class="say">the best onboarding is not needing one</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        End-to-end encryption is completely invisible in the UI — the only trace of it is a line of text in a chat's info screen most users never open. That's a deliberate trust-communication decision: the technology is unverifiable by a normal user, so the interface has to earn trust through familiarity and restraint instead of through explanation.
+        <span class="say">you can't see the encryption. you're meant to feel it anyway.</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown nine — the map is the button</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">09 / mobility — Uber booking sheet</span>
+  <h2>The largest tappable target in this entire sheet</h2>
+  <p class="lead">Every other screen here fights for attention with small, precise controls. This one solves the same targeting problem by making the target the whole screen.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="ub">
+          <div class="ub-map"></div>
+          <div class="ub-pin" style="top:30%;left:44%"></div>
+          <div class="ub-sheet">
+            <div class="ub-input">📍 Rajpur Road</div>
+            <div class="ub-input">🎯 UPES School of Business</div>
+            <div class="ub-opt"><span>Uber Go</span><span class="price">₹186</span></div>
+            <div class="ub-opt"><span>Premier</span><span class="price">₹244</span></div>
+            <div class="ub-cta">Confirm Uber Go</div>
+          </div>
+        </div>
+        <span class="mk" style="top:20%;left:20%">1</span>
+        <span class="mk b" style="top:38%;left:50%;transform:translateX(-50%)">2</span>
+        <span class="mk g" style="top:63%;right:12%">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        Seeing the fare before confirming feels obvious in hindsight, but it removes a specific anxiety — "how much is this actually going to cost me" — that older booking flows left unanswered until the ride ended.
+        <span class="say">show the number before asking for the tap</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        The map isn't decoration behind the sheet — it's the primary interaction surface, and it's enormous. This is <b>Fitts's Law</b> pushed to its extreme: target acquisition time drops as target size grows, so the biggest possible target is chosen for the single most important tap in the flow.
+        <span class="say">make the target the whole screen and targeting stops being a problem</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        Upfront pricing wasn't just a UX improvement — it was a direct response to public backlash over opaque surge pricing. This exact screen exists partly because of a PR and regulatory problem, not only a design one.
+        <span class="say">sometimes the interface changes because a crisis did</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown ten — the timer is the product</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">10 / quick commerce — Swiggy Instamart</span>
+  <h2>One badge carries the entire value proposition</h2>
+  <p class="lead">Delete the countdown badge from this screen and you have a mediocre grocery app. Nothing else on it is meaningfully differentiated — the badge <em>is</em> the category.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="width:300px;height:560px">
+        <div class="sw">
+          <div class="sw-top"><span>Deliver to Dehradun</span><span class="sw-timer">⚡ 10 MINS</span></div>
+          <div class="sw-cats">
+            <div class="sw-cat"><i></i>Fruits</div>
+            <div class="sw-cat"><i></i>Snacks</div>
+            <div class="sw-cat"><i></i>Dairy</div>
+          </div>
+          <div class="sw-grid">
+            <div class="sw-card"><div class="im"></div><div class="nm">Amul Milk 1L</div><div class="pr">₹66</div><div class="add">ADD</div></div>
+            <div class="sw-card"><div class="im"></div><div class="nm">Lays Classic</div><div class="pr">₹20</div><div class="add">ADD</div></div>
+          </div>
+        </div>
+        <span class="mk" style="top:8%;right:8%">1</span>
+        <span class="mk b" style="top:8%;right:8%;margin-top:20px">2</span>
+        <span class="mk g" style="top:8%;right:8%;margin-top:40px">3</span>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        <span class="lens">beginner sees</span>
+        The "10 mins" badge is the first and, for many users, the <i>only</i> thing consciously registered before scrolling — everything else on the screen is browsed, this is read.
+        <span class="say">one badge, entire reason to open the app</span>
+      </div></div>
+      <div class="note b"><div class="n">2</div><div class="body">
+        <span class="lens">academic names it</span>
+        That badge is the single lime-green, high-saturation element on an otherwise warm, muted screen — the <b>isolation effect</b> (a close relative of Von Restorff) at work, because this is the one claim the entire category is built on.
+        <span class="say">isolate the one thing that is actually the pitch</span>
+      </div></div>
+      <div class="note g"><div class="n">3</div><div class="body">
+        <span class="lens">professional built it</span>
+        That number isn't a UI flourish — it's a live SLA rendered directly into the interface. It's only sayable because dark-store inventory and rider dispatch are engineered to make it true, order after order. Get it wrong even occasionally and the badge itself becomes the thing users stop trusting.
+        <span class="say">the UI is making a promise the backend has to keep every single time</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Cross-cut — one job, ten answers</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">11 / the same button</span>
+  <h2>Every primary CTA on this sheet is solving the identical problem. Look how differently each one answers it.</h2>
+  <p class="lead">This is the closing argument of the whole exercise. If you ask "which of these ten buttons is best," the question is wrong — each one is correct <em>for what surrounds it</em>, and wrong for everything else.</p>
+
+  <table>
+    <thead><tr><th style="width:13%">Product</th><th style="width:16%">CTA</th><th style="width:20%">Treatment</th><th>Why this, and not one of the other nine</th></tr></thead>
+    <tbody>
+      <tr><td>Netflix</td><td>"Play"</td><td>White on black, sharp rect</td><td>On a dark screen the brightest object wins automatically — no saturated colour required.</td></tr>
+      <tr><td>Amazon</td><td>"Buy Now"</td><td>Saturated orange, pill</td><td>Competing against a page dense with other sellers' offers — it has to shout to be found.</td></tr>
+      <tr><td>Google</td><td><i>the search box itself</i></td><td>No separate button needed</td><td>Removing the CTA removes a decision. The Enter key is the button.</td></tr>
+      <tr><td>Apple</td><td>"Buy"</td><td>Black on off-white, quiet pill</td><td>Nothing else on the page competes for attention, so confidence can be understated.</td></tr>
+      <tr><td>Airbnb</td><td>"Reserve"</td><td>Coral, rounded rect</td><td>Has to register against a page of photography without reading as a discount banner.</td></tr>
+      <tr><td>Duolingo</td><td>"Continue"</td><td>Saturated green, thick 3D bevel</td><td>Deliberately toy-like — tappability itself is part of the brand's friendliness.</td></tr>
+      <tr><td>CRED</td><td>"Pay a bill"</td><td>Purple gradient, soft glow</td><td>Even the button chrome is doing premium/status signalling, not just calling for a tap.</td></tr>
+      <tr><td>WhatsApp</td><td><i>no text at all</i></td><td>Green circular send icon</td><td>Text buttons would break the message-density rhythm this app runs on.</td></tr>
+      <tr><td>Uber</td><td>"Confirm Uber Go"</td><td>Black full-width bar</td><td>You're about to commit real money and a stranger's arrival — the button needs to feel final.</td></tr>
+      <tr><td>Instamart</td><td>"ADD"</td><td>Tiny outlined pill, repeated</td><td>Not one CTA but dozens per screen — quiet on purpose because it appears constantly.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">The button never decided its own colour, size or shape. The surrounding noise did — every time.</p>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Revision sheet</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">12 / for the exam, not just the notebook</span>
+  <h2>All ten, in one table</h2>
+  <p class="lead">One line per lens, per product. This is the page to photograph before a viva.</p>
+
+  <table>
+    <thead><tr><th style="width:13%">Product</th><th style="width:27%">Beginner felt</th><th style="width:27%">Academic named</th><th>Professional built</th></tr></thead>
+    <tbody>
+      <tr><td>Netflix</td><td>Autoplay is intrusive; "continue" gives instant relief</td><td>Hick's Law · Von Restorff</td><td>Personalised artwork, algorithmic row-ranking</td></tr>
+      <tr><td>Amazon</td><td>Rating count = trust, decided in a glance</td><td>Serial position effect</td><td>Live Buy Box eligibility auction</td></tr>
+      <tr><td>Google</td><td>Empty page feels fast and calm</td><td>Hick's Law, taken to zero</td><td>Every removed pixel was A/B tested first</td></tr>
+      <tr><td>Apple</td><td>Feels expensive from whitespace alone</td><td>Aesthetic-usability effect</td><td>Spec comparison hidden by design; sells feeling first</td></tr>
+      <tr><td>Airbnb</td><td>"Superhost" reassures instantly</td><td>Stacked social proof</td><td>Every interaction feeds the search-ranking model</td></tr>
+      <tr><td>Duolingo</td><td>Streak loss produces real anxiety</td><td>Variable-ratio reinforcement</td><td>Streak Freeze monetises the anxiety it created</td></tr>
+      <tr><td>CRED</td><td>"Too fancy for a bill payment app"</td><td>Status signalling, not safety signalling</td><td>Gamified engagement layer funds an unprofitable utility</td></tr>
+      <tr><td>WhatsApp</td><td>Blue ticks trusted with zero explanation</td><td>Jakob's Law</td><td>Encryption trust communicated by restraint, not explanation</td></tr>
+      <tr><td>Uber</td><td>Seeing the fare first removes anxiety</td><td>Fitts's Law, extreme target size</td><td>Upfront pricing is a response to a real PR/regulatory crisis</td></tr>
+      <tr><td>Instamart</td><td>The timer is the only thing really read</td><td>Isolation effect</td><td>The badge is a live SLA, not a UI flourish</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Method — run this yourself</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">13 / the exercise</span>
+  <h2>Rebuild, don't redesign — now with a lens attached to every note</h2>
+  <p class="lead">The same five-step method from the earlier sheets, with one change: every annotation now has to declare which of the three lenses is speaking.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:18%">Step</th><th style="width:38%">Do</th><th>Produces</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Capture</b></td><td>One real screen — a screen where a decision happens, not a home page.</td><td>A constrained target.</td></tr>
+        <tr><td><b>2 · Feel it</b></td><td>Write down your raw, beginner reaction before you know anything. One sentence.</td><td>An honest baseline, before theory contaminates it.</td></tr>
+        <tr><td><b>3 · Name it</b></td><td>Find the citable principle behind that reaction — a real heuristic or bias, not a made-up one.</td><td>Vocabulary that transfers to the next screen you look at.</td></tr>
+        <tr><td><b>4 · Follow the metric</b></td><td>Ask what business or engineering number this decision was built to move, and what it cost to build.</td><td>The part almost every student skips — and the part that separates analysis from theory.</td></tr>
+        <tr><td><b>5 · Break it</b></td><td>Change one token. Screenshot the damage. Explain which lens notices the break first.</td><td>Proof the system was understood, not just described.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:16px"><strong>Marking:</strong> a student who can only do step 2 has an opinion. A student who can do steps 2–4 has an analysis. A student who can do step 5 has understood the product well enough to have built it.</p>
+  </div>
+
+  <h3>Two honest caveats to say out loud</h3>
+  <ul class="nl">
+    <li>These reconstructions are <b>built from observation</b>, not from any company's published specs, code, or screenshots. Colours and proportions are close, not exact — say so, and treat any student who later measures a real value and finds it differs as having done the exercise correctly.</li>
+    <li>The mechanism notes (retention curves, Buy Box scoring, artwork A/B tests) describe <b>publicly known practices in the industry</b>, not confirmed internal specifics of any single company's current system. Teach them as "this is how this category of decision typically gets made," not as leaked internals.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>
