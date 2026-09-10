@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YC Product Building — Knowledge Graph</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e8;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  #canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: grab;
+  }
+  #canvas:active { cursor: grabbing; }
+
+  .header-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .header-bar h1 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #f0f0f5;
+  }
+  .header-bar h1 span { color: #ff6b35; }
+  .header-bar .legend {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .filter-bar {
+    position: fixed;
+    top: 48px; left: 0; right: 0;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 24px;
+    background: rgba(10,10,15,0.75);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    overflow-x: auto;
+  }
+  .filter-btn {
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: #999;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: rgba(255,255,255,0.25); color: #ccc; }
+  .filter-btn.active {
+    background: rgba(255,107,53,0.15);
+    border-color: #ff6b35;
+    color: #ff6b35;
+  }
+
+  .detail-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: min(360px, calc(100vw - 24px));
+    max-height: min(520px, calc(100vh - 24px));
+    z-index: 200;
+    background: rgba(18,18,28,0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 18px;
+    overflow-y: auto;
+    box-shadow: 0 18px 48px rgba(0,0,0,0.45);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px) scale(0.98);
+    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+  }
+  .detail-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+  .explain-eyebrow {
+    margin-bottom: 10px;
+    color: #777785;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+  }
+  .detail-panel .node-type-label {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .detail-panel h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .detail-panel .desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #b0b0bb;
+    margin-bottom: 18px;
+  }
+  .detail-panel .connections-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  .detail-panel .conn-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .detail-panel .conn-item:hover { color: #ff6b35; }
+  .conn-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .detail-panel .source-link {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.25);
+    color: #ff6b35;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .detail-panel .source-link:hover {
+    background: rgba(255,107,53,0.2);
+  }
+
+  .stats-bar {
+    position: fixed;
+    bottom: 12px; left: 24px;
+    z-index: 100;
+    font-size: 11px;
+    color: #555;
+    font-weight: 400;
+  }
+
+  .zoom-controls {
+    position: fixed;
+    bottom: 16px; right: 24px;
+    z-index: 100;
+    display: flex;
+    gap: 4px;
+  }
+  .zoom-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(14,14,22,0.8);
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .zoom-btn:hover { border-color: rgba(255,255,255,0.2); color: #ccc; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="header-bar">
+  <h1><span>YC</span> Product Building — Knowledge Graph</h1>
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#ff6b35"></span>Core Doctrine</span>
+    <span><span class="legend-dot" style="background:#4ecdc4"></span>Process</span>
+    <span><span class="legend-dot" style="background:#a78bfa"></span>RFS Fall 2026</span>
+    <span><span class="legend-dot" style="background:#f472b6"></span>RFS Summer 2026</span>
+    <span><span class="legend-dot" style="background:#60a5fa"></span>People</span>
+    <span><span class="legend-dot" style="background:#fbbf24"></span>Grassroots Ideas</span>
+  </div>
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="detail-panel" id="detailPanel">
+  <div id="panelContent"></div>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="zoom-controls">
+  <button class="zoom-btn" onclick="zoomIn()">+</button>
+  <button class="zoom-btn" onclick="zoomOut()">−</button>
+  <button class="zoom-btn" onclick="resetView()" style="font-size:12px">⟳</button>
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────
+const CATEGORIES = {
+  doctrine: { color: '#ff6b35', label: 'Core Doctrine' },
+  process: { color: '#4ecdc4', label: 'Process' },
+  rfs_f26: { color: '#a78bfa', label: 'RFS Fall 2026' },
+  rfs_s26: { color: '#f472b6', label: 'RFS Summer 2026' },
+  people: { color: '#60a5fa', label: 'People' },
+  grassroots: { color: '#fbbf24', label: 'Grassroots Ideas' },
+};
+
+const nodes = [
+  // ── Core Doctrine ──
+  { id: 'mspw', label: 'Make Something\nPeople Want', cat: 'doctrine', r: 28,
+    desc: 'YC\'s founding mantra. Every startup must launch, talk to users, iterate. A mediocre product shipped now beats a perfect product shipped late — as long as it has a "quantum of utility" whose value overwhelms its warts.',
+    url: 'https://www.ycombinator.com/library/4D-yc-s-essential-startup-advice' },
+  { id: 'launch_fast', label: 'Launch Fast', cat: 'doctrine', r: 20,
+    desc: 'Ship immediately. Launching a mediocre product and iterating from real user feedback is better than waiting for perfection. Most YC companies launch many, many times.',
+    url: 'https://www.ycombinator.com/library/4D-yc-s-essential-startup-advice' },
+  { id: 'talk_users', label: 'Talk to Users', cat: 'doctrine', r: 22,
+    desc: '"Write code and talk to users" — almost all of an early-stage company\'s time should go here. Observe what users actually do, not just what they say. Target the most desperate, intense users first.',
+    url: 'https://www.ycombinator.com/library/4D-yc-s-essential-startup-advice' },
+  { id: 'ninety_ten', label: '90/10 Solution', cat: 'doctrine', r: 16,
+    desc: 'Paul Buchheit\'s rule: find a way to accomplish 90% of what you want with only 10% of the effort. A 90% solution available right now beats a 100% solution that takes ages to build.' },
+  { id: 'dont_scale', label: 'Do Things That\nDon\'t Scale', cat: 'doctrine', r: 18,
+    desc: 'Paul Graham\'s essay turned principle: manually recruit users, do customer support yourself, hand-deliver the product. These unscalable actions build deep understanding of your users.' },
+  { id: 'write_code', label: 'Write Code &\nTalk to Users', cat: 'doctrine', r: 17,
+    desc: 'The only two tasks that matter for an early-stage startup. Everything else — conferences, press, dinners with VCs — is a distraction. Jessica Livingston\'s "How Not to Fail" details the wrong things to focus on.' },
+  { id: 'focus', label: 'Focus', cat: 'doctrine', r: 15,
+    desc: 'Don\'t try to do too many things at once. Startups die of suicide, not murder — from internal confusion, not from competitors. Justin.tv only became Twitch when they focused exclusively on gaming.' },
+
+  // ── Process ──
+  { id: 'mvp', label: 'MVP', cat: 'process', r: 22,
+    desc: 'Minimum Viable Product — the lean specification of your first product. Launch in weeks, not months. Seibel: hold a "spec" to what a small team can build in ≤2–3 weeks. Lean MVP is a feature subset, not a worse version.',
+    url: 'https://www.ycombinator.com/library/6f-how-to-plan-an-mvp' },
+  { id: 'iterate', label: 'Iterate ≠ Pivot', cat: 'process', r: 16,
+    desc: 'Iterating = changing the solution to a fixed problem. Pivoting = changing the problem or customer entirely. Iterate constantly; pivot rarely and only after extensive testing. Don\'t give up after 2 months.' },
+  { id: 'prod_dev_cycle', label: 'Product Dev\nCycle', cat: 'process', r: 18,
+    desc: 'Structured 2-week sprints: brainstorm → spec → build → ship → measure. The cycle exists so you can test multiple things quickly. "Usually all of the things you want to build won\'t work" — speed is how you find what does.',
+    url: 'https://www.ycombinator.com/library/4e-guide-to-product-development' },
+  { id: 'metrics', label: 'Metrics &\nKPIs', cat: 'process', r: 15,
+    desc: 'Set one primary metric (revenue, active users, retention) and 3–5 secondary ones. Measure every feature against these. If a feature doesn\'t move the needle, kill it. Charge money early to validate willingness to pay.' },
+  { id: 'problem_first', label: 'Problem First,\nNot Solution', cat: 'process', r: 17,
+    desc: 'Identifying the problem is the genius part. Google, Facebook, Justin.tv all evolved their solutions to a fixed problem. "Don\'t try to find customers for your solution — change the solution to a good problem."' },
+  { id: 'pmf', label: 'Product-Market\nFit', cat: 'process', r: 20,
+    desc: 'Takes at least 2 years of constant iteration to reach. You know you have it when growth is organic and users resist having the product taken away. Before PMF, nothing else matters — not hiring, not press, not fundraising.' },
+  { id: 'idea_selection', label: 'How to Pick\na Startup Idea', cat: 'process', r: 16,
+    desc: 'Start with problems you\'ve personally experienced. The best ideas come from the intersection of what you know, what you need, and what the world is ready for. YC funds ideas across every category — RFS is extra validation, not a requirement.',
+    url: 'https://www.ycombinator.com/library/Ri-how-to-pick-a-startup-idea' },
+
+  // ── RFS Fall 2026 ──
+  { id: 'rfs_primer', label: 'The Primer\n(AI Tutor)', cat: 'rfs_f26', r: 18,
+    desc: 'Inspired by Neal Stephenson\'s "Diamond Age." An AI tutor that adaptively teaches children to read, write, and do arithmetic at the quality of a private tutor, at consumer scale. Entry point to a far greater ambition.' },
+  { id: 'rfs_defense', label: 'Future of\nAmerican Defense', cat: 'rfs_f26', r: 16,
+    desc: 'Written by the sitting US Secretary of the Army. Needs: low-cost interceptors, next-gen sensors, cutting-edge drones, resilient logistics, advanced manufacturing — all surviving extreme climates.' },
+  { id: 'rfs_small_sw', label: 'Cloud for\nSmall Software', cat: 'rfs_f26', r: 17,
+    desc: 'Agent-built personal/team tools are easy to create, hard to deploy and share. A cloud designed for "small software" could delete most complexity. Small software should be as easy to share as a Google Doc.' },
+  { id: 'rfs_multiplayer', label: 'Multiplayer AI', cat: 'rfs_f26', r: 17,
+    desc: 'AI hasn\'t had its multiplayer moment. Agents run multi-hour tasks that pull in many people — anyone on a team should be able to drop into a live agent session, redirect it, hand it off. Shared agents for every kind of work.' },
+  { id: 'rfs_compute_sea', label: 'Compute\nat Sea', cat: 'rfs_f26', r: 14,
+    desc: 'AI is running out of compute. The ocean is 70% of Earth\'s surface, has abundant sunlight, no permitting, and is a natural heat sink. Standardized modular vessels operating as one global cloud.' },
+  { id: 'rfs_consumer_bn', label: 'AI Consumer\nfor 1B People', cat: 'rfs_f26', r: 18,
+    desc: 'Every platform shift mints consumer giants. AI is the biggest shift yet, but 3 years in, only ChatGPT is on your home screen. Intelligence is now good enough; cost is falling 10× per year. "Consumer is going to be so back."' },
+  { id: 'rfs_aging', label: 'AI for Aging\nPopulation', cat: 'rfs_f26', r: 15,
+    desc: 'By 2030, 1 in 5 Americans over 65. Millions of unfilled caregiving jobs. Almost no technology actually built for older people. Voice interfaces, safety monitoring, robotics for physical tasks, caregiver coordination.' },
+  { id: 'rfs_phys_os', label: 'OS for the\nPhysical World', cat: 'rfs_f26', r: 16,
+    desc: '80% of workforce doesn\'t sit at a desk. Now 3 kinds of workers: AI agents, robots, and wearable-equipped humans. Today\'s software can\'t manage all three. These industries spend 10–100× more on labor than software.' },
+  { id: 'rfs_crypto', label: 'Build in Crypto\n(Bear Market)', cat: 'rfs_f26', r: 14,
+    desc: 'Bear markets let real projects thrive. Stablecoins adopted by every major institution. Agents will use crypto as financial rails. Excited about: capital raising, stablecoin apps, agentic commerce, institutional products.' },
+  { id: 'rfs_real_data', label: 'Data for the\nReal World', cat: 'rfs_f26', r: 15,
+    desc: 'Superhuman models exist for code and language, but physical-world data is sparse. New ways to collect dense physical-world data: robots, autonomous balloons, sensor networks. Once you model a system, you can control it.' },
+  { id: 'rfs_human_proof', label: 'Proving\nYou\'re Human', cat: 'rfs_f26', r: 16,
+    desc: 'Deepfakes enabled $25M fraud via fake video call. Every trust signal was built for a world where faking a human was expensive — that world is gone. Rebuild the trust layer: verified humans on calls, transactions, reviews.' },
+  { id: 'rfs_compliance', label: 'AI-Native\nCompliance', cat: 'rfs_f26', r: 14,
+    desc: 'Financial compliance still stitched with spreadsheets and expensive headcount. AI can monitor regulatory changes, flag anomalies, generate reports, keep audit trails — faster and cheaper than humans.' },
+  { id: 'rfs_self_api', label: 'Self-Maintaining\nAPIs', cat: 'rfs_f26', r: 14,
+    desc: '30% of AWS downtime from external API changes going unnoticed. Agentic coding tools prove devs give codebase access to external tools. When Stripe ships a breaking change, an agent should scan codebases and open a PR.' },
+
+  // ── RFS Summer 2026 ──
+  { id: 'rfs_ag', label: 'AI Low-Pesticide\nAgriculture', cat: 'rfs_s26', r: 15,
+    desc: 'AI identifies individual weeds/pests in real time. Robotics treats one plant, not whole fields. Biology: microbes, peptides, RNA replacements for synthetic chemicals. 90% pesticide reduction = generational company.' },
+  { id: 'rfs_service_co', label: 'AI-Native\nService Companies', cat: 'rfs_s26', r: 17,
+    desc: 'The shift from copilots to companies that skip the human and just do the work. Sell the service, not the software. Services spend is many multiples of software spend. Target: insurance, accounting, compliance, healthcare admin.' },
+  { id: 'rfs_med', label: 'AI Personalized\nMedicine', cat: 'rfs_s26', r: 15,
+    desc: 'Genome sequencing cost collapsed faster than Moore\'s Law. mRNA enables n-of-1 medicines. AI agents analyze genome + EHR + wearables for user-specific protocols. Future of medicine is one patient, one protocol.' },
+  { id: 'rfs_brain', label: 'Company Brain', cat: 'rfs_s26', r: 16,
+    desc: 'AI\'s biggest blocker is domain knowledge scattered in heads, Slack, emails, tickets. Not a search tool — a living map of how a company actually works, turning knowledge into executable skill files for AI. Every company needs one.' },
+  { id: 'rfs_swarm', label: 'Counter-Swarm\nDefense', cat: 'rfs_s26', r: 14,
+    desc: 'Patriot missile: $3M. FPV drone: $500. Defense against coordinated swarms looks more like running a distributed system than operating a weapon. Winning companies look more like Cloudflare than Raytheon.' },
+  { id: 'rfs_dynamic_ui', label: 'Dynamic Software\nInterfaces', cat: 'rfs_s26', r: 15,
+    desc: 'Every user sees the same interface — that\'s about to end. AI coding agents let users become their own forward-deployed engineers. Software companies ship primitives; users heavily modify the final interface.' },
+  { id: 'rfs_space_chips', label: 'Electronics\nin Space', cat: 'rfs_s26', r: 13,
+    desc: 'Reusable rockets → massive increase in space capacity. Bottleneck: inference chips optimized for mass, thermal, and radiation. Explicitly targeting SpaceX/NVIDIA chip designers.' },
+  { id: 'rfs_hw_supply', label: 'Hardware\nSupply Chain', cat: 'rfs_s26', r: 14,
+    desc: 'Shenzhen: design to part in 1 day. US: weeks. That gap compounds across iterations. Next great hardware companies built on much faster iteration loops. Infrastructure for that doesn\'t fully exist.' },
+  { id: 'rfs_saas_kill', label: 'SaaS\nChallengers', cat: 'rfs_s26', r: 16,
+    desc: 'AI collapsed cost of producing software 10–100×. The moat of millions of LOC is gone. 5-person startup can outbuild entrenched incumbents. Replace legacy SaaS with AI-native software — ERPs, CAD, supply chain, industrial control.' },
+  { id: 'rfs_sw_agents', label: 'Software\nfor Agents', cat: 'rfs_s26', r: 16,
+    desc: 'Next trillion internet users are AI agents. They need machine-readable interfaces: APIs, MCPs, CLIs. Tools agents can discover, sign up for, and use programmatically. Biggest opportunity most founders walk past.' },
+  { id: 'rfs_enterprise', label: 'Sell to Huge\nCompanies', cat: 'rfs_s26', r: 14,
+    desc: '2–3 person team can ship something a Fortune 10 finds useful before ink is dry on incorporation. Enterprise buyers are awake, looking for AI teams, willing to move faster than ever. Stealth-for-3-years is dead.' },
+  { id: 'rfs_semi_sc', label: 'Semiconductor\nSupply Chain 2.0', cat: 'rfs_s26', r: 14,
+    desc: 'Advanced AI chip: 1,400 process steps, 12 countries, 5 months. Managed with spreadsheets and SAP. In 2021, a $300 chip held up a $50K car. Need real-time allocation tracking, multi-tier risk, export compliance.' },
+  { id: 'rfs_ai_os', label: 'AI Operating\nSystem for Cos', cat: 'rfs_s26', r: 16,
+    desc: 'Make every meeting, ticket, customer interaction queryable by an intelligence layer. Turns company from open loop to closed loop — cuts sprint time in half. The product connecting Slack+Linear+GitHub+Notion doesn\'t exist yet.' },
+
+  // ── People ──
+  { id: 'pg', label: 'Paul Graham', cat: 'people', r: 16,
+    desc: 'YC co-founder. "The founder is more important than the idea — a lot more important." Author of essays that define startup thinking: Do Things That Don\'t Scale, Startup = Growth, How to Get Startup Ideas.' },
+  { id: 'ms', label: 'Michael Seibel', cat: 'people', r: 16,
+    desc: 'YC CEO. Co-founded Justin.tv → Twitch → sold to Amazon. Teaches the Building Product lecture. Key insight: "It\'s going to take at least 2 years of constant iteration to reach product-market fit."',
+    url: 'https://www.youtube.com/watch?v=C27RVio2rOs' },
+  { id: 'pb', label: 'Paul Buchheit', cat: 'people', r: 12,
+    desc: 'YC partner, creator of Gmail. Originator of the 90/10 rule: accomplish 90% of what you want with 10% of the effort. Also credited with "Make something people want."' },
+  { id: 'gt', label: 'Garry Tan', cat: 'people', r: 14,
+    desc: 'YC President. Personally authored the AI Low-Pesticide Agriculture RFS. Driving YC\'s thesis that AI + biology + robotics create generational companies.' },
+  { id: 'jl', label: 'Jessica\nLivingston', cat: 'people', r: 12,
+    desc: 'YC co-founder. "Nothing else you do will matter if you\'re not making something people want." Created the framework for what NOT to focus on in "How Not To Fail."' },
+  { id: 'ae', label: 'Aaron Epstein', cat: 'people', r: 12,
+    desc: 'YC Partner. Authored the Multiplayer AI and Software for Agents RFS entries. Thesis: the biggest opportunity might be building software that agents depend on, not the agents themselves.' },
+  { id: 'dh', label: 'Diana Hu', cat: 'people', r: 12,
+    desc: 'YC Partner. Authored or co-authored four RFS entries: Real World Data, Inference Chips for Agents, Semiconductor Supply Chain, and AI OS for Companies. Co-founded Escher Reality (powers Pokémon GO).' },
+
+  // ── Grassroots / Community Ideas ──
+  { id: 'gr_edu', label: 'EdTech /\nLanguage / VR', cat: 'grassroots', r: 13,
+    desc: 'From co-founder matching: language learning via interactive videos, Udemy-in-VR, personalized coaching for new managers. Overlaps with YC\'s Primer RFS — education is an enduring founder interest.' },
+  { id: 'gr_fintech', label: 'Fintech /\nText-to-Pay', cat: 'grassroots', r: 12,
+    desc: 'Grassroots ideas: text-to-pay, capital raising for SMBs, Glassdoor for financial advisors, quarterly earnings summaries, Web3 investment protocols. Financial services remain a magnet for first-time founders.' },
+  { id: 'gr_social', label: 'Social / Dating\n/ Community', cat: 'grassroots', r: 12,
+    desc: 'Video speed dating, voice-based dating, Nextdoor for college, connecting strangers to group meetups. Community and connection apps are perennial — YC funded Airbnb, Reddit, and many others here.' },
+  { id: 'gr_agri_hw', label: 'Agri / Hardware\nNiche', cat: 'grassroots', r: 11,
+    desc: 'Exotic melon hydroponics, IoT estrus detection for cattle, electric water jet ski, 3D material design boards. Hardware + niche-domain ideas where founder-market fit matters most.' },
+  { id: 'gr_product_used', label: 'YC Products\nPeople Use Daily', cat: 'grassroots', r: 14,
+    desc: 'Reddit discussion on daily-use YC alumni products: Stripe, Dropbox, Airbnb, DoorDash, Reddit itself, Twitch, Instacart, Gusto, Coinbase. The proof that "make something people want" scales to world-changing companies.' },
+];
+
+const edges = [
+  // Doctrine web
+  { from: 'mspw', to: 'launch_fast', label: 'requires' },
+  { from: 'mspw', to: 'talk_users', label: 'requires' },
+  { from: 'mspw', to: 'write_code', label: 'distilled as' },
+  { from: 'talk_users', to: 'ninety_ten', label: 'yields' },
+  { from: 'launch_fast', to: 'mvp', label: 'operationalized via' },
+  { from: 'talk_users', to: 'iterate', label: 'drives' },
+  { from: 'mspw', to: 'dont_scale', label: 'early tactic' },
+  { from: 'mspw', to: 'focus', label: 'sustains' },
+  // Process web
+  { from: 'mvp', to: 'prod_dev_cycle', label: 'feeds into' },
+  { from: 'prod_dev_cycle', to: 'metrics', label: 'measured by' },
+  { from: 'iterate', to: 'prod_dev_cycle', label: 'executed via' },
+  { from: 'problem_first', to: 'mvp', label: 'precedes' },
+  { from: 'problem_first', to: 'idea_selection', label: 'informed by' },
+  { from: 'prod_dev_cycle', to: 'pmf', label: 'goal' },
+  { from: 'iterate', to: 'pmf', label: '~2 years to' },
+  { from: 'idea_selection', to: 'mspw', label: 'validated by' },
+  // People → Doctrine
+  { from: 'pg', to: 'mspw', label: 'coined' },
+  { from: 'pg', to: 'dont_scale', label: 'authored' },
+  { from: 'ms', to: 'mvp', label: 'teaches' },
+  { from: 'ms', to: 'prod_dev_cycle', label: 'teaches' },
+  { from: 'ms', to: 'iterate', label: 'framework' },
+  { from: 'pb', to: 'ninety_ten', label: 'originated' },
+  { from: 'jl', to: 'focus', label: 'authored "How Not to Fail"' },
+  { from: 'gt', to: 'rfs_ag', label: 'authored' },
+  { from: 'ae', to: 'rfs_multiplayer', label: 'authored' },
+  { from: 'ae', to: 'rfs_sw_agents', label: 'authored' },
+  { from: 'dh', to: 'rfs_real_data', label: 'co-authored' },
+  { from: 'dh', to: 'rfs_semi_sc', label: 'authored' },
+  { from: 'dh', to: 'rfs_ai_os', label: 'authored' },
+  // RFS → Doctrine connections
+  { from: 'rfs_primer', to: 'rfs_consumer_bn', label: 'subset of' },
+  { from: 'rfs_small_sw', to: 'rfs_dynamic_ui', label: 'related' },
+  { from: 'rfs_multiplayer', to: 'rfs_sw_agents', label: 'complementary' },
+  { from: 'rfs_defense', to: 'rfs_swarm', label: 'overlaps' },
+  { from: 'rfs_compliance', to: 'rfs_service_co', label: 'instance of' },
+  { from: 'rfs_brain', to: 'rfs_ai_os', label: 'enables' },
+  { from: 'rfs_hw_supply', to: 'rfs_semi_sc', label: 'specific case' },
+  { from: 'rfs_saas_kill', to: 'rfs_enterprise', label: 'go-to-market via' },
+  { from: 'rfs_space_chips', to: 'rfs_compute_sea', label: 'related frontier' },
+  { from: 'rfs_ag', to: 'rfs_real_data', label: 'needs' },
+  { from: 'rfs_human_proof', to: 'rfs_crypto', label: 'identity layer for' },
+  { from: 'rfs_self_api', to: 'rfs_sw_agents', label: 'infrastructure for' },
+  // RFS → Doctrine
+  { from: 'rfs_service_co', to: 'pmf', label: 'redefines' },
+  { from: 'rfs_consumer_bn', to: 'mspw', label: 'at scale' },
+  { from: 'rfs_saas_kill', to: 'mvp', label: 'enabled by faster' },
+  // Grassroots links
+  { from: 'gr_edu', to: 'rfs_primer', label: 'aligns with' },
+  { from: 'gr_fintech', to: 'rfs_compliance', label: 'overlaps' },
+  { from: 'gr_fintech', to: 'rfs_crypto', label: 'overlaps' },
+  { from: 'gr_agri_hw', to: 'rfs_ag', label: 'aligns with' },
+  { from: 'gr_agri_hw', to: 'rfs_hw_supply', label: 'needs' },
+  { from: 'gr_social', to: 'rfs_human_proof', label: 'needs' },
+  { from: 'gr_product_used', to: 'mspw', label: 'proof of' },
+  { from: 'gr_product_used', to: 'pmf', label: 'achieved' },
+  { from: 'idea_selection', to: 'gr_edu', label: 'examples' },
+  { from: 'idea_selection', to: 'gr_fintech', label: 'examples' },
+];
+
+// ─── PHYSICS ───────────────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Initialize positions with a better initial layout
+const catCenters = {
+  doctrine: { x: 0, y: -80 },
+  process: { x: 200, y: -60 },
+  rfs_f26: { x: -250, y: 180 },
+  rfs_s26: { x: 250, y: 180 },
+  people: { x: -200, y: -180 },
+  grassroots: { x: 0, y: 320 },
+};
+
+nodes.forEach(n => {
+  const c = catCenters[n.cat];
+  n.x = W/2 + c.x + (Math.random() - 0.5) * 200;
+  n.y = H/2 + c.y + (Math.random() - 0.5) * 160;
+  n.vx = 0;
+  n.vy = 0;
+});
+
+let camera = { x: 0, y: 0, zoom: 1 };
+let activeFilter = null;
+let selectedNode = null;
+let hoveredNode = null;
+let dragNode = null;
+let panStart = null;
+let panCameraStart = null;
+let closeCardTimer = null;
+
+// Build adjacency
+const adj = {};
+nodes.forEach(n => adj[n.id] = []);
+edges.forEach(e => {
+  adj[e.from].push(e.to);
+  adj[e.to].push(e.from);
+});
+
+function simulate() {
+  const alpha = 0.15;
+  const repulsion = 4000;
+  const springLen = 140;
+  const springK = 0.004;
+  const centerPull = 0.0008;
+  const damping = 0.88;
+
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      let force = repulsion / (dist * dist);
+      let fx = (dx / dist) * force;
+      let fy = (dy / dist) * force;
+      a.vx -= fx * alpha;
+      a.vy -= fy * alpha;
+      b.vx += fx * alpha;
+      b.vy += fy * alpha;
+    }
+  }
+
+  edges.forEach(e => {
+    const a = nodes.find(n => n.id === e.from);
+    const b = nodes.find(n => n.id === e.to);
+    if (!a || !b) return;
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    let force = (dist - springLen) * springK;
+    let fx = (dx / dist) * force;
+    let fy = (dy / dist) * force;
+    a.vx += fx * alpha;
+    a.vy += fy * alpha;
+    b.vx -= fx * alpha;
+    b.vy -= fy * alpha;
+  });
+
+  const cx = W / 2, cy = H / 2;
+  nodes.forEach(n => {
+    n.vx += (cx - n.x) * centerPull;
+    n.vy += (cy - n.y) * centerPull;
+    n.vx *= damping;
+    n.vy *= damping;
+    if (n !== dragNode) {
+      n.x += n.vx;
+      n.y += n.vy;
+    }
+  });
+}
+
+function toScreen(x, y) {
+  return {
+    x: (x + camera.x) * camera.zoom + W / 2,
+    y: (y + camera.y) * camera.zoom + H / 2
+  };
+}
+function fromScreen(sx, sy) {
+  return {
+    x: (sx - W / 2) / camera.zoom - camera.x,
+    y: (sy - H / 2) / camera.zoom - camera.y
+  };
+}
+
+function isVisible(node) {
+  if (!activeFilter) return true;
+  if (node.cat === activeFilter) return true;
+  // show connected nodes dimly
+  return false;
+}
+function getOpacity(node) {
+  if (!activeFilter) return 1;
+  if (node.cat === activeFilter) return 1;
+  // Check if connected to a filtered node
+  const connected = adj[node.id].some(id => {
+    const n = nodes.find(nn => nn.id === id);
+    return n && n.cat === activeFilter;
+  });
+  return connected ? 0.25 : 0.06;
+}
+function getEdgeOpacity(edge) {
+  if (!activeFilter) return 0.15;
+  const a = nodes.find(n => n.id === edge.from);
+  const b = nodes.find(n => n.id === edge.to);
+  if (a.cat === activeFilter || b.cat === activeFilter) return 0.35;
+  return 0.03;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Edges
+  edges.forEach(e => {
+    const a = nodes.find(n => n.id === e.from);
+    const b = nodes.find(n => n.id === e.to);
+    if (!a || !b) return;
+    const sa = toScreen(a.x - W/2, a.y - H/2);
+    const sb = toScreen(b.x - W/2, b.y - H/2);
+    const opacity = getEdgeOpacity(e);
+
+    ctx.beginPath();
+    ctx.moveTo(sa.x, sa.y);
+    ctx.lineTo(sb.x, sb.y);
+    ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Edge label
+    if (opacity > 0.1 && camera.zoom > 0.6) {
+      const mx = (sa.x + sb.x) / 2;
+      const my = (sa.y + sb.y) / 2;
+      ctx.font = `${9 * camera.zoom}px Inter, sans-serif`;
+      ctx.fillStyle = `rgba(150,150,170,${opacity * 1.5})`;
+      ctx.textAlign = 'center';
+      ctx.fillText(e.label, mx, my - 3);
+    }
+  });
+
+  // Nodes
+  nodes.forEach(n => {
+    const s = toScreen(n.x - W/2, n.y - H/2);
+    const r = n.r * camera.zoom;
+    const opacity = getOpacity(n);
+    const color = CATEGORIES[n.cat].color;
+    const isHover = n === hoveredNode;
+    const isSelected = n === selectedNode;
+
+    // Glow
+    if (isHover || isSelected) {
+      const grad = ctx.createRadialGradient(s.x, s.y, r * 0.5, s.x, s.y, r * 2.5);
+      grad.addColorStop(0, color + '40');
+      grad.addColorStop(1, color + '00');
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = color + (opacity < 1 ? Math.round(opacity * 40).toString(16).padStart(2, '0') : '25');
+    ctx.fill();
+    ctx.strokeStyle = color + (opacity < 1 ? Math.round(opacity * 180).toString(16).padStart(2, '0') : 'cc');
+    ctx.lineWidth = isHover || isSelected ? 2 : 1;
+    ctx.stroke();
+
+    // Label
+    if (camera.zoom > 0.35) {
+      const lines = n.label.split('\n');
+      const fontSize = Math.max(9, Math.min(12, 11 * camera.zoom));
+      ctx.font = `500 ${fontSize}px Inter, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = `rgba(240,240,248,${opacity})`;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, s.x, s.y + r + 12 + i * (fontSize + 2));
+      });
+    }
+  });
+}
+
+function findNodeAt(mx, my) {
+  const world = fromScreen(mx, my);
+  let closest = null, closestDist = Infinity;
+  nodes.forEach(n => {
+    const dx = (n.x - W/2) - world.x;
+    const dy = (n.y - H/2) - world.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const hitR = n.r + 8;
+    if (dist < hitR && dist < closestDist) {
+      closest = n;
+      closestDist = dist;
+    }
+  });
+  return closest;
+}
+
+// ─── INTERACTION ───────────────────────────────────────────────────
+canvas.addEventListener('mousedown', e => {
+  const node = findNodeAt(e.clientX, e.clientY);
+  if (node) {
+    dragNode = node;
+  } else {
+    panStart = { x: e.clientX, y: e.clientY };
+    panCameraStart = { x: camera.x, y: camera.y };
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (dragNode) {
+    const world = fromScreen(e.clientX, e.clientY);
+    dragNode.x = world.x + W/2;
+    dragNode.y = world.y + H/2;
+    dragNode.vx = 0;
+    dragNode.vy = 0;
+  } else if (panStart) {
+    camera.x = panCameraStart.x + (e.clientX - panStart.x) / camera.zoom;
+    camera.y = panCameraStart.y + (e.clientY - panStart.y) / camera.zoom;
+  } else {
+    const node = findNodeAt(e.clientX, e.clientY);
+    hoveredNode = node;
+    canvas.style.cursor = node ? 'pointer' : 'grab';
+    if (node) {
+      openPanel(node, e.clientX, e.clientY);
+    } else {
+      scheduleClosePanel();
+    }
+  }
+});
+
+canvas.addEventListener('mouseleave', scheduleClosePanel);
+
+canvas.addEventListener('mouseup', e => {
+  if (dragNode) {
+    dragNode = null;
+  }
+  panStart = null;
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.92 : 1.08;
+  camera.zoom = Math.max(0.2, Math.min(3, camera.zoom * factor));
+}, { passive: false });
+
+// Touch
+let lastTouchDist = 0;
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    const node = findNodeAt(t.clientX, t.clientY);
+    if (node) {
+      dragNode = node;
+    } else {
+      panStart = { x: t.clientX, y: t.clientY };
+      panCameraStart = { x: camera.x, y: camera.y };
+    }
+  } else if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastTouchDist = Math.sqrt(dx*dx + dy*dy);
+  }
+}, { passive: true });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    if (dragNode) {
+      const world = fromScreen(t.clientX, t.clientY);
+      dragNode.x = world.x + W/2;
+      dragNode.y = world.y + H/2;
+    } else if (panStart) {
+      camera.x = panCameraStart.x + (t.clientX - panStart.x) / camera.zoom;
+      camera.y = panCameraStart.y + (t.clientY - panStart.y) / camera.zoom;
+    }
+  } else if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (lastTouchDist) {
+      camera.zoom = Math.max(0.2, Math.min(3, camera.zoom * (dist / lastTouchDist)));
+    }
+    lastTouchDist = dist;
+  }
+}, { passive: false });
+canvas.addEventListener('touchend', e => {
+  if (dragNode && e.changedTouches.length) {
+    const t = e.changedTouches[0];
+    const node = findNodeAt(t.clientX, t.clientY);
+    if (node) openPanel(node, t.clientX, t.clientY);
+  }
+  dragNode = null;
+  panStart = null;
+  lastTouchDist = 0;
+});
+
+// ─── PANEL ─────────────────────────────────────────────────────────
+function openPanel(node, pointerX, pointerY) {
+  clearTimeout(closeCardTimer);
+  selectedNode = node;
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('panelContent');
+  const cat = CATEGORIES[node.cat];
+  const connections = [];
+  edges.forEach(e => {
+    if (e.from === node.id) {
+      const target = nodes.find(n => n.id === e.to);
+      if (target) connections.push({ node: target, label: e.label, dir: '→' });
+    }
+    if (e.to === node.id) {
+      const source = nodes.find(n => n.id === e.from);
+      if (source) connections.push({ node: source, label: e.label, dir: '←' });
+    }
+  });
+
+  let html = `
+    <div class="explain-eyebrow">Explain</div>
+    <div class="node-type-label" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40">${cat.label}</div>
+    <h2>${node.label.replace(/\n/g, ' ')}</h2>
+    <div class="desc">${node.desc}</div>
+  `;
+  if (node.url) {
+    html += `<a class="source-link" href="${node.url}" target="_blank" rel="noopener">Open Source →</a>`;
+  }
+  if (connections.length) {
+    html += `<div style="margin-top:20px"><div class="connections-title">Connections (${connections.length})</div>`;
+    connections.forEach(c => {
+      const cc = CATEGORIES[c.node.cat].color;
+      html += `<div class="conn-item" onclick="navigateTo('${c.node.id}')">
+        <span class="conn-dot" style="background:${cc}"></span>
+        <span>${c.dir} ${c.node.label.replace(/\n/g, ' ')} <span style="color:#555;font-style:italic">${c.label}</span></span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  content.innerHTML = html;
+  panel.classList.add('open');
+  if (Number.isFinite(pointerX) && Number.isFinite(pointerY)) {
+    positionPanel(pointerX, pointerY);
+  }
+}
+
+function closePanel() {
+  document.getElementById('detailPanel').classList.remove('open');
+  selectedNode = null;
+  hoveredNode = null;
+}
+
+function scheduleClosePanel() {
+  clearTimeout(closeCardTimer);
+  closeCardTimer = setTimeout(closePanel, 120);
+}
+
+function positionPanel(x, y) {
+  const panel = document.getElementById('detailPanel');
+  const gap = 18;
+  const width = panel.offsetWidth;
+  const height = panel.offsetHeight;
+  let left = x + gap;
+  let top = y + gap;
+  if (left + width > W - 12) left = x - width - gap;
+  if (top + height > H - 12) top = H - height - 12;
+  panel.style.left = `${Math.max(12, left)}px`;
+  panel.style.top = `${Math.max(88, top)}px`;
+}
+
+const detailPanel = document.getElementById('detailPanel');
+detailPanel.addEventListener('mouseenter', () => clearTimeout(closeCardTimer));
+detailPanel.addEventListener('mouseleave', scheduleClosePanel);
+
+function navigateTo(id) {
+  const node = nodes.find(n => n.id === id);
+  if (node) {
+    camera.x = -(node.x - W/2);
+    camera.y = -(node.y - H/2);
+    camera.zoom = 1.2;
+    openPanel(node);
+  }
+}
+
+// ─── FILTERS ───────────────────────────────────────────────────────
+const filterBar = document.getElementById('filterBar');
+const allBtn = document.createElement('button');
+allBtn.className = 'filter-btn active';
+allBtn.textContent = 'All';
+allBtn.onclick = () => setFilter(null);
+filterBar.appendChild(allBtn);
+
+Object.entries(CATEGORIES).forEach(([key, val]) => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.innerHTML = `<span class="legend-dot" style="background:${val.color}"></span> ${val.label}`;
+  btn.onclick = () => setFilter(key);
+  btn.dataset.cat = key;
+  filterBar.appendChild(btn);
+});
+
+function setFilter(cat) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active',
+      cat === null ? b.textContent === 'All' : b.dataset.cat === cat
+    );
+  });
+}
+
+// ─── ZOOM ──────────────────────────────────────────────────────────
+function zoomIn() { camera.zoom = Math.min(3, camera.zoom * 1.3); }
+function zoomOut() { camera.zoom = Math.max(0.2, camera.zoom * 0.77); }
+function resetView() { camera = { x: 0, y: 0, zoom: 1 }; }
+
+// ─── LOOP ──────────────────────────────────────────────────────────
+const statsBar = document.getElementById('statsBar');
+statsBar.textContent = `${nodes.length} nodes · ${edges.length} edges · 6 categories · Pan / zoom / hover a node to explain`;
+
+function loop() {
+  simulate();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
