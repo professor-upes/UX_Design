@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teardowns — Type &amp; Colour in the Wild</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&family=Caveat:wght@400;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f3;
+  --grid:#e2e6ee;
+  --ink:#1b2233;
+  --pencil:#7d879c;
+  --pen-red:#c0392b;
+  --pen-blue:#2f5fa8;
+  --pen-green:#0a8754;
+  --marker:#ffe27a;
+  --rule:#d8dbe3;
+
+  /* real product tokens */
+  --z-red:#e23744;
+  --z-ink:#2d2d2d;
+  --z-muted:#696969;
+  --z-surface:#f4f4f2;
+  --z-green:#267e3e;
+
+  --s-green:#1ed760;
+  --s-bg:#121212;
+  --s-elev:#1f1f1f;
+  --s-muted:#b3b3b3;
+
+  --n-text:#37352f;
+  --n-muted:#9b9a97;
+  --n-side:#f7f7f5;
+  --n-hover:#efefee;
+  --n-blue:#0075de;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:"Newsreader",Georgia,serif;
+  font-size:17px;
+  line-height:1.62;
+}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 120px}
+
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.cover{padding:80px 0 30px}
+.cover .sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pencil);margin-bottom:24px}
+.cover h1{font-size:clamp(44px,8vw,92px);font-weight:800;letter-spacing:-.035em;line-height:.94;max-width:15ch}
+.cover .deck{max-width:56ch;font-size:20px;color:#3b4356;margin-top:24px}
+
+.chapter{margin-top:110px}
+.chapter-num{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--pen-red);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-size:clamp(28px,4.2vw,42px);font-weight:700;letter-spacing:-.028em;line-height:1.05;max-width:24ch}
+h3{font-size:19px;font-weight:700;margin:34px 0 8px}
+h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+p{max-width:66ch}
+p.lead{font-size:19px}
+.hl{background-image:linear-gradient(180deg,transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 2px}
+
+.card{background:#fffdf8;border:1px solid #e6e2d8;border-radius:3px;padding:24px 26px;margin:24px 0;box-shadow:0 1px 0 rgba(27,34,51,.06),0 10px 24px -18px rgba(27,34,51,.5);position:relative}
+.card.tilt{transform:rotate(-.35deg)}
+.card>*:first-child{margin-top:0}
+.tape{position:absolute;top:-11px;left:34px;width:78px;height:22px;background:rgba(255,226,122,.55);transform:rotate(-2.5deg)}
+
+.stamp{display:inline-block;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--pen-red);color:var(--pen-red);padding:4px 9px;transform:rotate(-1.6deg);border-radius:2px}
+
+/* ---------- teardown layout ---------- */
+.teardown{display:grid;grid-template-columns:360px 1fr;gap:54px;margin-top:34px;align-items:start}
+@media (max-width:900px){.teardown{grid-template-columns:1fr;gap:34px}}
+
+.stage{position:relative;justify-self:center}
+
+/* phone shell */
+.phone{
+  width:340px;height:706px;
+  border-radius:34px;
+  border:9px solid #23272f;
+  background:#fff;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 26px 54px -26px rgba(27,34,51,.6);
+  font-family:"Inter",system-ui,sans-serif;
+}
+.phone.wide{width:340px}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:20px;background:#23272f;border-radius:0 0 12px 12px;z-index:9}
+.status{display:flex;justify-content:space-between;padding:7px 18px 0;font-size:10.5px;font-weight:600;letter-spacing:.02em}
+
+/* numbered markers */
+.mk{
+  position:absolute;z-index:20;
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  font-family:"Caveat",cursive;font-size:19px;font-weight:700;
+  color:#fff;background:var(--pen-red);
+  border-radius:49% 51% 52% 48%;
+  transform:rotate(-4deg);
+  box-shadow:0 2px 8px rgba(192,57,43,.45);
+}
+.mk.b{background:var(--pen-blue);box-shadow:0 2px 8px rgba(47,95,168,.45)}
+
+/* notes column */
+.notes{position:relative}
+.note{display:grid;grid-template-columns:34px 1fr;gap:12px;margin-bottom:24px;align-items:start}
+.note .n{
+  width:26px;height:26px;display:grid;place-items:center;margin-top:3px;
+  font-family:"Caveat",cursive;font-size:19px;font-weight:700;color:#fff;
+  background:var(--pen-red);border-radius:49% 51% 52% 48%;transform:rotate(-4deg)
+}
+.note.b .n{background:var(--pen-blue)}
+.note .body{font-size:16px;line-height:1.55}
+.note .body b{font-weight:600}
+.note .body .say{
+  display:block;font-family:"Caveat",cursive;font-size:20px;
+  color:var(--pen-red);margin-top:4px;line-height:1.3
+}
+.note.b .body .say{color:var(--pen-blue)}
+.note code{font-family:"Space Mono",monospace;font-size:12.5px;background:rgba(27,34,51,.06);padding:1px 5px;border-radius:2px}
+
+/* spec strip */
+.spec-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0}
+.spec-box{border-top:2px solid var(--ink);padding-top:10px}
+.spec-box .k{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--pencil)}
+.spec-box .v{font-family:"Space Mono",monospace;font-size:13px;margin-top:3px;line-height:1.6}
+
+.sw-row{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.sw{width:104px;border:1px solid rgba(0,0,0,.08);border-radius:2px;overflow:hidden}
+.sw .chip{height:52px}
+.sw .meta{font-family:"Space Mono",monospace;font-size:9px;padding:5px 6px;background:#fff;line-height:1.5}
+
+ul.notes-list{list-style:none;padding:0;margin:14px 0;max-width:66ch}
+ul.notes-list li{position:relative;padding-left:26px;margin-bottom:10px}
+ul.notes-list li::before{content:"→";position:absolute;left:0;top:0;color:var(--pen-red);font-family:"Caveat",cursive;font-size:22px}
+ul.x li::before{content:"✕";font-size:15px}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--pencil);text-align:left;border-bottom:2px solid var(--ink);padding:0 12px 8px 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:11px 12px 11px 0;vertical-align:top}
+
+.part-break{margin:120px 0 0;border-top:2px solid var(--ink);padding-top:14px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.footnote{font-size:13.5px;color:#5a6377;max-width:72ch}
+figcaption{font-family:"Space Mono",monospace;font-size:11px;color:var(--pencil);margin-top:10px;max-width:62ch}
+svg{max-width:100%;height:auto;display:block}
+
+/* ================= ZOMATO SCREEN ================= */
+.z-app{background:var(--z-surface);height:100%;overflow:hidden;color:var(--z-ink)}
+.z-top{background:#fff;padding:14px 16px 12px}
+.z-loc{display:flex;align-items:baseline;gap:6px}
+.z-loc .h{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.z-loc .c{font-size:11px;color:var(--z-muted)}
+.z-loc .addr{font-size:11.5px;color:var(--z-muted);margin-top:1px}
+.z-search{margin-top:12px;background:var(--z-surface);border:1px solid #e8e8e6;border-radius:9px;padding:9px 12px;font-size:12.5px;color:#9a9a9a;display:flex;gap:8px;align-items:center}
+.z-chips{display:flex;gap:7px;padding:11px 16px;overflow:hidden}
+.z-chip{font-size:11px;font-weight:500;border:1px solid #e0e0dd;background:#fff;border-radius:14px;padding:5px 11px;white-space:nowrap}
+.z-chip.on{background:var(--z-ink);color:#fff;border-color:var(--z-ink)}
+.z-list{padding:2px 16px}
+.z-card{background:#fff;border-radius:11px;overflow:hidden;margin-bottom:12px}
+.z-img{height:104px;position:relative;background:linear-gradient(128deg,#e8c8a8,#d99b6c 55%,#c67b4e)}
+.z-img.two{background:linear-gradient(128deg,#cddcc0,#94b57f 55%,#6f9a5e)}
+.z-badge{position:absolute;left:9px;bottom:9px;background:rgba(0,0,0,.62);color:#fff;font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:4px;letter-spacing:.02em}
+.z-body{padding:10px 12px 12px}
+.z-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.z-name{font-size:15.5px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.z-rate{background:var(--z-green);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.z-meta{font-size:12px;color:var(--z-muted);margin-top:4px;display:flex;justify-content:space-between}
+.z-meta .eta{font-variant-numeric:tabular-nums}
+.z-offer{border-top:1px dashed #e6e6e3;margin-top:9px;padding-top:8px;font-size:12px;font-weight:600;color:var(--z-red);letter-spacing:-.01em}
+.z-cta{position:absolute;left:16px;right:16px;bottom:16px;background:var(--z-red);color:#fff;border-radius:10px;padding:13px;text-align:center;font-size:15px;font-weight:600;letter-spacing:-.01em}
+
+/* ================= SPOTIFY SCREEN ================= */
+.s-app{background:var(--s-bg);height:100%;color:#fff;font-family:"Outfit","Inter",sans-serif;display:flex;flex-direction:column}
+.s-app .status{color:#fff}
+.s-head{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 4px;font-size:11px;color:var(--s-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.s-art{margin:22px 20px 0;height:290px;border-radius:8px;background:
+  radial-gradient(circle at 28% 26%, #ff8a5c 0%, transparent 52%),
+  radial-gradient(circle at 76% 70%, #6b4cf0 0%, transparent 55%),
+  linear-gradient(150deg,#2b1a4d,#7a2f52 60%,#c2593f);
+  box-shadow:0 22px 44px -20px rgba(0,0,0,.9)}
+.s-meta{padding:26px 20px 0}
+.s-title{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.s-artist{font-size:14px;color:var(--s-muted);margin-top:3px;font-weight:400}
+.s-bar{margin:26px 20px 0;height:4px;border-radius:2px;background:#4d4d4d;position:relative}
+.s-bar i{position:absolute;left:0;top:0;bottom:0;width:38%;background:#fff;border-radius:2px}
+.s-bar b{position:absolute;left:38%;top:-3px;width:10px;height:10px;border-radius:50%;background:#fff;transform:translateX(-5px)}
+.s-times{display:flex;justify-content:space-between;margin:7px 20px 0;font-size:10.5px;color:var(--s-muted);font-variant-numeric:tabular-nums}
+.s-ctrl{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:22px}
+.s-ic{font-size:19px;color:#fff;opacity:.92}
+.s-play{width:60px;height:60px;border-radius:50%;background:var(--s-green);display:grid;place-items:center}
+.s-play svg{width:22px;height:22px}
+.s-foot{display:flex;justify-content:space-between;padding:24px 22px 0;font-size:12px;color:var(--s-muted)}
+.s-lyr{margin:20px 20px 0;background:var(--s-elev);border-radius:8px;padding:13px 15px}
+.s-lyr .k{font-size:10px;color:var(--s-muted);letter-spacing:.14em;text-transform:uppercase}
+.s-lyr .t{font-size:13.5px;margin-top:5px;color:#e8e8e8}
+
+/* ================= NOTION SCREEN ================= */
+.n-app{background:#fff;height:100%;color:var(--n-text);display:flex;font-family:"Inter",system-ui,sans-serif}
+.n-side{width:104px;background:var(--n-side);padding:26px 9px 0;flex:0 0 104px;border-right:1px solid #ecebe9}
+.n-side .u{font-size:10.5px;font-weight:600;padding:4px 6px;border-radius:4px;display:flex;gap:5px;align-items:center}
+.n-side .i{font-size:10px;color:var(--n-muted);padding:4px 6px;border-radius:4px;margin-top:2px}
+.n-side .i.on{background:var(--n-hover);color:var(--n-text);font-weight:500}
+.n-side .sec{font-size:8.5px;color:var(--n-muted);letter-spacing:.1em;text-transform:uppercase;margin:16px 0 5px 6px;font-weight:600}
+.n-main{flex:1;overflow:hidden}
+.n-cover{height:74px;background:linear-gradient(112deg,#dfe6df,#c9d6cd 50%,#e3dcd0)}
+.n-page{padding:0 22px}
+.n-emoji{font-size:30px;margin-top:-19px;position:relative;line-height:1}
+.n-h1{font-size:27px;font-weight:700;letter-spacing:-.028em;margin-top:11px;line-height:1.15}
+.n-body{font-size:12.5px;line-height:1.66;margin-top:13px;color:var(--n-text)}
+.n-body a{color:var(--n-blue);text-decoration:none;border-bottom:1px solid rgba(0,117,222,.35)}
+.n-h2{font-size:17px;font-weight:600;letter-spacing:-.018em;margin-top:20px}
+.n-call{background:var(--n-side);border-radius:4px;padding:10px 11px;margin-top:13px;display:flex;gap:8px;font-size:12px;line-height:1.55}
+.n-tog{margin-top:13px;font-size:12.5px;display:flex;gap:7px;color:var(--n-text)}
+.n-tbl{margin-top:16px;border-top:1px solid #eceae7}
+.n-tr{display:grid;grid-template-columns:1fr 62px 46px;font-size:11.5px;border-bottom:1px solid #eceae7;padding:7px 0;align-items:center}
+.n-tr.h{color:var(--n-muted);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.n-tag{font-size:9.5px;padding:1px 6px;border-radius:3px;background:#e9f2ec;color:#2c6e49;justify-self:start}
+.n-tag.w{background:#faeee0;color:#8a5a00}
+
+@media print{
+  body{background:#fff;background-image:none;font-size:11pt}
+  .sheet{max-width:none;padding:0}
+  .card{box-shadow:none;transform:none;break-inside:avoid}
+  .chapter{break-inside:avoid-page;margin-top:30px}
+  .part-break{break-before:page;margin-top:0}
+  .teardown{break-inside:avoid;grid-template-columns:320px 1fr}
+  .phone{box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+<header class="cover">
+  <div class="sub">Field notes · product design · sheet 02</div>
+  <h1>Teardowns: the theory, caught in the act</h1>
+  <p class="deck">Three screens rebuilt from scratch, annotated where every type and colour decision from Sheet 01 shows up. Nothing here is a screenshot — each screen is a <strong>reconstruction</strong>, built with the real tokens so it can be pulled apart. Logos are deliberately absent; the point is the system, not the mark.</p>
+  <p style="margin-top:24px"><span class="stamp">Numbers on the screen = notes beside it</span></p>
+</header>
+
+<div class="card tilt">
+  <div class="tape"></div>
+  <h4>Why reconstruct instead of screenshot</h4>
+  <p style="max-width:64ch">A screenshot lets students admire. A reconstruction forces a decision at every pixel — what size is that, what grey is that, why is the rating green when the brand is red. <span class="hl">You cannot rebuild a screen without understanding it.</span> This is the exercise; the annotations are just my answers to it.</p>
+</div>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown one — Zomato</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">01 / marketplace</span>
+  <h2>A hundred near-identical cards, and eight seconds to choose</h2>
+  <p class="lead">Every decision on this screen serves one goal: make two restaurants comparable at a glance. That constraint, not taste, produced the type scale and the colour discipline.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="z-app">
+          <div class="status" style="color:var(--z-ink)"><span>9:41</span><span>▮▮▮ ▲ ▮</span></div>
+
+          <div class="z-top">
+            <div class="z-loc"><span class="h">Indirapuram</span><span class="c">▾</span></div>
+            <div class="addr" style="font-size:11.5px;color:var(--z-muted);margin-top:1px">Ahinsa Khand 2, Ghaziabad</div>
+            <div class="z-search"><span>⌕</span><span>Restaurant name, cuisine or dish</span></div>
+          </div>
+
+          <div class="z-chips">
+            <div class="z-chip on">Filters</div>
+            <div class="z-chip">Rating 4.0+</div>
+            <div class="z-chip">Pure Veg</div>
+            <div class="z-chip">Fast</div>
+          </div>
+
+          <div class="z-list">
+            <div class="z-card">
+              <div class="z-img"><div class="z-badge">50% OFF UPTO ₹100</div></div>
+              <div class="z-body">
+                <div class="z-row">
+                  <div class="z-name">Bikanervala</div>
+                  <div class="z-rate">4.3 ★</div>
+                </div>
+                <div class="z-meta"><span>North Indian, Sweets · ₹300 for two</span><span class="eta">28 min</span></div>
+                <div class="z-offer">Free delivery on orders above ₹199</div>
+              </div>
+            </div>
+
+            <div class="z-card">
+              <div class="z-img two"><div class="z-badge">FLAT ₹125 OFF</div></div>
+              <div class="z-body">
+                <div class="z-row">
+                  <div class="z-name">Punjabi Angithi</div>
+                  <div class="z-rate">4.1 ★</div>
+                </div>
+                <div class="z-meta"><span>North Indian, Mughlai · ₹450 for two</span><span class="eta">41 min</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="z-cta">View cart · 2 items</div>
+        </div>
+
+        <span class="mk" style="top:8.6%;left:5%">1</span>
+        <span class="mk" style="top:16.4%;left:5%">2</span>
+        <span class="mk" style="top:38.5%;right:6%">3</span>
+        <span class="mk" style="top:45.5%;right:6%">4</span>
+        <span class="mk b" style="top:52.5%;left:24%">5</span>
+        <span class="mk" style="top:26.5%;left:32%">6</span>
+        <span class="mk b" style="bottom:5.6%;left:6%">7</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        Location header is the <b>largest text on the screen at 16px</b> — smaller than any headline you'd draw in class. Marketplace screens have no hero. The scale here runs <code>16 / 15.5 / 12.5 / 12 / 11</code>: five steps inside a five-pixel range.
+        <span class="say">density is the aesthetic. tight ratio, ~1.12.</span>
+      </div></div>
+
+      <div class="note"><div class="n">2</div><div class="body">
+        Search placeholder is grey on a near-white field. This is the <b>most common contrast failure in Indian D2C</b> and it appears in the real product too — placeholder copy that carries actual information ("cuisine or dish") should not sit below 4.5:1.
+        <span class="say">flag it. teach students to notice it in shipped apps, not just their own.</span>
+      </div></div>
+
+      <div class="note"><div class="n">3</div><div class="body">
+        The rating pill is <b>green</b>, on a red-branded app. Green is spent on <i>quality/safety</i> — a semantic job — so it can never be confused with promotion. Sheet 01, note 11: brand colour and semantic colour must not overlap.
+        <span class="say">the one colour students always get wrong.</span>
+      </div></div>
+
+      <div class="note"><div class="n">4</div><div class="body">
+        ETA and rating both use <b>tabular figures</b> (<code>font-variant-numeric: tabular-nums</code>). Proportional digits make "28 min" and "41 min" different widths, and the column stops scanning cleanly.
+        <span class="say">one CSS line. enormous difference down a long list.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">5</div><div class="body">
+        Red appears <b>exactly once per card</b>, on the offer line, below a dashed divider. Card one has it; card two doesn't. That asymmetry is the whole point — the red is a signal, and a signal that appears everywhere is wallpaper.
+        <span class="say">count the red pixels. it's under 4% of the screen.</span>
+      </div></div>
+
+      <div class="note"><div class="n">6</div><div class="body">
+        The food image is the only saturated area, so the surface behind it is a warm off-white <code>#F4F4F2</code> rather than pure white. Pure white would make the photography look dirty.
+        <span class="say">neutrals are chosen to flatter the content, not to be invisible.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">7</div><div class="body">
+        White on <code>#E23744</code> is roughly <b>3.9:1</b> — a fail for body text, a pass for large. It survives here only because the label is 15px semibold and sits on a full-bleed bar. Shrink this button and it becomes non-compliant.
+        <span class="say">the brand colour dictates the button size. not the other way round.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Type scale extracted</div><div class="v">16 · 15.5 · 12.5<br>12 · 11.5 · 11 · 9.5</div></div>
+    <div class="spec-box"><div class="k">Weights used</div><div class="v">400 · 500 · 600 · 700</div></div>
+    <div class="spec-box"><div class="k">Ratio</div><div class="v">≈ 1.12 (major second)</div></div>
+    <div class="spec-box"><div class="k">Brand colour coverage</div><div class="v">≈ 4% of pixels</div></div>
+  </div>
+
+  <div class="sw-row">
+    <div class="sw"><div class="chip" style="background:#e23744"></div><div class="meta">#E23744<br>brand · action</div></div>
+    <div class="sw"><div class="chip" style="background:#267e3e"></div><div class="meta">#267E3E<br>rating · semantic</div></div>
+    <div class="sw"><div class="chip" style="background:#2d2d2d"></div><div class="meta">#2D2D2D<br>text</div></div>
+    <div class="sw"><div class="chip" style="background:#696969"></div><div class="meta">#696969<br>muted</div></div>
+    <div class="sw"><div class="chip" style="background:#f4f4f2;border-bottom:1px solid #e6e2d8"></div><div class="meta">#F4F4F2<br>surface</div></div>
+  </div>
+
+  <div class="card">
+    <h4>What breaks if you change one thing</h4>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:34%">Change</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Make the rating pill red</td><td>Rating now reads as a promotion. Trust signal collapses into marketing noise.</td></tr>
+        <tr><td>Bump card title to 20px</td><td>One less card per viewport. Comparison — the entire job — gets harder.</td></tr>
+        <tr><td>Add red to a second element</td><td>The offer line stops being findable. Scarcity is the mechanism.</td></tr>
+        <tr><td>Switch to proportional figures</td><td>ETA column ragged. Scanning speed drops measurably.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown two — Spotify</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">02 / catalogue</span>
+  <h2>The interface disappears so the artwork can be loud</h2>
+  <p class="lead">Spotify does not control its own imagery — every album cover is someone else's design decision. The entire visual system exists to make arbitrary artwork look intentional.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone" style="border-color:#0d0d0d">
+        <div class="notch" style="background:#0d0d0d"></div>
+        <div class="s-app">
+          <div class="status"><span>9:41</span><span>▮▮▮ ▲ ▮</span></div>
+          <div class="s-head"><span>▾</span><span>Playing from playlist</span><span>⋯</span></div>
+
+          <div class="s-art"></div>
+
+          <div class="s-meta">
+            <div class="s-title">Kesariya</div>
+            <div class="s-artist">Arijit Singh, Pritam</div>
+          </div>
+
+          <div class="s-bar"><i></i><b></b></div>
+          <div class="s-times"><span>1:48</span><span>-2:52</span></div>
+
+          <div class="s-ctrl">
+            <span class="s-ic">⤨</span>
+            <span class="s-ic">◀◀</span>
+            <span class="s-play">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5 L19 12 L7 19.5 Z" fill="#191414"/></svg>
+            </span>
+            <span class="s-ic">▶▶</span>
+            <span class="s-ic">↻</span>
+          </div>
+
+          <div class="s-lyr">
+            <div class="k">Lyrics</div>
+            <div class="t">Tap to follow along, line by line</div>
+          </div>
+
+          <div class="s-foot"><span>⌂ Devices</span><span>♡ &nbsp; ⇪</span></div>
+        </div>
+
+        <span class="mk" style="top:14%;left:6%">1</span>
+        <span class="mk" style="top:47%;left:6%">2</span>
+        <span class="mk b" style="top:56%;right:7%">3</span>
+        <span class="mk" style="top:65.5%;left:41%">4</span>
+        <span class="mk b" style="top:79%;left:6%">5</span>
+        <span class="mk" style="top:60%;left:6%">6</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        Artwork gets <b>290 of 706 pixels — over 40% of the screen</b>, and it is the only saturated region. Everything else is greyscale by design. The UI has voluntarily disarmed so a stranger's album cover can win.
+        <span class="say">this is the strategy in one number.</span>
+      </div></div>
+
+      <div class="note"><div class="n">2</div><div class="body">
+        Title 22/700, artist 14/400 in <code>#B3B3B3</code>. Hierarchy built from <b>size + weight + one grey</b> — three dials, zero colour spent. Sheet 01, note 05: colour is the dial you save for last.
+        <span class="say">no accent needed. the gap does the work.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        The progress track is <code>#4D4D4D</code> against a <code>#121212</code> ground — about 3.1:1, just clearing the 3:1 bar for a non-text UI component. It is <b>deliberately near the floor</b> so the filled white portion reads instantly.
+        <span class="say">low contrast can be correct. it has to be measured, not guessed.</span>
+      </div></div>
+
+      <div class="note"><div class="n">4</div><div class="body">
+        The play triangle is <b>black on green</b>, not white. White on <code>#1ED760</code> is about 1.7:1 — unusable. Black is roughly 11.6:1. The maths made this call before any designer did.
+        <span class="say">the single best example i know of a constraint producing an identity.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">5</div><div class="body">
+        The lyrics panel is <code>#1F1F1F</code> — <b>lighter</b> than the page, not shadowed. In dark mode, elevation is expressed by lightness, because shadow is invisible on a dark ground.
+        <span class="say">the rule students always miss when they "add dark mode".</span>
+      </div></div>
+
+      <div class="note"><div class="n">6</div><div class="body">
+        Green appears on <b>exactly one element</b>. Everything else is white, grey or black. Same 4% discipline as Zomato, arrived at from the opposite direction.
+        <span class="say">two very different brands. identical restraint.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Type scale extracted</div><div class="v">22 · 14 · 13.5 · 12<br>11 · 10.5 · 10</div></div>
+    <div class="spec-box"><div class="k">Ratio</div><div class="v">≈ 1.15, with one big jump to the title</div></div>
+    <div class="spec-box"><div class="k">Surfaces</div><div class="v">#121212 page<br>#1F1F1F raised</div></div>
+    <div class="spec-box"><div class="k">Brand colour coverage</div><div class="v">≈ 1% of pixels</div></div>
+  </div>
+
+  <div class="sw-row">
+    <div class="sw"><div class="chip" style="background:#1ed760"></div><div class="meta">#1ED760<br>action, once</div></div>
+    <div class="sw"><div class="chip" style="background:#191414"></div><div class="meta">#191414<br>on-green text</div></div>
+    <div class="sw"><div class="chip" style="background:#121212"></div><div class="meta">#121212<br>page</div></div>
+    <div class="sw"><div class="chip" style="background:#1f1f1f"></div><div class="meta">#1F1F1F<br>raised</div></div>
+    <div class="sw"><div class="chip" style="background:#b3b3b3"></div><div class="meta">#B3B3B3<br>muted text</div></div>
+  </div>
+
+  <div class="card">
+    <h4>The dark-surface argument, stated properly</h4>
+    <p style="max-width:64ch">Students assume dark mode is a mood or a battery decision. Here it is neither. Album art arrives in every hue, saturation and crop imaginable. On white, a dark cover looks like a hole and a pale cover dissolves. On near-black, <span class="hl">every cover reads as deliberate</span>. The dark canvas is a framing device for content the company cannot art-direct.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Teardown three — Notion</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">03 / toolkit</span>
+  <h2>The design gives the colour away</h2>
+  <p class="lead">Notion's product surface is almost entirely neutral. The cover, the emoji, the tags — every coloured pixel on this screen was placed by the <em>user</em>, not the designer.</p>
+
+  <div class="teardown">
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="n-app">
+          <div class="n-side">
+            <div class="status" style="padding:0 0 12px;color:var(--n-muted);font-size:9px"><span>9:41</span></div>
+            <div class="u">◍ K's Workspace</div>
+            <div class="i">⌕ Search</div>
+            <div class="i">◷ Updates</div>
+            <div class="sec">Private</div>
+            <div class="i on">▸ Course design</div>
+            <div class="i">▸ Reading log</div>
+            <div class="i">▸ Teaching cases</div>
+            <div class="sec">Shared</div>
+            <div class="i">▸ DSIT 3010</div>
+            <div class="i">＋ New page</div>
+          </div>
+
+          <div class="n-main">
+            <div class="n-cover"></div>
+            <div class="n-page">
+              <div class="n-emoji">🧭</div>
+              <div class="n-h1">Course design</div>
+              <div class="n-body">Working notes for the semester. Everything here starts as a <a href="#">rough outline</a> and gets cut down twice before it reaches a slide.</div>
+
+              <div class="n-h2">This week</div>
+              <div class="n-call"><span>💡</span><span>Reconstruct one screen per session. Students who rebuild retain more than students who critique.</span></div>
+
+              <div class="n-tog"><span style="color:var(--n-muted)">▸</span><span>Reading list &amp; sources</span></div>
+
+              <div class="n-tbl">
+                <div class="n-tr h"><span>Module</span><span>Status</span><span>Wk</span></div>
+                <div class="n-tr"><span>Type &amp; colour</span><span class="n-tag">Done</span><span>3</span></div>
+                <div class="n-tr"><span>Layout &amp; grid</span><span class="n-tag w">Drafting</span><span>4</span></div>
+                <div class="n-tr"><span>Motion basics</span><span class="n-tag w">Drafting</span><span>5</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <span class="mk" style="top:10%;left:2%">1</span>
+        <span class="mk" style="top:16%;left:36%">2</span>
+        <span class="mk b" style="top:26.5%;left:36%">3</span>
+        <span class="mk" style="top:33%;right:6%">4</span>
+        <span class="mk b" style="top:47%;left:36%">5</span>
+        <span class="mk" style="top:69%;right:6%">6</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><div class="n">1</div><div class="body">
+        The sidebar is <code>#F7F7F5</code> and the text is <code>#37352F</code> — both <b>warm</b>. Notion's entire grey ramp is ecru-tinted rather than the cool blue-grey most tech products default to. Even the shadows are warm-tinted so they stay in chromatic agreement.
+        <span class="say">warm vs cool greys. nobody notices. everybody feels it.</span>
+      </div></div>
+
+      <div class="note"><div class="n">2</div><div class="body">
+        H1 at 27px against 12.5px body is a <b>ratio of about 2.1</b> — a much wider jump than Zomato's 1.12. A page has one subject; a marketplace has a hundred. The scale follows the job.
+        <span class="say">same alphabet. opposite answer. this is the whole course.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">3</div><div class="body">
+        Body sits at <b>line-height 1.66</b> — generous, because this is a reading surface, not a scanning surface. Compare Zomato's card meta at ~1.35. Leading is a statement about how long you expect someone to stay.
+        <span class="say">reading vs scanning. set the leading accordingly.</span>
+      </div></div>
+
+      <div class="note"><div class="n">4</div><div class="body">
+        The cover gradient and the compass emoji are <b>user-supplied</b>. Strip them and this screen is pure greyscale. Notion designed a system that is deliberately incomplete without you.
+        <span class="say">the boldest colour decision here is to not make one.</span>
+      </div></div>
+
+      <div class="note b"><div class="n">5</div><div class="body">
+        The single accent, <code>#0075DE</code>, appears only on a link — held closer to a hyperlink hue than a brand accent. It is doing a <i>functional</i> job, not an identity one.
+        <span class="say">one blue. one job. that's the entire palette.</span>
+      </div></div>
+
+      <div class="note"><div class="n">6</div><div class="body">
+        Status tags use very pale semantic backgrounds with dark text — an editorial green and a warm amber rather than saturated chips. This keeps them inside the warm-grey system instead of tearing a hole in it.
+        <span class="say">semantic colour can be quiet and still be instant.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="spec-strip">
+    <div class="spec-box"><div class="k">Type scale extracted</div><div class="v">27 · 17 · 12.5 · 12<br>11.5 · 10.5 · 9.5</div></div>
+    <div class="spec-box"><div class="k">Ratio</div><div class="v">≈ 1.55 at the top, 1.1 at the bottom</div></div>
+    <div class="spec-box"><div class="k">Body leading</div><div class="v">1.66</div></div>
+    <div class="spec-box"><div class="k">Designer-placed colour</div><div class="v">≈ 0.4% (one link)</div></div>
+  </div>
+
+  <div class="sw-row">
+    <div class="sw"><div class="chip" style="background:#37352f"></div><div class="meta">#37352F<br>text · warm</div></div>
+    <div class="sw"><div class="chip" style="background:#9b9a97"></div><div class="meta">#9B9A97<br>muted · warm</div></div>
+    <div class="sw"><div class="chip" style="background:#f7f7f5;border-bottom:1px solid #e6e2d8"></div><div class="meta">#F7F7F5<br>sidebar</div></div>
+    <div class="sw"><div class="chip" style="background:#0075de"></div><div class="meta">#0075DE<br>link</div></div>
+    <div class="sw"><div class="chip" style="background:#e9f2ec"></div><div class="meta">#E9F2EC<br>tag bg</div></div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Cross-cut — one component, three systems</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">04 / the same button</span>
+  <h2>Identical job. Three different correct answers.</h2>
+  <p class="lead">This is the closing argument of the whole masterclass. Put these side by side and ask which one is <em>best</em>. The answer is that the question is wrong.</p>
+
+  <figure style="margin-top:30px">
+    <svg viewBox="0 0 900 430" role="img" aria-label="The same primary action button rendered in three different design systems with annotations">
+      <!-- ZOMATO -->
+      <rect x="30" y="46" width="252" height="150" fill="#f4f4f2" stroke="#e6e2d8"/>
+      <rect x="54" y="106" width="204" height="44" rx="10" fill="#e23744"/>
+      <text x="156" y="134" text-anchor="middle" font-family="Poppins, sans-serif" font-size="15" font-weight="600" fill="#ffffff">Add item</text>
+      <text x="30" y="38" font-family="Space Mono, monospace" font-size="10" fill="#e23744" letter-spacing="1.4">MARKETPLACE</text>
+      <text x="30" y="222" font-family="Caveat, cursive" font-size="21" fill="#c0392b">white on red · 3.9:1</text>
+      <text x="30" y="244" font-family="Caveat, cursive" font-size="21" fill="#c0392b">must stay big &amp; bold to pass</text>
+
+      <!-- SPOTIFY -->
+      <rect x="324" y="46" width="252" height="150" fill="#121212"/>
+      <rect x="348" y="106" width="204" height="44" rx="22" fill="#1ed760"/>
+      <text x="450" y="134" text-anchor="middle" font-family="Outfit, sans-serif" font-size="15" font-weight="700" fill="#191414">Play</text>
+      <text x="324" y="38" font-family="Space Mono, monospace" font-size="10" fill="#1ed760" letter-spacing="1.4">CATALOGUE</text>
+      <text x="324" y="222" font-family="Caveat, cursive" font-size="21" fill="#0a8754">black on green · 11.6:1</text>
+      <text x="324" y="244" font-family="Caveat, cursive" font-size="21" fill="#0a8754">the pill shape is the brand, not the colour</text>
+
+      <!-- NOTION -->
+      <rect x="618" y="46" width="252" height="150" fill="#ffffff" stroke="#eceae7"/>
+      <rect x="642" y="106" width="204" height="40" rx="5" fill="#37352f"/>
+      <text x="744" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#ffffff">New page</text>
+      <text x="618" y="38" font-family="Space Mono, monospace" font-size="10" fill="#37352f" letter-spacing="1.4">TOOLKIT</text>
+      <text x="618" y="222" font-family="Caveat, cursive" font-size="21" fill="#2f5fa8">no brand colour at all · 13:1</text>
+      <text x="618" y="244" font-family="Caveat, cursive" font-size="21" fill="#2f5fa8">the action is important. the brand isn't.</text>
+
+      <line x1="30" y1="270" x2="870" y2="270" stroke="#d8dbe3"/>
+
+      <!-- reasoning row -->
+      <g font-family="Newsreader, serif" font-size="14" fill="#1b2233">
+        <text x="30" y="300">Competing with photos of</text>
+        <text x="30" y="320">food, so it must shout —</text>
+        <text x="30" y="340">and shouting costs contrast</text>
+        <text x="30" y="360">headroom it can't afford</text>
+        <text x="30" y="380">at small sizes.</text>
+
+        <text x="324" y="300">On a dark ground, the</text>
+        <text x="324" y="320">brightest thing wins. Green</text>
+        <text x="324" y="340">is the only saturated pixel</text>
+        <text x="324" y="360">in the chrome, so it needs</text>
+        <text x="324" y="380">no size to be found.</text>
+
+        <text x="618" y="300">Nothing competes, so the</text>
+        <text x="618" y="320">action can be near-black.</text>
+        <text x="618" y="340">Spending brand colour here</text>
+        <text x="618" y="360">would break the promise</text>
+        <text x="618" y="380">that the page is yours.</text>
+      </g>
+
+      <text x="30" y="420" font-family="Caveat, cursive" font-size="26" fill="#c0392b">the button didn't decide. the surrounding noise did.</text>
+    </svg>
+    <figcaption>Reconstructions using each product's real tokens. Ratios are indicative — verify against shipped values before quoting them in a deliverable.</figcaption>
+  </figure>
+</section>
+
+
+<!-- ================================================= -->
+<div class="part-break">Method — run this yourself</div>
+
+<section class="chapter" style="margin-top:34px">
+  <span class="chapter-num">05 / the exercise</span>
+  <h2>Rebuild, don't redesign</h2>
+  <p class="lead">Sheet 01 warned against the unsolicited-redesign portfolio piece. This is the replacement, and it teaches far more.</p>
+
+  <div class="card tilt">
+    <div class="tape"></div>
+    <table style="margin:6px 0 0">
+      <thead><tr><th style="width:20%">Step</th><th style="width:38%">Do</th><th>Produces</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · Capture</b></td><td>One screen from a real app. Not the home page — a screen where a decision happens.</td><td>A constrained target.</td></tr>
+        <tr><td><b>2 · Measure</b></td><td>Sample every colour and estimate every size. Write them in a table before opening a design tool.</td><td>The shock: usually 9+ greys and 7+ sizes.</td></tr>
+        <tr><td><b>3 · Rebuild</b></td><td>Reconstruct from the table only, never by tracing. HTML/CSS or Figma both fine.</td><td>Every gap in their understanding, exposed.</td></tr>
+        <tr><td><b>4 · Annotate</b></td><td>Number five decisions and write one line each on <i>why</i>, not <i>what</i>.</td><td>The actual deliverable.</td></tr>
+        <tr><td><b>5 · Break it</b></td><td>Change one token. Screenshot the damage. Explain what stopped working.</td><td>Proof they understood the system, not the surface.</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="margin-top:16px"><strong>Marking:</strong> step 5 is where the grade lives. A student who changes the rating pill to red and writes "now the trust signal reads as a promotion" has understood product design. A student who submits a beautiful rebuild with no step 5 has submitted a drawing.</p>
+  </div>
+
+  <h3>Two honest caveats to say out loud</h3>
+  <ul class="notes-list">
+    <li>These reconstructions are <b>built from observation</b>, not from any company's published specs. Sizes and greys are close, not exact. Say so — the method is the lesson, and a student who later measures a real value and finds it differs has done the exercise correctly.</li>
+    <li>Rebuilding for study is fine. <b>Shipping</b> a rebuilt interface, or presenting one as your own product design, is not. Draw that line explicitly before the assignment, not after.</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

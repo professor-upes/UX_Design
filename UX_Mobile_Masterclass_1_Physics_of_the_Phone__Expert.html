@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masterclass 1 — The Physics of the Phone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#2d5f8d; --mid:#3a7ca5; --light:#5ba8cf; --pale:#eef4f9;
+  --page:#f4f7fa; --card:#ffffff; --ink:#1f2c38; --muted:#6b7c8c;
+  --bad:#c0392b; --good:#1e8449; --mark:#f9e79f; --rule:#dde6ee;
+  --body:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+  --hand:"Caveat","Segoe Script",cursive;
+  --label:"Kalam","Segoe Script",cursive;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.68;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ---------- masthead ---------- */
+.masthead{
+  background:linear-gradient(135deg,#24506f 0%,var(--deep) 45%,var(--mid) 100%);
+  color:#fff;padding:56px 24px 44px;position:relative;overflow:hidden;
+}
+.masthead::after{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(255,255,255,.028) 38px 39px);
+  pointer-events:none;
+}
+.mh-inner{max-width:940px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{
+  font-family:var(--label);font-size:16px;letter-spacing:.5px;
+  color:#bfe0f3;margin:0 0 10px;
+}
+.masthead h1{
+  margin:0 0 6px;font-size:clamp(30px,5.4vw,50px);line-height:1.1;
+  font-weight:700;letter-spacing:-.6px;
+}
+.masthead .sub{
+  font-size:clamp(17px,2.4vw,22px);color:#d6ecf8;font-weight:400;margin:0 0 22px;
+}
+.mh-meta{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;
+}
+.pill{
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);
+  padding:5px 13px;border-radius:999px;font-size:13.5px;letter-spacing:.2px;
+}
+.mh-note{
+  font-family:var(--hand);font-size:22px;color:#ffe9a8;
+  margin-top:26px;transform:rotate(-.5deg);max-width:640px;line-height:1.4;
+}
+
+/* ---------- sticky nav ---------- */
+nav.toc{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);
+  box-shadow:0 1px 8px rgba(45,95,141,.07);
+}
+.toc-scroll{
+  max-width:1180px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;
+  padding:0 12px;scrollbar-width:thin;
+}
+.toc-scroll a{
+  flex:0 0 auto;padding:13px 12px;font-size:13.5px;color:var(--muted);
+  text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap;
+  font-weight:600;letter-spacing:.1px;
+}
+.toc-scroll a:hover{color:var(--deep);border-bottom-color:var(--light);background:var(--pale)}
+.toc-scroll a b{color:var(--light);font-weight:700;margin-right:5px}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:40px 20px 90px}
+section.chapter{margin:0 0 46px}
+.card{
+  background:var(--card);border-radius:14px;padding:34px 38px;
+  box-shadow:0 2px 14px rgba(45,95,141,.08);border:1px solid #e6eef5;
+  position:relative;
+}
+@media(min-width:1120px){
+  .card{margin-right:252px}
+  .gutter{position:absolute;right:-236px;top:0;width:212px}
+}
+h2.sec{
+  background:linear-gradient(100deg,var(--deep),var(--mid));
+  color:#fff;margin:0 0 26px;padding:15px 22px 15px 20px;border-radius:10px;
+  border-left:7px solid var(--light);font-size:clamp(20px,3vw,26px);line-height:1.25;
+  letter-spacing:-.2px;display:flex;align-items:baseline;gap:14px;
+}
+h2.sec .num{
+  font-family:var(--mono);font-size:.62em;opacity:.75;letter-spacing:1px;flex:0 0 auto;
+}
+h3{
+  font-size:20.5px;color:var(--deep);margin:38px 0 12px;line-height:1.3;
+  letter-spacing:-.2px;
+}
+h3:first-of-type{margin-top:0}
+h4{font-size:17px;color:var(--mid);margin:26px 0 8px;letter-spacing:.1px}
+p{margin:0 0 15px}
+a{color:var(--mid)}
+strong{color:var(--deep)}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.87em;background:var(--pale);padding:1px 5px;border-radius:4px;color:#24506f}
+.lede{font-size:18.5px;color:#39505f;line-height:1.62}
+
+/* ---------- callouts ---------- */
+.bridge{
+  border:1px solid #cfe3f2;border-left:6px solid var(--light);
+  background:linear-gradient(180deg,#f7fbfe,#eef6fc);
+  padding:18px 22px;border-radius:10px;margin:22px 0;
+}
+.bridge .tag{
+  font-family:var(--label);font-size:16px;color:var(--mid);
+  display:block;margin-bottom:6px;letter-spacing:.3px;
+}
+.insight{
+  background:#eaf4fb;border-left:6px solid var(--deep);border-radius:10px;
+  padding:18px 22px;margin:22px 0;
+}
+.insight .tag{font-family:var(--label);font-size:16px;color:var(--deep);display:block;margin-bottom:5px}
+.analogy{
+  background:var(--mark);border-left:6px solid #d4ac0d;border-radius:10px;
+  padding:18px 22px;margin:22px 0;color:#4a3d05;
+}
+.analogy .tag{font-family:var(--label);font-size:16px;color:#8a6d0b;display:block;margin-bottom:5px}
+.warn{
+  background:#fdeeec;border-left:6px solid var(--bad);border-radius:10px;
+  padding:18px 22px;margin:22px 0;color:#5c2018;
+}
+.warn .tag{font-family:var(--label);font-size:16px;color:var(--bad);display:block;margin-bottom:5px}
+
+/* ---------- number badge ---------- */
+.spec{
+  display:inline-block;font-family:var(--mono);font-size:14px;font-weight:600;
+  background:var(--deep);color:#fff;padding:2px 9px;border-radius:5px;letter-spacing:.4px;
+}
+.spec.g{background:var(--good)} .spec.r{background:var(--bad)} .spec.a{background:#b7791f}
+.srcflag{
+  font-family:var(--label);font-size:14px;color:var(--muted);letter-spacing:.2px;
+}
+
+/* ---------- comparison grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.gbox{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;background:#fbfdff}
+.gbox.web{border-top:5px solid #8e9aa6}
+.gbox.app{border-top:5px solid var(--light)}
+.gbox h5{margin:0 0 8px;font-size:14px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+.gbox.app h5{color:var(--mid)}
+.gbox p:last-child{margin-bottom:0}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;margin:22px 0;border-radius:10px;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:15px;background:#fff;min-width:560px}
+th{
+  background:linear-gradient(100deg,var(--deep),var(--mid));color:#fff;
+  text-align:left;padding:11px 14px;font-weight:600;font-size:14px;letter-spacing:.3px;
+}
+td{padding:11px 14px;border-top:1px solid var(--rule);vertical-align:top;line-height:1.5}
+tbody tr:nth-child(even){background:#f8fbfd}
+td.n{font-family:var(--mono);font-size:13.5px;white-space:nowrap;color:var(--deep)}
+
+/* ---------- figures ---------- */
+figure{margin:28px 0;background:#fbfdff;border:1px solid var(--rule);border-radius:12px;padding:20px 18px 14px}
+figure svg{display:block;width:100%;height:auto;max-width:100%}
+figcaption{
+  font-family:var(--label);font-size:15.5px;color:var(--muted);
+  margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);line-height:1.45;
+}
+figcaption b{color:var(--deep);font-weight:700}
+
+/* ---------- margin notes ---------- */
+.note{
+  font-family:var(--hand);font-size:20px;line-height:1.32;color:var(--deep);
+  transform:rotate(-.7deg);margin:0 0 26px;position:relative;padding-left:14px;
+}
+.note::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--light);border-radius:2px}
+.note.red{color:var(--bad)} .note.red::before{background:var(--bad)}
+.note.green{color:var(--good)} .note.green::before{background:var(--good)}
+@media(max-width:1119px){
+  .gutter{margin:24px 0 0;padding:16px 18px;background:#f7fbfe;border:1px dashed var(--light);border-radius:10px}
+  .note{margin-bottom:16px}
+  .note:last-child{margin-bottom:0}
+}
+.inline-hand{font-family:var(--hand);font-size:1.22em;color:var(--mid)}
+.hl{background:linear-gradient(180deg,transparent 55%,var(--mark) 55%);padding:0 2px}
+
+/* ---------- checklist ---------- */
+.ck{
+  border:1px dashed var(--good);background:#f2faf5;border-radius:8px;
+  padding:11px 16px;margin:18px 0;font-size:15.5px;color:#17583a;
+}
+.ck::before{content:"☐  ";font-weight:700}
+.ck b{color:#0f4429}
+
+/* ---------- teaching note ---------- */
+details.tn{
+  margin:24px 0;border:1px solid #e2d6b8;background:#fdfaf0;border-radius:10px;
+  padding:0 18px;
+}
+details.tn summary{
+  cursor:pointer;padding:13px 0;font-family:var(--label);font-size:16.5px;
+  color:#8a6d0b;font-weight:700;letter-spacing:.3px;list-style:none;
+}
+details.tn summary::-webkit-details-marker{display:none}
+details.tn summary::before{content:"✎  "}
+details.tn[open] summary{border-bottom:1px dashed #e2d6b8}
+details.tn .tnbody{padding:14px 0 16px;font-size:15.5px;color:#5a4a1e}
+details.tn .tnbody p:last-child{margin-bottom:0}
+
+/* ---------- checkpoint ---------- */
+details.cp{
+  margin:24px 0;border:1px solid var(--light);background:#f4fafd;border-radius:10px;padding:0 18px;
+}
+details.cp summary{
+  cursor:pointer;padding:14px 0;font-size:16px;color:var(--deep);font-weight:600;list-style:none;
+}
+details.cp summary::-webkit-details-marker{display:none}
+details.cp summary::before{content:"?";display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:var(--light);color:#fff;
+  font-family:var(--mono);font-size:13px;margin-right:10px;vertical-align:-4px}
+details.cp[open] summary{border-bottom:1px dashed var(--light)}
+details.cp .cpbody{padding:14px 0 16px;font-size:15.5px}
+details.cp .cpbody p:last-child{margin-bottom:0}
+
+/* ---------- misc ---------- */
+.secfoot{
+  margin-top:34px;padding-top:16px;border-top:2px solid var(--pale);
+  font-size:14px;color:var(--muted);display:flex;justify-content:space-between;
+  align-items:baseline;gap:12px;flex-wrap:wrap;
+}
+.secfoot .pg{font-family:var(--mono);font-size:13px;color:var(--light);letter-spacing:1px}
+hr.soft{border:0;border-top:1px solid var(--rule);margin:32px 0}
+.kbd{font-family:var(--mono);font-size:.85em;border:1px solid #c9d6e2;border-bottom-width:2px;
+  border-radius:4px;padding:1px 5px;background:#fff}
+
+/* ---------- print ---------- */
+@media print{
+  body{background:#fff;font-size:11.5pt}
+  nav.toc{display:none}
+  .masthead{background:#2d5f8d !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card{margin-right:0;box-shadow:none;border:1px solid #ccc;page-break-inside:auto}
+  section.chapter{page-break-before:always}
+  section.chapter:first-of-type{page-break-before:avoid}
+  figure{page-break-inside:avoid}
+  .gutter{position:static;width:auto;margin-top:18px;border:1px dashed #999;padding:12px}
+  details{page-break-inside:avoid}
+  details.tn,details.cp{border:1px solid #bbb}
+  details summary{list-style:none}
+  details:not([open]) .tnbody,details:not([open]) .cpbody{display:block}
+  h2.sec{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(prefers-reduced-motion:no-preference){
+  .card{transition:box-shadow .22s ease}
+  .card:hover{box-shadow:0 6px 24px rgba(45,95,141,.13)}
+}
+:focus-visible{outline:3px solid var(--light);outline-offset:3px;border-radius:4px}
+
+/* ---------- small screens: the artifact obeys what it teaches ---------- */
+@media(max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:26px 14px 60px}
+  .card{padding:24px 18px;border-radius:12px}
+  h2.sec{padding:13px 15px;border-left-width:5px;gap:9px}
+  h3{font-size:19px;margin-top:30px}
+  .bridge,.insight,.analogy,.warn{padding:15px 16px}
+  figure{padding:14px 10px 10px}
+  .masthead{padding:40px 18px 34px}
+  .grid2{gap:12px}
+  details.tn,details.cp{padding:0 14px}
+  .lede{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mh-inner">
+    <p class="eyebrow">UX for Mobile Apps · Masterclass 1 of 3</p>
+    <h1>The Physics of the Phone</h1>
+    <p class="sub">Why mobile isn't small web — and what a web designer has to unlearn first</p>
+    <div class="mh-meta">
+      <span class="pill">Level: Advanced</span>
+      <span class="pill">~75 min read</span>
+      <span class="pill">15 figures</span>
+      <span class="pill">2 studio exercises</span>
+      <span class="pill">iOS · Android · India</span>
+    </div>
+    <p class="mh-note">You already know how to design for a cursor on a 1440px canvas.<br>
+    Everything in here exists because a thumb on a 393pt canvas is a different machine.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Section navigation">
+  <div class="toc-scroll">
+    <a href="#s0"><b>00</b>Cold open</a>
+    <a href="#s1"><b>01</b>Three constraints</a>
+    <a href="#s2"><b>02</b>Coordinates</a>
+    <a href="#s3"><b>03</b>Touch</a>
+    <a href="#s4"><b>04</b>Navigation</a>
+    <a href="#s5"><b>05</b>Layout &amp; density</a>
+    <a href="#s6"><b>06</b>iOS vs Android</a>
+    <a href="#s7"><b>07</b>The Indian floor</a>
+    <a href="#s8"><b>08</b>Unlearning table</a>
+    <a href="#s9"><b>09</b>Studio</a>
+    <a href="#s10"><b>10</b>Glossary</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============================= §0 ============================= -->
+<section class="chapter" id="s0">
+<div class="card">
+<h2 class="sec"><span class="num">00</span> Cold open: the same company, two different products</h2>
+
+<p class="lede">Open Zomato on a laptop. Open Zomato on a phone. You are looking at one brand, one database, one set of restaurants — and two structurally different products. Not two skins. Two products.</p>
+
+<p>Before you read my explanation, look at Figure 1 and write down every structural difference you can find. Not colour, not typography — <em>structure</em>. Where things live, what disappeared, what got added, what changed shape. Give it two minutes. The list you produce is a fairly accurate map of what you currently believe mobile design is, and the gap between your list and mine is what this masterclass closes.</p>
+
+<figure>
+<svg viewBox="0 0 900 470" role="img" aria-labelledby="f1t">
+<title id="f1t">A restaurant-discovery interface rendered as a desktop web layout and as a phone app layout, showing structural differences in navigation, filtering and content density</title>
+<style>
+.lbl{font-family:Kalam,cursive;font-size:13px;fill:#6b7c8c}
+.ann{font-family:Caveat,cursive;font-size:17px;fill:#c0392b}
+.anng{font-family:Caveat,cursive;font-size:17px;fill:#1e8449}
+.ui{font-family:'Segoe UI',sans-serif;font-size:8.5px;fill:#4a5c6b}
+.uib{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#1f2c38;font-weight:600}
+</style>
+
+<!-- ===== desktop ===== -->
+<text class="lbl" x="22" y="26">DESKTOP WEB — 1440×900 CSS px · cursor · hover · keyboard</text>
+<rect x="22" y="38" width="470" height="352" rx="8" fill="#fff" stroke="#8e9aa6" stroke-width="1.6"/>
+<rect x="22" y="38" width="470" height="24" rx="8" fill="#e8edf1"/>
+<rect x="22" y="54" width="470" height="8" fill="#e8edf1"/>
+<circle cx="36" cy="50" r="3.5" fill="#c9d2da"/><circle cx="48" cy="50" r="3.5" fill="#c9d2da"/><circle cx="60" cy="50" r="3.5" fill="#c9d2da"/>
+<rect x="74" y="44" width="180" height="12" rx="6" fill="#fff" stroke="#d3dae0"/>
+<text class="ui" x="82" y="53">zomato.com/ncr/delivery</text>
+
+<!-- site header -->
+<rect x="22" y="62" width="470" height="30" fill="#fbfcfd" stroke="#eceff2"/>
+<rect x="34" y="70" width="52" height="14" rx="3" fill="#3a7ca5"/>
+<text class="ui" x="100" y="80">Delivery</text><text class="ui" x="146" y="80">Dining Out</text>
+<text class="ui" x="204" y="80">Nightlife</text><text class="ui" x="252" y="80">Gift Cards</text>
+<text class="ui" x="312" y="80">Business App</text>
+<rect x="404" y="68" width="76" height="18" rx="9" fill="#fff" stroke="#d3dae0"/>
+<text class="ui" x="414" y="80">Sign in / Up</text>
+
+<!-- persistent filter sidebar -->
+<rect x="32" y="102" width="108" height="278" rx="6" fill="#f8fafc" stroke="#e3e9ee"/>
+<text class="uib" x="42" y="118">Filters</text>
+<rect x="42" y="126" width="88" height="1" fill="#e3e9ee"/>
+<g fill="#4a5c6b" font-family="'Segoe UI',sans-serif" font-size="8.5">
+<text x="42" y="142">Cuisine</text><text x="42" y="196">Rating</text><text x="42" y="250">Price for two</text><text x="42" y="304">Offers</text>
+</g>
+<g fill="none" stroke="#c9d2da" stroke-width="1">
+<rect x="42" y="148" width="8" height="8" rx="1.5"/><rect x="42" y="162" width="8" height="8" rx="1.5"/><rect x="42" y="176" width="8" height="8" rx="1.5"/>
+<rect x="42" y="202" width="8" height="8" rx="1.5"/><rect x="42" y="216" width="8" height="8" rx="1.5"/><rect x="42" y="230" width="8" height="8" rx="1.5"/>
+<rect x="42" y="256" width="8" height="8" rx="1.5"/><rect x="42" y="270" width="8" height="8" rx="1.5"/><rect x="42" y="284" width="8" height="8" rx="1.5"/>
+<rect x="42" y="310" width="8" height="8" rx="1.5"/><rect x="42" y="324" width="8" height="8" rx="1.5"/><rect x="42" y="338" width="8" height="8" rx="1.5"/>
+</g>
+<g fill="#7d8b98" font-family="'Segoe UI',sans-serif" font-size="7.5">
+<text x="55" y="155">North Indian</text><text x="55" y="169">Chinese</text><text x="55" y="183">Biryani</text>
+<text x="55" y="209">4.5+</text><text x="55" y="223">4.0+</text><text x="55" y="237">3.5+</text>
+<text x="55" y="263">₹0–300</text><text x="55" y="277">₹300–600</text><text x="55" y="291">₹600+</text>
+<text x="55" y="317">Free delivery</text><text x="55" y="331">Pro extra</text><text x="55" y="345">Buy 1 Get 1</text>
+</g>
+
+<!-- 3-col card grid -->
+<g>
+<rect x="152" y="102" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="152" y="102" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="158" y="160">Bikanervala</text><text class="ui" x="158" y="172">4.3 ★ · ₹400 for two</text><text class="ui" x="158" y="182">North Indian, Sweets</text>
+<rect x="264" y="102" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="264" y="102" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="270" y="160">Barbeque Nation</text><text class="ui" x="270" y="172">4.5 ★ · ₹1600 for two</text><text class="ui" x="270" y="182">Grill, Buffet</text>
+<rect x="376" y="102" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="376" y="102" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="382" y="160">Burger Singh</text><text class="ui" x="382" y="172">4.1 ★ · ₹350 for two</text><text class="ui" x="382" y="182">Burgers, Fast Food</text>
+<rect x="152" y="198" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="152" y="198" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="158" y="256">Saravana Bhavan</text><text class="ui" x="158" y="268">4.4 ★ · ₹500 for two</text>
+<rect x="264" y="198" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="264" y="198" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="270" y="256">Rollmaal</text><text class="ui" x="270" y="268">4.2 ★ · ₹250 for two</text>
+<rect x="376" y="198" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="376" y="198" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="382" y="256">Nagpal's</text><text class="ui" x="382" y="268">4.0 ★ · ₹450 for two</text>
+<rect x="152" y="294" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="152" y="294" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="158" y="352">Kwality Wall's</text>
+<rect x="264" y="294" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="264" y="294" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="270" y="352">Chaayos</text>
+<rect x="376" y="294" width="102" height="86" rx="5" fill="#fff" stroke="#e3e9ee"/><rect x="376" y="294" width="102" height="44" rx="5" fill="#dce6ee"/>
+<text class="uib" x="382" y="352">Theobroma</text>
+</g>
+<!-- hover state indicator -->
+<path d="M300 240 l0 0" />
+<rect x="264" y="198" width="102" height="86" rx="5" fill="none" stroke="#1e8449" stroke-width="2" stroke-dasharray="4 3"/>
+<path d="M318 236 l-5 13 l5 -3 l3 5 l3 -1 l-3 -5 l6 -1 z" fill="#1e8449"/>
+<text class="anng" x="330" y="252">hover reveals</text>
+<text class="anng" x="330" y="266">3 more actions</text>
+
+<!-- ===== phone ===== -->
+<text class="lbl" x="600" y="26">PHONE APP — 393×852 pt · thumb · no hover</text>
+<rect x="600" y="38" width="196" height="404" rx="26" fill="#fff" stroke="#2d5f8d" stroke-width="2"/>
+<!-- status bar -->
+<rect x="600" y="38" width="196" height="26" rx="26" fill="#f2f7fb"/><rect x="600" y="52" width="196" height="12" fill="#f2f7fb"/>
+<text class="ui" x="614" y="56">9:41</text>
+<g fill="#7d8b98"><rect x="746" y="48" width="10" height="7" rx="1"/><rect x="760" y="48" width="14" height="7" rx="2"/><rect x="778" y="49" width="4" height="5" rx="1"/></g>
+<!-- location + search -->
+<text class="uib" x="612" y="82">Delhi NCR ▾</text>
+<rect x="612" y="90" width="172" height="22" rx="11" fill="#f4f7fa" stroke="#dfe7ee"/>
+<text class="ui" x="626" y="104">Search restaurant, cuisine</text>
+<circle cx="620" cy="101" r="3.5" fill="none" stroke="#8e9aa6"/>
+<!-- chips -->
+<g>
+<rect x="612" y="120" width="42" height="18" rx="9" fill="#fff" stroke="#c9d9e6"/><text class="ui" x="620" y="132">Filters</text>
+<rect x="660" y="120" width="38" height="18" rx="9" fill="#fff" stroke="#c9d9e6"/><text class="ui" x="668" y="132">4.0+</text>
+<rect x="704" y="120" width="52" height="18" rx="9" fill="#fff" stroke="#c9d9e6"/><text class="ui" x="712" y="132">Fast del.</text>
+<rect x="762" y="120" width="34" height="18" rx="9" fill="#fff" stroke="#c9d9e6"/><text class="ui" x="768" y="132">₹300</text>
+</g>
+<!-- full-bleed cards -->
+<g>
+<rect x="612" y="148" width="172" height="72" rx="8" fill="#fff" stroke="#e3e9ee"/>
+<rect x="612" y="148" width="172" height="42" rx="8" fill="#dce6ee"/>
+<text class="uib" x="618" y="203">Bikanervala</text><text class="ui" x="618" y="214">4.3 ★ · 28 min · ₹400 for two</text>
+<rect x="612" y="228" width="172" height="72" rx="8" fill="#fff" stroke="#e3e9ee"/>
+<rect x="612" y="228" width="172" height="42" rx="8" fill="#dce6ee"/>
+<text class="uib" x="618" y="283">Barbeque Nation</text><text class="ui" x="618" y="294">4.5 ★ · 41 min · ₹1600 for two</text>
+<rect x="612" y="308" width="172" height="60" rx="8" fill="#fff" stroke="#e3e9ee"/>
+<rect x="612" y="308" width="172" height="42" rx="8" fill="#dce6ee"/>
+<text class="uib" x="618" y="363">Burger Singh</text>
+</g>
+<!-- tab bar -->
+<rect x="600" y="386" width="196" height="42" fill="#fbfdff" stroke="#e3e9ee"/>
+<g fill="#8e9aa6">
+<circle cx="624" cy="399" r="5" fill="#3a7ca5"/><text class="ui" x="612" y="416" fill="#3a7ca5">Delivery</text>
+<circle cx="668" cy="399" r="5"/><text class="ui" x="656" y="416">Dining</text>
+<circle cx="712" cy="399" r="5"/><text class="ui" x="700" y="416">Nightlife</text>
+<circle cx="762" cy="399" r="5"/><text class="ui" x="752" y="416">Profile</text>
+</g>
+<rect x="668" y="434" width="60" height="3.5" rx="1.75" fill="#c3d4e0"/>
+
+<!-- annotations -->
+<path d="M572 108 q22 -10 36 -8" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ar)"/>
+<defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#c0392b"/></marker></defs>
+<text class="ann" x="500" y="120">12 filters →</text>
+<text class="ann" x="500" y="136">1 chip row</text>
+<text class="ann" x="500" y="180">3 columns →</text>
+<text class="ann" x="500" y="196">1 column</text>
+<text class="ann" x="500" y="240">5 nav links →</text>
+<text class="ann" x="500" y="256">4 tabs, moved</text>
+<text class="ann" x="500" y="272">to the bottom</text>
+<text class="ann" x="500" y="316">"28 min" appears —</text>
+<text class="ann" x="500" y="332">new data, not less</text>
+<text class="anng" x="608" y="460">thumb lives here ↑</text>
+<rect x="600" y="330" width="196" height="112" fill="#1e8449" opacity="0.06"/>
+</svg>
+<figcaption><b>Figure 1</b> — The same content, two structures. Note what the phone <em>gained</em>: delivery time on every card, a persistent bottom tab bar, and a green thumb-reach band that governs where anything important is allowed to live.</figcaption>
+</figure>
+
+<h3>What most web designers write down</h3>
+<p>Smaller screen. One column instead of three. Filters collapsed into a button. Menu moved to the bottom. Bigger tap areas. Fewer things on screen.</p>
+<p>All correct, all surface. Every one of those observations describes an <em>effect</em>. None of them names a <em>cause</em>. That is the difference between someone who can copy a mobile layout and someone who can design one for a product that has never been designed before.</p>
+
+<h3>What is actually going on</h3>
+<p>Three causes generate every difference in that figure, and every other difference you will meet for the rest of your career in this domain:</p>
+<ol>
+<li><strong>The hand.</strong> A thumb has an arc. That arc is roughly 60% of the screen on a modern phone, and the good part of it is at the bottom. This single fact relocated the navigation.</li>
+<li><strong>The eye.</strong> Phone sessions are short, interrupted, one-handed, often outdoors, often in motion. That is why "28 min" appears on the phone card and not the desktop card — the phone user is deciding <em>right now</em>, the desktop user is browsing.</li>
+<li><strong>The operating system.</strong> You do not own the screen. iOS and Android reserve bands at the top and bottom, own the back gesture, own the text size, and can suspend your app mid-task. On the web you owned the viewport from edge to edge. Here you are a tenant.</li>
+</ol>
+
+<div class="insight"><span class="tag">The thesis of this masterclass</span>
+<p>Mobile UX is not a style. It is <strong>a set of consequences that fall out of hand, eye, and OS</strong>. If you learn the styles you will be able to imitate 2026's apps. If you learn the three constraints you will be able to derive 2031's.</p></div>
+
+<p>The rest of this document does that derivation. Section 1 establishes the three constraints properly. Sections 2 through 6 derive the working knowledge — units, touch, navigation, layout, platform conventions — from them. Section 7 adds the constraint that most Western material ignores and that anyone shipping in India cannot: the device floor. Section 8 is the table you will actually screenshot.</p>
+
+<div class="gutter">
+<p class="note">Do the 2-minute exercise. Genuinely. The gap between your list and mine is the whole syllabus.</p>
+<p class="note green">Notice this page obeys its own rules — resize the window to 360px and the margin notes fold into the flow instead of vanishing.</p>
+</div>
+
+<div class="secfoot"><span>Cold open</span><span class="pg">00 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §1 ============================= -->
+<section class="chapter" id="s1">
+<div class="card">
+<h2 class="sec"><span class="num">01</span> The three constraints: hand, eye, operating system</h2>
+
+<p class="lede">Everything else in this masterclass is downstream of this section. If you only read one part, read this one — and then derive the rest yourself.</p>
+
+<h3>1.1 — The hand</h3>
+
+<p>You have spent your career designing for an input device that was physically separate from the display. A mouse cursor is a one-pixel point, it never occludes the target, it can rest without clicking, and it reports a hover state that you used to build entire interaction vocabularies — tooltips, dropdown menus, preview cards, cursor changes.</p>
+
+<p>A thumb is none of those things. It is a soft, wide, imprecise object attached to the same limb holding the device, and it moves in an arc, not on a plane.</p>
+
+<figure>
+<svg viewBox="0 0 880 420" role="img" aria-labelledby="f2t">
+<title id="f2t">Thumb reach zones mapped onto a phone screen, and the three common holding grips</title>
+<style>
+.lbl2{font-family:Kalam,cursive;font-size:13px;fill:#6b7c8c}
+.ann2{font-family:Caveat,cursive;font-size:18px}
+.ui2{font-family:'Segoe UI',sans-serif;font-size:9px;fill:#4a5c6b}
+.dim{font-family:ui-monospace,monospace;font-size:10px;fill:#2d5f8d}
+</style>
+
+<!-- reach map phone -->
+<defs>
+  <clipPath id="scr"><rect x="52" y="34" width="188" height="352" rx="22"/></clipPath>
+</defs>
+<rect x="46" y="28" width="200" height="364" rx="28" fill="#fff" stroke="#2d5f8d" stroke-width="2"/>
+<g clip-path="url(#scr)">
+  <rect x="52" y="34" width="188" height="352" fill="#fdeeec"/>
+  <circle cx="228" cy="372" r="196" fill="#fff8e1"/>
+  <circle cx="228" cy="372" r="132" fill="#eafaf1"/>
+</g>
+<circle cx="228" cy="372" r="132" fill="none" stroke="#1e8449" stroke-width="1.4" stroke-dasharray="5 4"/>
+<circle cx="228" cy="372" r="196" fill="none" stroke="#b7791f" stroke-width="1.4" stroke-dasharray="5 4"/>
+<circle cx="228" cy="372" r="5" fill="#2d5f8d"/>
+<text class="dim" x="196" y="396">thumb root</text>
+
+<text class="ann2" x="72" y="66" fill="#c0392b">HARD</text>
+<text class="ann2" x="66" y="200" fill="#b7791f">STRETCH</text>
+<text class="ann2" x="96" y="330" fill="#1e8449">NATURAL</text>
+<text class="lbl2" x="46" y="410">Right-handed, one-handed grip · 6.1" class device</text>
+
+<!-- three grips -->
+<g transform="translate(300,0)">
+<text class="lbl2" x="0" y="20">THE THREE GRIPS · Hoober field study, 2013 · n≈1,333 observations</text>
+
+<!-- grip 1 -->
+<rect x="4" y="34" width="92" height="164" rx="14" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<path d="M78 194 q22 -24 12 -62 q-6 -26 -22 -34 q-10 -5 -14 4 q-4 9 6 16 q12 9 12 30 q0 22 -12 34 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.2"/>
+<rect x="8" y="150" width="84" height="44" fill="#1e8449" opacity="0.1"/>
+<text class="ui2" x="16" y="216" font-size="10" font-weight="600">One-handed</text>
+<text class="dim" x="16" y="230">≈49%</text>
+<text class="ann2" x="4" y="252" fill="#1e8449" font-size="15">thumb does 100%</text>
+
+<!-- grip 2 -->
+<rect x="132" y="34" width="92" height="164" rx="14" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<path d="M124 120 q-16 10 -10 34 q6 22 24 24 q10 1 10 -8 q0 -8 -10 -12 q-12 -5 -8 -22 q3 -12 -6 -16 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.2"/>
+<rect x="136" y="38" width="84" height="156" fill="#1e8449" opacity="0.1"/>
+<text class="ui2" x="140" y="216" font-size="10" font-weight="600">Cradled</text>
+<text class="dim" x="140" y="230">≈36%</text>
+<text class="ann2" x="128" y="252" fill="#1e8449" font-size="15">index finger, full reach</text>
+
+<!-- grip 3 -->
+<rect x="264" y="34" width="92" height="164" rx="14" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<path d="M258 190 q18 -20 10 -52 q-5 -20 -18 -26 q-8 -4 -11 3 q-3 7 5 12 q9 7 9 23 q0 17 -9 26 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.2"/>
+<path d="M362 190 q-18 -20 -10 -52 q5 -20 18 -26 q8 -4 11 3 q3 7 -5 12 q-9 7 -9 23 q0 17 9 26 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.2"/>
+<rect x="268" y="130" width="84" height="64" fill="#1e8449" opacity="0.1"/>
+<text class="ui2" x="272" y="216" font-size="10" font-weight="600">Two-handed</text>
+<text class="dim" x="272" y="230">≈15%</text>
+<text class="ann2" x="258" y="252" fill="#1e8449" font-size="15">typing posture, mostly</text>
+
+<!-- caveat block -->
+<rect x="4" y="272" width="452" height="88" rx="8" fill="#fdfaf0" stroke="#e2d6b8"/>
+<text class="ann2" x="18" y="296" fill="#8a6d0b">Read this before you quote those numbers:</text>
+<text class="ui2" x="18" y="316" font-size="10">The study is from 2013. The reference phone was ~4". A 2026 phone is 6.1–6.9".</text>
+<text class="ui2" x="18" y="332" font-size="10">The grip ratios are directionally still true. The reach arc is not — it covers a</text>
+<text class="ui2" x="18" y="348" font-size="10">much smaller fraction of a modern screen. Treat the ratios as evidence, the arc as geometry.</text>
+</g>
+</svg>
+<figcaption><b>Figure 2</b> — Left: the reach map. Right: the three grips, with the honest caveat about the age of the underlying data. The green band on the left is the only region a one-handed user reaches without adjusting their grip.</figcaption>
+</figure>
+
+<p>Three consequences, and they are not suggestions:</p>
+
+<h4>Consequence 1 — Bottom navigation won on merit, not fashion</h4>
+<p>Primary navigation sits at the bottom of the screen on essentially every consumer app you can name because that is where the thumb already is. Netflix, Instagram, Spotify, Swiggy, PhonePe, CRED — bottom tabs. When Apple shipped iOS 15 they moved Safari's address bar to the bottom, which is about as strong a signal as the industry produces: the company that invented the top-of-screen browser chrome moved it down because phones got taller than hands.</p>
+
+<div class="bridge"><span class="tag">You already know this as…</span>
+<p>…the "fold." On the web you fought to get important things above the fold because scrolling had a cost. On a phone <span class="hl">scrolling is nearly free and reaching is expensive</span>. The axis of difficulty rotated 90 degrees. Important things do not go at the top; they go where the thumb is.</p></div>
+
+<h4>Consequence 2 — Reachability is an OS admission of design failure</h4>
+<p>iOS has "Reachability" (swipe down on the home indicator, the whole screen slides down). Android has one-handed mode. Both exist because phone height outgrew thumb length. Both are escape hatches. <strong>If your primary action requires the user to invoke an escape hatch, you have made a design error, not a device error.</strong></p>
+
+<h4>Consequence 3 — The top of the screen is for information, the bottom is for action</h4>
+<p>This is the single most portable rule in this document. Titles, status, context, content — top. Buttons, tabs, confirmations, destructive actions — bottom. Look at any well-built payment sheet in a UPI app: the amount and payee are at the top where you read them, and the slide-to-pay control is at the bottom where your thumb rests.</p>
+
+<div class="ck">Every primary action sits in the bottom third of the screen, or has a bottom-anchored equivalent. <b>No exceptions for "it looked better at the top in Figma."</b></div>
+
+<details class="tn"><summary>Teaching note — the demo that lands</summary>
+<div class="tnbody">
+<p>Do this live. Ask students to take out their phones, hold them naturally in one hand, and — without adjusting their grip — try to tap the top-left corner. Most will physically shuffle the phone in their palm. That shuffle <em>is</em> the lesson; it takes eight seconds and no slide can replicate it.</p>
+<p>Follow with: "now open any app you use daily and tell me where its main navigation is." You will get bottom tabs from nearly everyone. Let them discover the pattern rather than presenting it.</p>
+</div></details>
+
+<hr class="soft">
+
+<h3>1.2 — The eye</h3>
+
+<p>Web design assumes a stable reader: seated, indoors, screen at a fixed 50–70cm, ambient light controlled, attention available for minutes. Phone design assumes almost none of that.</p>
+
+<ul>
+<li><strong>Viewing distance is shorter but less stable</strong> — roughly 25–35cm, and it moves. Text that is legible at rest becomes unreadable while walking.</li>
+<li><strong>Sessions are short and interrupted.</strong> Design for a user who will be pulled away mid-task and return three minutes later, or three days later. Section 4 covers what that means for state.</li>
+<li><strong>Ambient light is hostile.</strong> A phone in Delhi sun in May is competing with roughly 100,000 lux. Your carefully chosen #7A8B99 on #FFFFFF — a perfectly respectable 3.7:1 that you shipped on a website — is simply invisible outdoors.</li>
+<li><strong>Motion is normal.</strong> Reading on a moving bus, in an auto, on the metro. Fine detail and thin strokes degrade first.</li>
+</ul>
+
+<div class="insight"><span class="tag">The contrast number, stated precisely</span>
+<p>WCAG 2.2 requires <span class="spec">4.5:1</span> for normal body text and <span class="spec">3:1</span> for large text (18pt, or 14pt bold) and for non-text UI components such as icons and input borders. <span class="srcflag">— W3C, normative</span></p>
+<p style="margin-top:10px">Those are <em>accessibility floors measured in a lab</em>. My working rule for phone interfaces is 7:1 for anything the user must read outdoors — delivery status, OTP codes, transaction amounts, boarding passes. <span class="srcflag">— my judgement, not a standard</span></p></div>
+
+<p>This is also why "elegant" light-grey secondary text — the workhorse of tasteful web design — is the most common quality failure in mobile UI made by web designers. On your calibrated monitor at 30% brightness it reads as refined. On a 400-nit budget LCD at 60% brightness in daylight it reads as nothing at all.</p>
+
+<div class="ck">Test every screen at maximum and minimum brightness, and once outdoors, before you call it done.</div>
+
+<hr class="soft">
+
+<h3>1.3 — The operating system</h3>
+
+<p>Here is the constraint that has no web analogue at all, and the one web designers systematically underestimate.</p>
+
+<p>On the web you owned the viewport. Every pixel from <code>0,0</code> to <code>100vw,100vh</code> was yours to command. The browser had chrome, but it lived outside your box.</p>
+
+<p>In an app, <strong>the operating system is inside your box</strong>. It reserves regions. It owns gestures. It changes your typography without asking. It can freeze your process. And it will hand your screen to another app and give it back later in a state you have to reconstruct.</p>
+
+<figure>
+<svg viewBox="0 0 860 470" role="img" aria-labelledby="f3t">
+<title id="f3t">Diagram of the screen regions reserved by the operating system on a modern phone, with dimensions in logical points</title>
+<style>
+.lbl3{font-family:Kalam,cursive;font-size:13px;fill:#6b7c8c}
+.ann3{font-family:Caveat,cursive;font-size:17px;fill:#c0392b}
+.dim3{font-family:ui-monospace,monospace;font-size:10.5px;fill:#2d5f8d}
+.ui3{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#4a5c6b}
+</style>
+
+<rect x="60" y="30" width="230" height="412" rx="30" fill="#fff" stroke="#2d5f8d" stroke-width="2.2"/>
+
+<!-- top inset -->
+<rect x="63" y="33" width="224" height="52" fill="#fdeeec"/>
+<rect x="112" y="42" width="126" height="26" rx="13" fill="#1f2c38"/>
+<text class="ui3" x="76" y="60" fill="#1f2c38">9:41</text>
+<g fill="#1f2c38"><rect x="238" y="52" width="10" height="7" rx="1"/><rect x="252" y="52" width="14" height="7" rx="2"/></g>
+<text class="dim3" x="300" y="52">TOP SAFE-AREA INSET</text>
+<text class="dim3" x="300" y="68">47–62 pt — device dependent</text>
+<text class="ann3" x="300" y="88">never hardcode this</text>
+<line x1="290" y1="33" x2="295" y2="33" stroke="#2d5f8d"/><line x1="290" y1="85" x2="295" y2="85" stroke="#2d5f8d"/>
+<line x1="293" y1="33" x2="293" y2="85" stroke="#2d5f8d" stroke-dasharray="3 2"/>
+
+<!-- your area -->
+<rect x="63" y="85" width="224" height="298" fill="#eafaf1"/>
+<text class="ui3" x="120" y="230" font-size="14" fill="#1e8449" font-weight="600">YOUR CANVAS</text>
+<text class="dim3" x="300" y="230">the only region you own</text>
+
+<!-- gesture edges -->
+<rect x="63" y="85" width="14" height="298" fill="#fff8e1"/>
+<rect x="273" y="85" width="14" height="298" fill="#fff8e1"/>
+<text class="dim3" x="300" y="264">EDGE GESTURE ZONES</text>
+<text class="dim3" x="300" y="280">iOS: back-swipe · Android: system back</text>
+<text class="ann3" x="300" y="300">your horizontal carousel</text>
+<text class="ann3" x="300" y="317">will fight these</text>
+
+<!-- home indicator -->
+<rect x="63" y="383" width="224" height="56" fill="#fdeeec"/>
+<rect x="140" y="416" width="70" height="4" rx="2" fill="#1f2c38"/>
+<text class="dim3" x="300" y="400">BOTTOM SAFE-AREA INSET</text>
+<text class="dim3" x="300" y="416">34 pt on Face ID iPhones</text>
+<text class="ann3" x="300" y="436">a button here is a home-swipe</text>
+<line x1="290" y1="383" x2="295" y2="383" stroke="#2d5f8d"/><line x1="290" y1="439" x2="295" y2="439" stroke="#2d5f8d"/>
+<line x1="293" y1="383" x2="293" y2="439" stroke="#2d5f8d" stroke-dasharray="3 2"/>
+
+<!-- right panel: things the OS also takes -->
+<rect x="592" y="30" width="252" height="412" rx="10" fill="#fbfdff" stroke="#dde6ee"/>
+<text class="lbl3" x="606" y="52">THE OS ALSO OWNS…</text>
+<g class="ui3" font-size="10.5">
+<text x="606" y="80" font-weight="600" fill="#2d5f8d">Your type size</text>
+<text x="606" y="96">Dynamic Type / font scale. Users set 85%–310%.</text>
+<text x="606" y="110">Your fixed-height row will clip. Guaranteed.</text>
+
+<text x="606" y="140" font-weight="600" fill="#2d5f8d">Your colour scheme</text>
+<text x="606" y="156">Light / dark / high-contrast, switchable</text>
+<text x="606" y="170">mid-session, at sunset, automatically.</text>
+
+<text x="606" y="200" font-weight="600" fill="#2d5f8d">Your motion</text>
+<text x="606" y="216">Reduce Motion is a system setting. Your</text>
+<text x="606" y="230">hero transition must have a still fallback.</text>
+
+<text x="606" y="260" font-weight="600" fill="#2d5f8d">Your lifecycle</text>
+<text x="606" y="276">Backgrounded, suspended, memory-killed,</text>
+<text x="606" y="290">relaunched cold — all without warning.</text>
+
+<text x="606" y="320" font-weight="600" fill="#2d5f8d">Your keyboard</text>
+<text x="606" y="336">Appears over your layout, height unknown</text>
+<text x="606" y="350">until it appears, varies by keyboard app.</text>
+
+<text x="606" y="380" font-weight="600" fill="#2d5f8d">Your permissions</text>
+<text x="606" y="396">Camera, location, notifications, photos —</text>
+<text x="606" y="410">the user can say no, and often will.</text>
+</g>
+<text class="ann3" x="606" y="434" font-size="16">on the web, you owned every one of these</text>
+
+<!-- bracket -->
+<path d="M330 120 q-14 60 0 120" fill="none" stroke="#c0392b" stroke-width="1.3"/>
+<text class="lbl3" x="60" y="462">Reference device: iPhone 15 class, 393 × 852 pt, portrait</text>
+</svg>
+<figcaption><b>Figure 3</b> — The screen you think you have versus the screen you actually control. The two red bands and two amber strips are not yours. Neither is the list on the right.</figcaption>
+</figure>
+
+<p>Two of these deserve immediate emphasis because they break web-trained instincts hardest.</p>
+
+<h4>Dynamic Type will destroy your fixed-height rows</h4>
+<p>On the web, a user zooming to 200% triggered your responsive breakpoints and the layout reflowed — you had already designed for it. On a phone, the user increases text size in system settings and <em>your layout does not get a breakpoint</em>. The text simply becomes larger inside the container you gave it. If you set a 44pt-tall list row with 17pt text, and the user is running 235% text size, that text is now 40pt tall inside a 44pt row. It clips, or it overlaps, or it truncates something important.</p>
+<p>The fix is structural, not cosmetic: <span class="hl">size containers from their contents, never the reverse</span>. Every height in a mobile layout should be a minimum, not a value.</p>
+
+<h4>Your app gets suspended, not unloaded</h4>
+<p>A web page that goes away and comes back reloads. It re-runs, re-fetches, and lands on a URL that describes its state. An app that goes away and comes back <em>resumes</em> — sometimes from memory, sometimes from a cold launch after the OS reclaimed it. The user's mental model does not distinguish these. They expect to find their half-typed review, their scroll position, their selected filters, exactly where they left them, whether that was 30 seconds or three days ago.</p>
+
+<div class="warn"><span class="tag">The bug you will personally ship</span>
+<p>User fills a 9-field address form. A call comes in. They return four minutes later. Fields are empty. On the web the browser would often have restored the form for you. In an app, nothing restores anything unless <em>you</em> wrote the code to restore it. This is the single most common quality gap between a competent app and an amateur one, and it is invisible in every design review because reviews never background the app.</p></div>
+
+<div class="ck">Every screen with user input survives a background/foreground cycle and a cold relaunch with its state intact.</div>
+
+<details class="cp"><summary>Checkpoint — derive it yourself</summary>
+<div class="cpbody">
+<p><strong>Question:</strong> Bottom sheets — the panels that slide up from the bottom edge — are everywhere on mobile and essentially absent on desktop web. Which of the three constraints explains this, and how?</p>
+<p><strong>Answer:</strong> Primarily the hand, secondarily the eye. A bottom sheet arrives inside the thumb's natural arc, so its controls are immediately reachable without a grip change. It also opens <em>away from</em> the hand, so the hand does not occlude its own controls — a dropdown that opened downward from a top-anchored button would be covered by the finger that opened it. On desktop neither pressure exists: a cursor reaches the top-right corner as easily as the bottom-left and never covers anything. The pattern is not a mobile aesthetic; it is a solution to a biomechanical problem desktop does not have.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">Hand → where things go.<br>Eye → how loud they have to be.<br>OS → what you're allowed to assume.</p>
+<p class="note red">The lifecycle one is the killer. Nobody reviews for it, everybody ships the bug.</p>
+<p class="note green">If you can trace a rule back to one of these three, you understand it. If you can't, you memorised it.</p>
+</div>
+
+<div class="secfoot"><span>The three constraints</span><span class="pg">01 / 10</span></div>
+</div>
+</section>
+
+<!-- ============================= §2 ============================= -->
+<section class="chapter" id="s2">
+<div class="card">
+<h2 class="sec"><span class="num">02</span> Coordinates: pt, dp, sp — and why your CSS pixels lied</h2>
+
+<p class="lede">This section is short, unglamorous, and the single highest-value hour you will spend. Almost every "the design doesn't match the build" argument in mobile teams traces back to somebody not understanding what is in this section.</p>
+
+<h3>2.1 — The unit you thought you knew</h3>
+
+<p>You have been writing <code>px</code> for years. Here is the uncomfortable fact: <strong>the CSS pixel was never a pixel.</strong> It is a logical unit — an "anchor unit" defined so that content stays roughly the same physical size across devices, with the browser multiplying by a device pixel ratio to reach real hardware pixels. You have been using a density-independent unit this entire time and calling it by the wrong name.</p>
+
+<p>Mobile platforms name it honestly:</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:12%">Unit</th><th style="width:16%">Platform</th><th>What it is</th><th style="width:26%">Your web equivalent</th></tr></thead>
+<tbody>
+<tr><td class="n">pt</td><td>iOS</td><td>Logical point. Multiplied by the screen's scale factor (@1x, @2x, @3x) to reach physical pixels.</td><td>CSS px, near enough</td></tr>
+<tr><td class="n">dp</td><td>Android</td><td>Density-independent pixel. 1dp = 1px at 160dpi baseline; scaled by the device's density bucket.</td><td>CSS px, near enough</td></tr>
+<tr><td class="n">sp</td><td>Android</td><td>Scale-independent pixel. Like dp, <strong>but also multiplied by the user's font-size setting.</strong> Use for text. Only for text.</td><td>No web equivalent — <code>rem</code> is the closest and it isn't close</td></tr>
+<tr><td class="n">px</td><td>Both</td><td>An actual physical pixel on the panel. You almost never specify these. Asset exporters do.</td><td>The thing you thought <code>px</code> meant</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 880 330" role="img" aria-labelledby="f4t">
+<title id="f4t">Diagram showing how one logical point maps to one, two or three physical pixels at different screen scale factors</title>
+<style>
+.dim4{font-family:ui-monospace,monospace;font-size:11px;fill:#2d5f8d}
+.ann4{font-family:Caveat,cursive;font-size:18px;fill:#c0392b}
+.lb4{font-family:Kalam,cursive;font-size:14px;fill:#6b7c8c}
+.u4{font-family:'Segoe UI',sans-serif;font-size:10px;fill:#4a5c6b}
+</style>
+<text class="lb4" x="20" y="24">ONE LOGICAL POINT, THREE DIFFERENT PANELS — all render at the same physical size in the hand</text>
+
+<!-- @1x -->
+<text class="dim4" x="30" y="56">@1x  ·  scale 1  ·  legacy / low-density Android</text>
+<rect x="30" y="66" width="90" height="90" fill="#eef4f9" stroke="#2d5f8d" stroke-width="2"/>
+<g stroke="#c9d9e6" stroke-width="0.8">
+<line x1="30" y1="96" x2="120" y2="96"/><line x1="30" y1="126" x2="120" y2="126"/>
+<line x1="60" y1="66" x2="60" y2="156"/><line x1="90" y1="66" x2="90" y2="156"/>
+</g>
+<rect x="30" y="66" width="30" height="30" fill="#5ba8cf" opacity="0.85"/>
+<text class="u4" x="30" y="176">1 pt = 1 px</text>
+<text class="u4" x="30" y="190">export @1x assets</text>
+
+<!-- @2x -->
+<text class="dim4" x="196" y="56">@2x  ·  scale 2  ·  most Android, iPhone SE/Plus</text>
+<rect x="196" y="66" width="90" height="90" fill="#eef4f9" stroke="#2d5f8d" stroke-width="2"/>
+<g stroke="#c9d9e6" stroke-width="0.6">
+<line x1="196" y1="81" x2="286" y2="81"/><line x1="196" y1="96" x2="286" y2="96"/><line x1="196" y1="111" x2="286" y2="111"/>
+<line x1="196" y1="126" x2="286" y2="126"/><line x1="196" y1="141" x2="286" y2="141"/>
+<line x1="211" y1="66" x2="211" y2="156"/><line x1="226" y1="66" x2="226" y2="156"/><line x1="241" y1="66" x2="241" y2="156"/>
+<line x1="256" y1="66" x2="256" y2="156"/><line x1="271" y1="66" x2="271" y2="156"/>
+</g>
+<rect x="196" y="66" width="30" height="30" fill="#5ba8cf" opacity="0.85"/>
+<text class="u4" x="196" y="176">1 pt = 2 × 2 px</text>
+<text class="u4" x="196" y="190">export @2x assets</text>
+
+<!-- @3x -->
+<text class="dim4" x="362" y="56">@3x  ·  scale 3  ·  iPhone Pro / Max, flagship Android</text>
+<rect x="362" y="66" width="90" height="90" fill="#eef4f9" stroke="#2d5f8d" stroke-width="2"/>
+<g stroke="#c9d9e6" stroke-width="0.5">
+<line x1="362" y1="76" x2="452" y2="76"/><line x1="362" y1="86" x2="452" y2="86"/><line x1="362" y1="96" x2="452" y2="96"/>
+<line x1="362" y1="106" x2="452" y2="106"/><line x1="362" y1="116" x2="452" y2="116"/><line x1="362" y1="126" x2="452" y2="126"/>
+<line x1="362" y1="136" x2="452" y2="136"/><line x1="362" y1="146" x2="452" y2="146"/>
+<line x1="372" y1="66" x2="372" y2="156"/><line x1="382" y1="66" x2="382" y2="156"/><line x1="392" y1="66" x2="392" y2="156"/>
+<line x1="402" y1="66" x2="402" y2="156"/><line x1="412" y1="66" x2="412" y2="156"/><line x1="422" y1="66" x2="422" y2="156"/>
+<line x1="432" y1="66" x2="432" y2="156"/><line x1="442" y1="66" x2="442" y2="156"/>
+</g>
+<rect x="362" y="66" width="30" height="30" fill="#5ba8cf" opacity="0.85"/>
+<text class="u4" x="362" y="176">1 pt = 3 × 3 px</text>
+<text class="u4" x="362" y="190">export @3x assets</text>
+
+<text class="ann4" x="30" y="222">The blue square is the same physical size on all three panels.</text>
+<text class="ann4" x="30" y="244">What changes is how many hardware pixels draw it — which is why your</text>
+<text class="ann4" x="30" y="266">1× PNG looks like a smudge on a Pro, and your icons must ship as vectors.</text>
+
+<!-- sp warning -->
+<rect x="512" y="60" width="344" height="216" rx="10" fill="#fdeeec" stroke="#c0392b" stroke-width="1.4"/>
+<text class="lb4" x="528" y="86" fill="#c0392b" font-size="15">THE ONE THAT HAS NO WEB EQUIVALENT</text>
+<text class="u4" x="528" y="112" font-size="11" font-weight="600" fill="#5c2018">sp — scale-independent pixel (Android)</text>
+<text class="u4" x="528" y="134">A 16sp label is 16dp tall when the user's font scale is 100%.</text>
+<text class="u4" x="528" y="150">At 130% it is 20.8dp. At 200% it is 32dp.</text>
+<text class="u4" x="528" y="166">Your container did not change. Only the text did.</text>
+<rect x="528" y="180" width="60" height="20" rx="4" fill="#fff" stroke="#c9d2da"/>
+<text x="536" y="194" font-family="'Segoe UI',sans-serif" font-size="9" fill="#4a5c6b">Continue</text>
+<rect x="608" y="180" width="60" height="20" rx="4" fill="#fff" stroke="#c0392b"/>
+<text x="612" y="196" font-family="'Segoe UI',sans-serif" font-size="15" fill="#4a5c6b">Contin</text>
+<text class="u4" x="528" y="216">100% scale</text>
+<text class="u4" x="608" y="216">200% scale, fixed height → clipped</text>
+<text class="ann4" x="528" y="248" font-size="17">iOS does the same thing via Dynamic Type.</text>
+<text class="ann4" x="528" y="268" font-size="17">Roughly 30% of users are not at 100%.</text>
+</svg>
+<figcaption><b>Figure 4</b> — The density ladder, and the unit that breaks fixed-height layouts. Use <code>sp</code> for text and <code>dp</code> for everything else; on iOS, use Dynamic Type text styles rather than hardcoded sizes.</figcaption>
+</figure>
+
+<h3>2.2 — Reference frames: pick one, name it, design in it</h3>
+
+<p>There is no "the phone size." There is a range, and you choose a reference device to design in and then verify at the extremes. State your reference explicitly in the file — designs that don't say what they were drawn at cause arguments.</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th>Reference</th><th class="n">Logical size</th><th class="n">Scale</th><th>Use it as</th></tr></thead>
+<tbody>
+<tr><td>iPhone 15 / 16 (non-Pro)</td><td class="n">393 × 852 pt</td><td class="n">@3x</td><td>Primary iOS design canvas</td></tr>
+<tr><td>iPhone SE (3rd gen)</td><td class="n">375 × 667 pt</td><td class="n">@2x</td><td>Your "does it still fit" floor on iOS</td></tr>
+<tr><td>Common Android baseline</td><td class="n">360 × 800 dp</td><td class="n">@2x–@3x</td><td>Primary Android canvas, and the narrowest width you must support</td></tr>
+<tr><td>Pixel 8 / large Android</td><td class="n">412 × 915 dp</td><td class="n">@2.6x</td><td>Upper end check</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="bridge"><span class="tag">You already know this as…</span>
+<p>…breakpoints. But note the range: web breakpoints spanned 320px to 2560px, an 8× spread, and you built fluid systems to survive it. Phone widths span roughly 320 to 440 — a 1.4× spread. <span class="hl">You have far less variance to handle and far less excuse for it breaking.</span> The variance that will actually break you is vertical (text scaling, keyboard, safe areas), not horizontal.</p></div>
+
+<h3>2.3 — The 8-point grid</h3>
+
+<p>Spacing on both platforms runs on multiples of 8, with 4 available as a half-step for tight relationships. This is not an aesthetic preference; it is arithmetic. Multiples of 8 divide cleanly at @1x, @2x and @3x, so a 12dp gap stays crisp at every density while a 13dp gap lands on a fractional pixel and blurs its edge.</p>
+
+<figure>
+<svg viewBox="0 0 860 300" role="img" aria-labelledby="f5t">
+<title id="f5t">A list row component annotated with 8-point grid spacing values</title>
+<style>
+.d5{font-family:ui-monospace,monospace;font-size:10px;fill:#2d5f8d}
+.a5{font-family:Caveat,cursive;font-size:17px;fill:#1e8449}
+.l5{font-family:Kalam,cursive;font-size:13px;fill:#6b7c8c}
+.u5{font-family:'Segoe UI',sans-serif;fill:#1f2c38}
+</style>
+<text class="l5" x="20" y="24">ONE LIST ROW — every value below is 4 or 8 or a multiple</text>
+
+<!-- 8pt grid backdrop -->
+<g stroke="#e9f0f6" stroke-width="1">
+<line x1="20" y1="40" x2="480" y2="40"/><line x1="20" y1="56" x2="480" y2="56"/><line x1="20" y1="72" x2="480" y2="72"/>
+<line x1="20" y1="88" x2="480" y2="88"/><line x1="20" y1="104" x2="480" y2="104"/><line x1="20" y1="120" x2="480" y2="120"/>
+<line x1="20" y1="136" x2="480" y2="136"/><line x1="20" y1="152" x2="480" y2="152"/><line x1="20" y1="168" x2="480" y2="168"/>
+<line x1="20" y1="184" x2="480" y2="184"/>
+</g>
+
+<rect x="20" y="40" width="460" height="144" fill="#fff" stroke="#dde6ee"/>
+<!-- thumbnail -->
+<rect x="36" y="56" width="112" height="112" rx="8" fill="#dce6ee"/>
+<text class="u5" x="60" y="118" font-size="10" fill="#7d8b98">poster 4:3</text>
+<!-- text block -->
+<text class="u5" x="164" y="76" font-size="15" font-weight="600">Panchayat · Season 4</text>
+<text class="u5" x="164" y="98" font-size="12" fill="#6b7c8c">Comedy drama · 2026 · 8 episodes</text>
+<text class="u5" x="164" y="120" font-size="12" fill="#6b7c8c">Continue watching · 32 min left</text>
+<rect x="164" y="132" width="180" height="4" rx="2" fill="#e3e9ee"/>
+<rect x="164" y="132" width="118" height="4" rx="2" fill="#3a7ca5"/>
+<!-- action -->
+<circle cx="440" cy="112" r="18" fill="#eef4f9" stroke="#c9d9e6"/>
+<path d="M435 105 l12 7 l-12 7 z" fill="#2d5f8d"/>
+
+<!-- dimension lines -->
+<g stroke="#1e8449" stroke-width="1">
+<line x1="20" y1="196" x2="36" y2="196"/><line x1="20" y1="192" x2="20" y2="200"/><line x1="36" y1="192" x2="36" y2="200"/>
+<line x1="148" y1="196" x2="164" y2="196"/><line x1="148" y1="192" x2="148" y2="200"/><line x1="164" y1="192" x2="164" y2="200"/>
+<line x1="492" y1="40" x2="492" y2="56"/><line x1="488" y1="40" x2="496" y2="40"/><line x1="488" y1="56" x2="496" y2="56"/>
+<line x1="492" y1="56" x2="492" y2="168"/><line x1="488" y1="168" x2="496" y2="168"/>
+</g>
+<text class="d5" x="14" y="212">16</text>
+<text class="d5" x="146" y="212">16</text>
+<text class="d5" x="500" y="52">16</text>
+<text class="d5" x="500" y="116">112</text>
+<text class="d5" x="164" y="230">22 → baseline gap between title and subtitle: 8</text>
+<text class="d5" x="164" y="246">Row height 144 = 16 + 112 + 16. Not "about 145".</text>
+
+<!-- right panel -->
+<rect x="560" y="40" width="284" height="228" rx="10" fill="#f2faf5" stroke="#1e8449" stroke-width="1.2"/>
+<text class="l5" x="576" y="66" fill="#1e8449" font-size="15">THE SPACING SCALE — memorise it</text>
+<g class="d5" font-size="12">
+<text x="576" y="94">4   hairline · icon-to-label</text>
+<text x="576" y="114">8   inside a component</text>
+<text x="576" y="134">12  half-step, use sparingly</text>
+<text x="576" y="154">16  screen margin, default gutter</text>
+<text x="576" y="174">24  between components</text>
+<text x="576" y="194">32  between groups</text>
+<text x="576" y="214">48  between sections</text>
+</g>
+<text class="a5" x="576" y="246">Seven numbers. That's the whole system.</text>
+</svg>
+<figcaption><b>Figure 5</b> — Every gap in a well-built mobile component resolves to this scale. If a value in your spec isn't on the list, you either have a reason or a mistake.</figcaption>
+</figure>
+
+<div class="analogy"><span class="tag">Where the discipline comes from</span>
+<p>You already accept this in typography: you don't set a type scale of 15.3px / 17.9px / 21.4px, you set 16 / 20 / 24 and stick to it because the ratios do the work. The 8-point grid is that same argument applied to space. It is not about the number 8 — a 4-point system works too. It is about having <em>a</em> system so that "how much space goes here" stops being a per-instance decision.</p></div>
+
+<div class="ck">Every margin, padding and gap in the design resolves to 4 / 8 / 16 / 24 / 32 / 48. <b>Screen edge margin is 16dp unless you have a stated reason.</b></div>
+
+<details class="tn"><summary>Teaching note — the grading shortcut</summary>
+<div class="tnbody">
+<p>When marking student mockups, the fastest quality signal available is: pull the spacing values off five random elements. If they read 14, 22, 9, 17, 30, the student is eyeballing and every downstream problem is a symptom of that. If they read 8, 16, 16, 24, 8, the student has a system and you can move on to critiquing decisions rather than craft.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">CSS px was always logical. You just never had to say so out loud.</p>
+<p class="note red">sp vs dp is the one that bites. Text in sp, everything else in dp.</p>
+<p class="note green">Seven spacing values. Print them and tape them to the monitor.</p>
+</div>
+
+<div class="secfoot"><span>Coordinates</span><span class="pg">02 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §3 ============================= -->
+<section class="chapter" id="s3">
+<div class="card">
+<h2 class="sec"><span class="num">03</span> Touch: what happens when you delete the cursor</h2>
+
+<p class="lede">Moving from mouse to touch does not simplify your input model. It deletes three channels — hover, right-click, and precise pointing — and replaces them with one channel that is imprecise, occluding, and gesture-loaded. This is a harder input problem, not an easier one.</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:26%">Channel</th><th style="width:37%">Mouse</th><th>Touch</th></tr></thead>
+<tbody>
+<tr><td>Position without commitment</td><td>Hover — the entire basis of tooltips, dropdown menus, preview cards, cursor affordances</td><td><strong>Gone.</strong> A finger is either touching or not. There is no "here but not yet."</td></tr>
+<tr><td>Secondary action</td><td>Right-click context menu</td><td>Long-press — same idea, but invisible, undiscoverable, and it competes with drag</td></tr>
+<tr><td>Pointing precision</td><td>~1px, exact, never occludes</td><td>10–14mm contact patch, centroid drifts, hand covers the target</td></tr>
+<tr><td>Multi-select</td><td>Shift-click, drag-marquee, Ctrl-click</td><td>Bespoke selection mode you have to design and teach</td></tr>
+<tr><td>Keyboard focus</td><td>Tab order, free, standard</td><td>Exists for accessibility, invisible to most users, still your responsibility</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn"><span class="tag">The trap</span>
+<p>The instinct is to "port" hover behaviours to long-press. Don't. Hover is <em>free and reversible</em> — the user learns it by accident, at zero cost, because their cursor was passing by anyway. Long-press costs 500ms of committed contact and is discovered by nobody who wasn't told. Anything genuinely important must have a visible, tappable path. Long-press is a shortcut for power users, never a primary route.</p></div>
+
+<h3>3.1 — The 44-point floor</h3>
+
+<p><strong>The numbers.</strong> iOS: <span class="spec">44 × 44 pt</span> minimum tap target. Android / Material 3: <span class="spec">48 × 48 dp</span> minimum, with at least <span class="spec">8 dp</span> between adjacent targets. <span class="srcflag">— Apple HIG and Material 3, both normative</span> WCAG 2.2 adds an absolute accessibility floor of <span class="spec a">24 × 24 CSS px</span> (SC 2.5.8, Level AA) and an enhanced target of <span class="spec a">44 × 44</span> (SC 2.5.5, Level AAA). <span class="srcflag">— W3C</span> The WCAG minimum is a legal floor, not a design target; design to the platform numbers.</p>
+
+<p><strong>Why <em>those</em> numbers.</strong> A fingertip's contact patch on glass is roughly 10–14mm across; a thumb pad is wider still. The digitiser reports one centroid from that whole patch, and the centroid systematically drifts from where the user believes they are pointing — downward, and along the thumb's approach angle. 44pt is about 7mm of visible target with enough surrounding tolerance to absorb that drift. Below it, error rate does not decline gently; it climbs, and the errors cluster at the screen edges furthest from the thumb.</p>
+
+<div class="insight"><span class="tag">The thing web designers don't know</span>
+<p><strong>The touch target is not the visible element.</strong> A 24pt icon can carry a 48pt invisible hit area centred on it. This is standard, invisible to users, and it is why Apple's own toolbars look far lighter than a literal reading of the 44pt rule would allow. You do not have to make things look chunky. You have to make them <em>hit</em> big.</p></div>
+
+<figure>
+<svg viewBox="0 0 880 400" role="img" aria-labelledby="f6t">
+<title id="f6t">A comparison of an action toolbar drawn with insufficient touch targets and the same toolbar with correctly expanded hit areas</title>
+<style>
+.d6{font-family:ui-monospace,monospace;font-size:10.5px}
+.a6{font-family:Caveat,cursive;font-size:18px}
+.l6{font-family:Kalam,cursive;font-size:14px}
+.u6{font-family:'Segoe UI',sans-serif;font-size:10px;fill:#4a5c6b}
+</style>
+
+<!-- WRONG -->
+<text class="l6" x="20" y="24" fill="#c0392b">✕  WRONG — spaced by visual balance</text>
+<rect x="20" y="36" width="390" height="150" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.8"/>
+<g>
+<circle cx="80" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M75 110 h10 M80 105 v10" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="130" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M125 106 l10 8 M135 106 l-10 8" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="180" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M175 110 h10" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="230" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><circle cx="230" cy="110" r="3" fill="#4a5c6b"/>
+<circle cx="280" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M275 114 l5 -8 l5 8 z" fill="#4a5c6b"/>
+</g>
+<!-- actual hit boxes = visual bounds -->
+<g fill="none" stroke="#c0392b" stroke-dasharray="3 2" stroke-width="1.2">
+<rect x="69" y="99" width="22" height="22"/><rect x="119" y="99" width="22" height="22"/>
+<rect x="169" y="99" width="22" height="22"/><rect x="219" y="99" width="22" height="22"/><rect x="269" y="99" width="22" height="22"/>
+</g>
+<!-- finger -->
+<ellipse cx="152" cy="112" rx="26" ry="30" fill="#c0392b" opacity="0.22"/>
+<ellipse cx="152" cy="112" rx="26" ry="30" fill="none" stroke="#c0392b" stroke-width="1.4"/>
+<text class="d6" x="20" y="152" fill="#c0392b">hit box 22 × 22 pt   ·   gap 28 pt   ·   contact patch spans TWO targets</text>
+<text class="a6" x="20" y="176" fill="#c0392b">Which one did they mean? The OS guesses. Sometimes wrong.</text>
+
+<!-- RIGHT -->
+<text class="l6" x="470" y="24" fill="#1e8449">✓  RIGHT — spaced by hit-area arithmetic</text>
+<rect x="470" y="36" width="390" height="150" rx="10" fill="#fff" stroke="#1e8449" stroke-width="1.8"/>
+<g>
+<circle cx="536" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M531 110 h10 M536 105 v10" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="600" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M595 106 l10 8 M605 106 l-10 8" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="664" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M659 110 h10" stroke="#4a5c6b" stroke-width="1.6"/>
+<circle cx="728" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><circle cx="728" cy="110" r="3" fill="#4a5c6b"/>
+<circle cx="792" cy="110" r="11" fill="none" stroke="#4a5c6b" stroke-width="1.6"/><path d="M787 114 l5 -8 l5 8 z" fill="#4a5c6b"/>
+</g>
+<g fill="#1e8449" opacity="0.13">
+<rect x="514" y="88" width="44" height="44" rx="6"/><rect x="578" y="88" width="44" height="44" rx="6"/>
+<rect x="642" y="88" width="44" height="44" rx="6"/><rect x="706" y="88" width="44" height="44" rx="6"/><rect x="770" y="88" width="44" height="44" rx="6"/>
+</g>
+<g fill="none" stroke="#1e8449" stroke-dasharray="3 2" stroke-width="1.2">
+<rect x="514" y="88" width="44" height="44" rx="6"/><rect x="578" y="88" width="44" height="44" rx="6"/>
+<rect x="642" y="88" width="44" height="44" rx="6"/><rect x="706" y="88" width="44" height="44" rx="6"/><rect x="770" y="88" width="44" height="44" rx="6"/>
+</g>
+<ellipse cx="600" cy="112" rx="26" ry="30" fill="#1e8449" opacity="0.2"/>
+<ellipse cx="600" cy="112" rx="26" ry="30" fill="none" stroke="#1e8449" stroke-width="1.4"/>
+<g stroke="#1e8449" stroke-width="1">
+<line x1="558" y1="146" x2="578" y2="146"/><line x1="558" y1="142" x2="558" y2="150"/><line x1="578" y1="142" x2="578" y2="150"/>
+</g>
+<text class="d6" x="560" y="164" fill="#1e8449">20</text>
+<text class="d6" x="470" y="152" fill="#1e8449">hit box 44 × 44 pt  ·  icons unchanged at 22 pt  ·  centroid unambiguous</text>
+<text class="a6" x="470" y="176" fill="#1e8449">Same visual weight. Half the mis-taps.</text>
+
+<!-- bottom row: reach degradation -->
+<rect x="20" y="210" width="840" height="170" rx="10" fill="#fbfdff" stroke="#dde6ee"/>
+<text class="l6" x="36" y="236" fill="#6b7c8c">AND IT GETS WORSE WITH DISTANCE — the same 44pt target, three positions</text>
+<g>
+<rect x="40" y="252" width="120" height="112" rx="10" fill="#fff" stroke="#c9d9e6"/>
+<rect x="78" y="300" width="44" height="44" rx="6" fill="#1e8449" opacity="0.18"/>
+<text class="u6" x="46" y="380">Bottom-centre · natural arc</text>
+<text class="d6" x="46" y="272" fill="#1e8449">error rate: baseline</text>
+
+<rect x="200" y="252" width="120" height="112" rx="10" fill="#fff" stroke="#c9d9e6"/>
+<rect x="238" y="272" width="44" height="44" rx="6" fill="#b7791f" opacity="0.2"/>
+<text class="u6" x="206" y="380">Top-centre · grip shift needed</text>
+<text class="d6" x="206" y="272" fill="#b7791f"> </text>
+
+<rect x="360" y="252" width="120" height="112" rx="10" fill="#fff" stroke="#c9d9e6"/>
+<rect x="368" y="264" width="44" height="44" rx="6" fill="#c0392b" opacity="0.2"/>
+<text class="u6" x="366" y="380">Top-far-corner · worst case</text>
+</g>
+<text class="a6" x="510" y="284" fill="#2d5f8d">A 44pt target at the bottom of the screen and a 44pt</text>
+<text class="a6" x="510" y="306" fill="#2d5f8d">target at the top-left corner are not the same control.</text>
+<text class="a6" x="510" y="332" fill="#c0392b">Size is necessary. Position is sufficient.</text>
+<text class="u6" x="510" y="360" font-size="11">Which is why "Cancel" lives top-left and "Save" lives bottom-right or top-right:</text>
+<text class="u6" x="510" y="374" font-size="11">the hard-to-reach corner is deliberately given to the action you'd rather they didn't fire by accident.</text>
+</svg>
+<figcaption><b>Figure 6</b> — Left/right: the same toolbar, spaced two ways. Bottom: why a compliant target size still isn't enough on its own.</figcaption>
+</figure>
+
+<p><strong>In the wild.</strong> Netflix's player controls look small — the play glyph is well under 44pt — but the hit region extends generously past the glyph in every direction. Contrast that with older builds of IRCTC Rail Connect, where the passenger-details form used checkbox targets close to the visual minimum in tightly packed rows: exactly the arrangement in the left panel of Figure 6, and exactly the mis-tap complaints you would predict.</p>
+
+<div class="warn"><span class="tag">The failure you will personally ship</span>
+<p>A row of icon-only actions — share, bookmark, download, more — spaced by <em>visual</em> balance in Figma. They look correct at 100% zoom on a 27-inch monitor. In the hand, the contact patch straddles two of them and the OS picks whichever centroid is closer. Your user meant "bookmark" and got "delete." This is the most common ship-blocking bug in first mobile projects by web designers, and it is entirely invisible in the design file.</p></div>
+
+<div class="ck">Every interactive element has a ≥44pt / 48dp hit area and ≥8dp clearance from its neighbour, <b>regardless of its visible size</b>.</div>
+
+<h3>3.2 — Occlusion: your hand covers what it touches</h3>
+
+<p>This one fact — obvious once said, invisible until said — generates a whole family of mobile patterns that have no web equivalent.</p>
+
+<figure>
+<svg viewBox="0 0 860 340" role="img" aria-labelledby="f7t">
+<title id="f7t">Diagram comparing a downward-opening dropdown menu occluded by the user's hand with a bottom sheet that opens away from the hand</title>
+<style>
+.a7{font-family:Caveat,cursive;font-size:18px}
+.l7{font-family:Kalam,cursive;font-size:14px}
+.u7{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#4a5c6b}
+</style>
+<!-- wrong -->
+<text class="l7" x="24" y="24" fill="#c0392b">✕  Web instinct: dropdown opens downward from its trigger</text>
+<rect x="24" y="36" width="180" height="284" rx="22" fill="#fff" stroke="#c0392b" stroke-width="1.8"/>
+<rect x="36" y="60" width="156" height="22" rx="6" fill="#eef4f9"/>
+<text class="u7" x="44" y="75">Sort by: Rating ▾</text>
+<rect x="36" y="86" width="156" height="120" rx="6" fill="#fff" stroke="#dde6ee"/>
+<text class="u7" x="46" y="106">Rating: high to low</text><text class="u7" x="46" y="130">Delivery time</text>
+<text class="u7" x="46" y="154">Cost: low to high</text><text class="u7" x="46" y="178">Distance</text>
+<path d="M188 320 q30 -46 12 -118 q-10 -40 -34 -54 q-16 -9 -22 4 q-6 13 10 24 q20 14 20 46 q0 34 -20 52 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.4" opacity="0.94"/>
+<text class="a7" x="24" y="338" fill="#c0392b">Options 2, 3 and 4 are under the hand.</text>
+
+<!-- right -->
+<text class="l7" x="300" y="24" fill="#1e8449">✓  Mobile answer: sheet rises from the bottom edge</text>
+<rect x="300" y="36" width="180" height="284" rx="22" fill="#fff" stroke="#1e8449" stroke-width="1.8"/>
+<rect x="312" y="60" width="156" height="22" rx="6" fill="#eef4f9"/>
+<text class="u7" x="320" y="75">Sort by: Rating ▾</text>
+<rect x="300" y="176" width="180" height="144" rx="18" fill="#fff" stroke="#c9d9e6"/>
+<rect x="372" y="186" width="36" height="4" rx="2" fill="#c9d9e6"/>
+<text class="u7" x="316" y="212" font-weight="600">Sort by</text>
+<text class="u7" x="316" y="238">Rating: high to low</text><text class="u7" x="316" y="264">Delivery time</text>
+<text class="u7" x="316" y="290">Cost: low to high</text>
+<circle cx="458" cy="234" r="5" fill="#1e8449"/>
+<path d="M470 320 q26 -30 14 -70 q-8 -26 -26 -34 q-12 -6 -16 3 q-5 9 8 16 q14 9 14 30 q0 22 -14 34 z" fill="#f6d9c4" stroke="#d9a884" stroke-width="1.4" opacity="0.94"/>
+<text class="a7" x="300" y="338" fill="#1e8449">Content sits above the hand. Thumb reaches all of it.</text>
+
+<!-- rule panel -->
+<rect x="560" y="36" width="284" height="284" rx="10" fill="#f2faf5" stroke="#1e8449" stroke-width="1.2"/>
+<text class="l7" x="576" y="62" fill="#1e8449" font-size="15">THE OCCLUSION RULE</text>
+<text class="u7" x="576" y="88" font-size="11" font-weight="600" fill="#0f4429">Menus open away from the finger.</text>
+<text class="u7" x="576" y="110">Everything below follows from that one line:</text>
+<g class="u7" font-size="10.5">
+<text x="576" y="136">• Bottom sheets instead of dropdowns</text>
+<text x="576" y="156">• Action sheets anchored to the bottom edge</text>
+<text x="576" y="176">• Toasts and snackbars at the bottom, above the</text>
+<text x="590" y="190">tab bar, never at the top</text>
+<text x="576" y="210">• Context menus that flip direction based on</text>
+<text x="590" y="224">where on the screen you pressed</text>
+<text x="576" y="244">• Magnifier loupes when placing a text cursor</text>
+<text x="576" y="264">• Tooltips: deleted entirely, not relocated</text>
+<text x="576" y="284">• Drag handles on the left of a row (right-handed</text>
+<text x="590" y="298">thumb comes from the right and covers less)</text>
+</g>
+</svg>
+<figcaption><b>Figure 7</b> — Occlusion in one picture. The bottom sheet is not a style choice; it is the geometrically correct answer to "where do I put options the user must read while touching the screen?"</figcaption>
+</figure>
+
+<h3>3.3 — The 100-millisecond contract</h3>
+
+<p>On the web you had <code>:hover</code> doing continuous work: the moment the cursor crossed a link, something changed, and the user knew the element was live before committing. That reassurance is gone. The replacement is the <strong>touch-down response</strong>, and it has a deadline.</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th class="n" style="width:14%">Budget</th><th style="width:30%">What must happen</th><th>Why that number</th></tr></thead>
+<tbody>
+<tr><td class="n">≤ 100 ms</td><td>Visual response to touch-down — highlight, scale, ripple, colour shift</td><td>Nielsen's threshold for "the system is reacting instantaneously." Below it the response feels caused by your finger; above it, it feels like a separate event. <span class="srcflag">— NN/g</span></td></tr>
+<tr><td class="n">≤ 400 ms</td><td>The result of the action begins to appear</td><td>Doherty threshold — the point at which attention stays engaged rather than wandering. <span class="srcflag">— IBM, 1982; still holds</span></td></tr>
+<tr><td class="n">≤ 1 s</td><td>The operation completes, or a determinate progress indicator appears</td><td>Nielsen's limit for uninterrupted flow of thought</td></tr>
+<tr><td class="n">16.7 ms</td><td>One frame at 60 Hz. 8.3 ms at 120 Hz.</td><td>Your entire per-frame budget for layout, paint and composite. Miss it and the scroll visibly stutters.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The practical rule: <span class="hl">every touchable element must have a pressed state, and it must fire on touch-down, not on touch-up.</span> Material calls this the ripple; iOS uses opacity and scale. Web-trained developers often bind visual feedback to the click/tap event, which fires on release — which means the user gets 300ms of nothing, assumes the tap missed, and taps again. Double submissions in mobile checkout flows are very often this bug and not a network problem.</p>
+
+<div class="bridge"><span class="tag">You already know this as…</span>
+<p>…the <strong>300ms click delay</strong> you fought in mobile web around 2013, where browsers waited to see whether a tap was actually a double-tap-to-zoom. You fixed it with FastClick, or later with <code>touch-action: manipulation</code> and a proper viewport meta tag. Native apps never had that delay — but the <em>lesson</em> transfers exactly: a touch interface that doesn't acknowledge contact immediately feels broken, and users respond by tapping harder and more often.</p></div>
+
+<div class="ck">Every tappable element has a pressed state that fires on touch-down. <b>Test it on a throttled device, not a simulator on a fast laptop.</b></div>
+
+<h3>3.4 — Gestures and the discoverability tax</h3>
+
+<p>Gestures are the great seduction of mobile design. Swipe to delete, pull to refresh, pinch to zoom, long-press to reorder, swipe between tabs — they feel sophisticated, they save chrome, and they are how the best apps feel fast.</p>
+
+<p>They are also invisible. A gesture has no affordance. Nothing on screen says "you may swipe this row leftward." The user either already knows the convention, discovers it by accident, or never finds the feature at all.</p>
+
+<div class="insight"><span class="tag">The gesture rule</span>
+<p>Rank a gesture by how widely it is already standardised, and match its role to that rank:</p>
+<ul style="margin-top:10px;margin-bottom:0">
+<li><strong>Universal</strong> (vertical scroll, tap, pinch-zoom on media, pull-to-refresh, edge-swipe back): safe to rely on. Users have these.</li>
+<li><strong>Common</strong> (swipe row for actions, swipe between tabs, long-press for context, drag handle to reorder): safe as an <em>accelerator</em>, never as the only path. Every one of these needs a visible equivalent.</li>
+<li><strong>Bespoke</strong> (your invented two-finger drag, your diagonal swipe): assume roughly nobody will find it. If you ship it, ship an onboarding hint — and accept that most users will still never use it.</li>
+</ul></div>
+
+<p>CRED is the interesting Indian case here: a deliberately gesture-forward, high-craft interface that treats discovery friction as an acceptable cost because its audience is narrow, affluent, repeat-visit and self-selecting for exactly that kind of polish. That is a defensible product bet. It is a terrible default. If your app is Meesho and your next million users are first-time smartphone owners in tier-3 cities, every hidden gesture is a feature that does not exist.</p>
+
+<div class="ck">Every gesture-triggered action also has a visible, tappable route to the same outcome.</div>
+
+<details class="cp"><summary>Checkpoint — apply the three constraints</summary>
+<div class="cpbody">
+<p><strong>Question:</strong> "Swipe left on an email to delete it" is a Common gesture. What visible equivalent should exist, and where should it live?</p>
+<p><strong>Answer:</strong> A visible Delete control reachable without the gesture — typically inside the opened message (bottom toolbar, thumb zone) and inside a multi-select mode entered from the list. Where it must <em>not</em> live: a top-right overflow menu as the only route, because that is the worst point in the reach map (§1.1) for a frequent action. Note that all three constraints participate: hand decides position, eye decides that it must be a labelled icon and not a bare glyph, OS decides that it must survive a 200% text scale.</p>
+</div></details>
+
+<details class="tn"><summary>Teaching note — the 20-minute exercise that fixes this permanently</summary>
+<div class="tnbody">
+<p>Hand out printed screenshots of a student-built mobile mockup. Give each student a red pen and a cut-out 44pt square at the printout's scale. Ask them to place the square over every interactive element and mark every one that doesn't fit, and every pair whose squares overlap. Ten minutes, and the number never goes below three on a first attempt. It converts an abstract rule into a physical count, and students stop arguing with it.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">No hover. No right-click. No precision. Three channels gone, one added.</p>
+<p class="note red">Hit area ≠ visual bounds. If you take one line from this section, take that one.</p>
+<p class="note">Occlusion explains bottom sheets, action sheets, bottom toasts, flipped menus — all of it.</p>
+<p class="note green">Feedback on touch-DOWN. Not on release.</p>
+</div>
+
+<div class="secfoot"><span>Touch</span><span class="pg">03 / 10</span></div>
+</div>
+</section>
+
+<!-- ============================= §4 ============================= -->
+<section class="chapter" id="s4">
+<div class="card">
+<h2 class="sec"><span class="num">04</span> Navigation architecture — the structural difference</h2>
+
+<p class="lede">If Section 1 is the physics, this is the engineering. Navigation is where web experience helps you least and misleads you most, because on the web the platform did almost all of this work for you and you never had to notice.</p>
+
+<h3>4.1 — What the URL was doing for you</h3>
+
+<p>On the web, navigation state lives in a string. That one design decision gave you, for free:</p>
+
+<ul>
+<li><strong>A back button that always worked</strong>, implemented once by the browser, consistent across every site on the internet.</li>
+<li><strong>Shareable, bookmarkable state.</strong> Any point in your app could be sent over WhatsApp and it would open there.</li>
+<li><strong>Restorable position.</strong> Refresh and you land where you were, more or less.</li>
+<li><strong>A mental model users already had.</strong> Pages. Forward and back. Nobody needed teaching.</li>
+</ul>
+
+<p>In an app, none of that is free. <strong>Navigation is a data structure you build and maintain.</strong> Specifically, it is a stack — you push screens onto it and pop them off — and if you want deep links, state restoration or a sane back behaviour, you write them.</p>
+
+<figure>
+<svg viewBox="0 0 880 400" role="img" aria-labelledby="f8t">
+<title id="f8t">Diagram of a navigation stack showing screens pushed and popped, and a modal presented over the stack</title>
+<style>
+.a8{font-family:Caveat,cursive;font-size:17px;fill:#2d5f8d}
+.l8{font-family:Kalam,cursive;font-size:14px;fill:#6b7c8c}
+.d8{font-family:ui-monospace,monospace;font-size:10.5px;fill:#2d5f8d}
+.u8{font-family:'Segoe UI',sans-serif;font-size:10px;fill:#1f2c38}
+</style>
+<text class="l8" x="20" y="24">PUSH / POP — the stack as it actually exists in memory</text>
+
+<!-- stack -->
+<g>
+<rect x="30" y="290" width="200" height="46" rx="7" fill="#eef4f9" stroke="#2d5f8d" stroke-width="1.6"/>
+<text class="u8" x="44" y="312" font-weight="600">Restaurant list</text><text class="u8" x="44" y="328" fill="#6b7c8c">root · index 0</text>
+<rect x="46" y="232" width="200" height="46" rx="7" fill="#e3eff8" stroke="#2d5f8d" stroke-width="1.6"/>
+<text class="u8" x="60" y="254" font-weight="600">Restaurant detail</text><text class="u8" x="60" y="270" fill="#6b7c8c">index 1</text>
+<rect x="62" y="174" width="200" height="46" rx="7" fill="#d7e8f4" stroke="#2d5f8d" stroke-width="1.6"/>
+<text class="u8" x="76" y="196" font-weight="600">Dish detail</text><text class="u8" x="76" y="212" fill="#6b7c8c">index 2</text>
+<rect x="78" y="116" width="200" height="46" rx="7" fill="#c9e0f0" stroke="#2d5f8d" stroke-width="2"/>
+<text class="u8" x="92" y="138" font-weight="600">Customise · add-ons</text><text class="u8" x="92" y="154" fill="#6b7c8c">index 3 — visible</text>
+</g>
+<path d="M300 132 l-24 0" stroke="#1e8449" stroke-width="1.6" marker-end="url(#a8m)"/>
+<defs><marker id="a8m" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#1e8449"/></marker></defs>
+<text class="a8" x="306" y="128" fill="#1e8449">push() — new screen slides in from the right</text>
+<path d="M300 200 l-24 0" stroke="#c0392b" stroke-width="1.6" marker-end="url(#a8r)"/>
+<defs><marker id="a8r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#c0392b"/></marker></defs>
+<text class="a8" x="306" y="196" fill="#c0392b">pop() — back gesture, or your own Back button</text>
+<text class="a8" x="306" y="240">popToRoot() — "Home" tab tapped while already on Home</text>
+<text class="a8" x="306" y="272">Everything below index 3 is still in memory,</text>
+<text class="a8" x="306" y="292">still holding its scroll position, still yours to feed.</text>
+<text class="d8" x="306" y="322">On the web this stack was the browser's history object.</text>
+<text class="d8" x="306" y="338">Here it is an array you own, and it is the app's spine.</text>
+
+<!-- modal -->
+<g transform="translate(600,0)">
+<text class="l8" x="0" y="24">MODAL — a second stack, on top, going nowhere</text>
+<rect x="16" y="40" width="160" height="300" rx="20" fill="#f4f7fa" stroke="#8e9aa6" stroke-width="1.4"/>
+<text class="u8" x="46" y="90" fill="#8e9aa6">…dimmed stack…</text>
+<rect x="16" y="120" width="160" height="220" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.8"/>
+<rect x="82" y="132" width="28" height="4" rx="2" fill="#c9d9e6"/>
+<text class="u8" x="32" y="160" font-weight="600">Log in to continue</text>
+<rect x="32" y="172" width="128" height="22" rx="5" fill="#f4f7fa" stroke="#dde6ee"/>
+<text class="u8" x="40" y="187" fill="#8e9aa6">Mobile number</text>
+<rect x="32" y="202" width="128" height="24" rx="6" fill="#2d5f8d"/>
+<text class="u8" x="66" y="218" fill="#fff">Send OTP</text>
+<text class="u8" x="32" y="252" fill="#6b7c8c">Cancel</text>
+<text class="a8" x="0" y="368" font-size="16">Vertical = "you must resolve this."</text>
+<text class="a8" x="0" y="388" font-size="16">Horizontal = "you went deeper."</text>
+</g>
+</svg>
+<figcaption><b>Figure 8</b> — Push/pop versus modal presentation. The direction of the transition is not decoration: it tells the user whether they went <em>deeper into</em> something or <em>sideways out of</em> it. Getting this backwards is a genuine usability bug, not a taste issue.</figcaption>
+</figure>
+
+<div class="insight"><span class="tag">The rule the transition is encoding</span>
+<p><strong>Horizontal push = deeper into the same journey.</strong> Back returns you. Context is preserved.<br>
+<strong>Vertical modal = a self-contained interruption.</strong> It has its own Cancel/Done, it doesn't get a Back arrow, and it must be dismissible. Login, compose, share, permissions, filters.</p>
+<p style="margin-top:10px">When a user says an app "feels confusing" and can't say why, this is the cause about a third of the time. They have lost track of whether they are <em>inside</em> something or <em>on top of</em> it.</p></div>
+
+<h3>4.2 — Tabs are parallel stacks, not links</h3>
+
+<p>The most common structural error web designers make: treating a bottom tab bar like a website's top nav — five links, one page at a time, tapping a tab replaces the content.</p>
+
+<p>That is not what a tab bar is. <strong>Each tab owns its own independent navigation stack, and those stacks persist.</strong> If the user is three screens deep in Search, switches to Profile, and comes back to Search, they should land exactly where they were — three deep, same scroll position. Instagram, Netflix, Spotify and Swiggy all do this. It is the behaviour users have been trained on for a decade, and violating it makes an app feel cheap in a way that is hard for a non-designer to articulate.</p>
+
+<div class="bridge"><span class="tag">You already know this as…</span>
+<p>…nothing, actually. This has no web equivalent. The closest thing is multiple browser tabs, and the analogy is genuinely useful: think of each bottom tab as its own browser tab with its own history. It is one of the very few concepts in this masterclass where your web experience gives you no head start at all — which is precisely why it's worth flagging.</p></div>
+
+<h3>4.3 — The navigation container decision</h3>
+
+<p>Four containers, four jobs. This is the decision, not a menu of styles:</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:17%">Container</th><th style="width:22%">Use when</th><th style="width:24%">Hard limits</th><th>Cost of misuse</th></tr></thead>
+<tbody>
+<tr><td><strong>Bottom tab bar</strong></td><td>3–5 top-level destinations that users switch between frequently and in no fixed order</td><td>Max 5. Below 3, use something else. Labels always — icon-only tabs measurably reduce recognition.</td><td>With 6+ destinations you get an "More" tab, which is a drawer wearing a costume</td></tr>
+<tr><td><strong>Navigation drawer</strong></td><td>Many destinations, visited infrequently, where depth matters more than switching speed — file trees, workspaces, account areas</td><td>Costs one tap plus one gesture to open. Contents are invisible until opened.</td><td>Feature discovery collapses. This is why hamburger menus lost as <em>primary</em> nav.</td></tr>
+<tr><td><strong>Bottom sheet</strong></td><td>Contextual choices tied to the current screen — sort, filter, share, quick actions</td><td>Not navigation. It is a decision surface. Don't nest navigation inside it.</td><td>Users can't get back to it, can't link to it, can't find it again</td></tr>
+<tr><td><strong>Segmented control / top tabs</strong></td><td>2–4 filtered views of <em>the same</em> content — All / Unread / Archived</td><td>Same content type only. Not for different destinations.</td><td>Used as primary nav it puts your most-used control in the worst reach zone</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Why the hamburger lost — the honest version</h4>
+<p>The common telling is "hamburger menus are bad." The accurate telling is more useful: <strong>a hamburger menu trades discoverability for space, and on a phone's primary navigation that trade is almost always wrong.</strong> Contents hidden behind an icon get visited less than contents visible on a tab bar — this has been replicated repeatedly in navigation research, and the industry's collective migration to bottom tabs from roughly 2014 onward is the practical verdict.</p>
+<p>But it lost as <em>primary</em> navigation only. Drawers remain correct where the destination list is long, hierarchical, and not the thing you switch between every ten seconds. Gmail's account and label drawer is right. Obsidian's file-tree drawer is right. Slack's workspace switcher is right. The pattern isn't dead; its job description got narrower.</p>
+
+<h3>4.4 — Three legitimate answers: Netflix, Notion, Obsidian</h3>
+
+<p>Three well-designed apps solve the same problem — "how does a user get anywhere" — in three incompatible ways, and each is correct for its content shape. This is the section to study if you want to stop copying patterns and start choosing them.</p>
+
+<figure>
+<svg viewBox="0 0 880 430" role="img" aria-labelledby="f9t">
+<title id="f9t">Three navigation architectures compared: flat tab-based, deep stack with breadcrumbs, and drawer-based file tree</title>
+<style>
+.a9{font-family:Caveat,cursive;font-size:16px}
+.l9{font-family:Kalam,cursive;font-size:14px;fill:#2d5f8d}
+.u9{font-family:'Segoe UI',sans-serif;font-size:9px;fill:#4a5c6b}
+.d9{font-family:ui-monospace,monospace;font-size:9.5px;fill:#6b7c8c}
+</style>
+
+<!-- NETFLIX -->
+<text class="l9" x="20" y="24">A · FLAT + TABS  —  streaming</text>
+<rect x="20" y="34" width="164" height="292" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="20" y="34" width="164" height="22" rx="20" fill="#f2f7fb"/><rect x="20" y="46" width="164" height="10" fill="#f2f7fb"/>
+<text class="u9" x="30" y="50">9:41</text>
+<rect x="28" y="64" width="148" height="52" rx="5" fill="#c9d9e6"/>
+<text class="u9" x="34" y="94" fill="#fff" font-size="10">hero title</text>
+<text class="u9" x="28" y="132" font-weight="600">Trending now</text>
+<g fill="#dce6ee"><rect x="28" y="138" width="42" height="58" rx="4"/><rect x="76" y="138" width="42" height="58" rx="4"/><rect x="124" y="138" width="42" height="58" rx="4"/><rect x="172" y="138" width="12" height="58" rx="4"/></g>
+<text class="u9" x="28" y="216" font-weight="600">Because you watched…</text>
+<g fill="#dce6ee"><rect x="28" y="222" width="42" height="58" rx="4"/><rect x="76" y="222" width="42" height="58" rx="4"/><rect x="124" y="222" width="42" height="58" rx="4"/><rect x="172" y="222" width="12" height="58" rx="4"/></g>
+<rect x="20" y="292" width="164" height="34" fill="#fbfdff" stroke="#e3e9ee"/>
+<g fill="#8e9aa6"><circle cx="46" cy="304" r="4" fill="#2d5f8d"/><circle cx="86" cy="304" r="4"/><circle cx="126" cy="304" r="4"/><circle cx="162" cy="304" r="4"/></g>
+<g class="u9" font-size="7"><text x="36" y="320" fill="#2d5f8d">Home</text><text x="74" y="320">Games</text><text x="112" y="320">New&amp;Hot</text><text x="152" y="320">My</text></g>
+<text class="d9" x="20" y="348">Depth: 2–3 screens, max</text>
+<text class="d9" x="20" y="364">Breadth: thousands of items</text>
+<text class="a9" x="20" y="392" fill="#1e8449">Content is FLAT and ENORMOUS.</text>
+<text class="a9" x="20" y="410" fill="#1e8449">You browse, you don't navigate.</text>
+
+<!-- NOTION -->
+<text class="l9" x="300" y="24">B · DEEP STACK + BREADCRUMB  —  docs</text>
+<rect x="300" y="34" width="164" height="292" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="300" y="34" width="164" height="22" rx="20" fill="#f2f7fb"/><rect x="300" y="46" width="164" height="10" fill="#f2f7fb"/>
+<text class="u9" x="310" y="50">9:41</text>
+<rect x="300" y="60" width="164" height="24" fill="#fbfdff" stroke="#eceff2"/>
+<text class="u9" x="308" y="76" font-size="8">‹  Team / Marketing / Q3 …</text>
+<text class="u9" x="312" y="106" font-size="12" font-weight="600">Q3 Campaign Brief</text>
+<g class="u9"><text x="312" y="128">Owner · Priya</text><text x="312" y="146">Status · In review</text>
+<text x="312" y="170">▸  Objectives</text><text x="312" y="190">▸  Channel plan</text><text x="312" y="210">▾  Budget</text>
+<text x="326" y="230" fill="#6b7c8c">Paid social  ₹4,20,000</text>
+<text x="326" y="248" fill="#6b7c8c">Influencer   ₹2,60,000</text>
+<text x="312" y="272">▸  Risks</text></g>
+<rect x="428" y="286" width="28" height="28" rx="14" fill="#2d5f8d"/>
+<text x="438" y="305" fill="#fff" font-size="14" font-family="'Segoe UI',sans-serif">+</text>
+<text class="d9" x="300" y="348">Depth: unbounded nesting</text>
+<text class="d9" x="300" y="364">Breadth: your workspace</text>
+<text class="a9" x="300" y="392" fill="#b7791f">Content is a TREE, arbitrarily deep.</text>
+<text class="a9" x="300" y="410" fill="#b7791f">Tabs can't express depth. Breadcrumbs can.</text>
+
+<!-- OBSIDIAN -->
+<text class="l9" x="580" y="24">C · DRAWER + FILE TREE  —  power tool</text>
+<rect x="580" y="34" width="164" height="292" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="580" y="34" width="164" height="22" rx="20" fill="#f2f7fb"/><rect x="580" y="46" width="164" height="10" fill="#f2f7fb"/>
+<text class="u9" x="590" y="50">9:41</text>
+<rect x="580" y="60" width="104" height="266" fill="#f4f7fa" stroke="#dde6ee"/>
+<text class="u9" x="588" y="78" font-weight="600" font-size="8">VAULT</text>
+<g class="u9" font-size="8">
+<text x="588" y="98">📁 00 Inbox</text><text x="588" y="116">📁 10 Projects</text>
+<text x="596" y="134">📄 UPES syllabus</text><text x="596" y="152">📄 Masterclass 1</text>
+<text x="588" y="170">📁 20 Areas</text><text x="588" y="188">📁 30 Archive</text>
+<text x="588" y="212">🔍 Search</text><text x="588" y="230">🕸 Graph view</text>
+<text x="588" y="248">⚙ Settings</text>
+</g>
+<rect x="684" y="60" width="60" height="266" fill="#fff"/>
+<text class="u9" x="690" y="82" font-size="8" fill="#c9d2da">…note…</text>
+<path d="M690 300 q-16 -20 -6 -40" fill="none" stroke="#8e9aa6" stroke-width="1.2"/>
+<text class="d9" x="580" y="348">Depth: filesystem</text>
+<text class="d9" x="580" y="364">Breadth: whatever you made</text>
+<text class="a9" x="580" y="392" fill="#c0392b">Breaks the tab-bar orthodoxy —</text>
+<text class="a9" x="580" y="410" fill="#c0392b">deliberately, and it's right to.</text>
+
+<!-- divider ticks -->
+<line x1="272" y1="34" x2="272" y2="416" stroke="#e3e9ee" stroke-dasharray="4 4"/>
+<line x1="552" y1="34" x2="552" y2="416" stroke="#e3e9ee" stroke-dasharray="4 4"/>
+</svg>
+<figcaption><b>Figure 9</b> — Three content shapes, three navigation architectures. The lesson is not "copy Netflix." It is that <b>content shape determines navigation shape</b>, and you must diagnose your content shape before choosing.</figcaption>
+</figure>
+
+<h4>Netflix — flat, wide, browse-not-navigate</h4>
+<p>Netflix's catalogue is enormous but structurally flat: there is no meaningful hierarchy between "a thriller from 2019" and "a comedy from 2023." Users don't navigate to a title, they <em>encounter</em> one. So the architecture optimises for encounter: a small fixed set of bottom tabs, a home surface that is almost entirely algorithmic rows, and a detail screen that is at most two levels deep. The player then removes all chrome entirely, because during playback the content <em>is</em> the interface.</p>
+<p>Note what this buys and costs. It buys speed to content and near-zero navigation learning. It costs precision — finding one specific title you half-remember is genuinely worse on Netflix than in a file browser, which is why Search is a first-class tab rather than a header icon.</p>
+
+<h4>Notion — deep tree compressed into a stack</h4>
+<p>Notion has the hardest mobile problem of the three. Its desktop product is a dense, infinitely nestable tree with a sidebar, multi-column layouts, hover-revealed controls, keyboard shortcuts and drag-and-drop as core interaction. Essentially every one of those relies on capabilities the phone deleted.</p>
+<p>The mobile answer is a push/pop stack with a breadcrumb strip standing in for the sidebar's spatial sense — and, more importantly, <strong>a deliberate reduction in what mobile is for</strong>. Mobile Notion is weighted toward reading, quick capture and light editing; heavy structural work stays on desktop. That is the professional move, and it is the one students resist most: <em>you are allowed to decide that some of your product does not belong on the phone.</em></p>
+
+<div class="analogy"><span class="tag">The compression question</span>
+<p>Every desktop-first product hits this. Ask it explicitly: <em>which 20% of this product accounts for 80% of the moments a user would reach for their phone?</em> Build that, properly. Then decide, on purpose, what the phone will simply not do. A mobile app that does four things excellently beats one that does forty things at 40%.</p></div>
+
+<h4>Obsidian — the principled exception</h4>
+<p>Obsidian's mobile app puts a file-tree drawer where the orthodoxy says a tab bar belongs. By the rules in §4.3 this should be wrong. It isn't, and understanding why is the point of including it.</p>
+<p>Obsidian's content is a <em>user-authored filesystem</em>. There are no fixed top-level destinations to put in a tab bar — the destinations are whatever folders you made. A tab bar would either be empty of meaning or would be four generic labels sitting on top of the actual navigation, adding a layer rather than removing one. The drawer's discoverability cost is also much lower here than for a mass-market app, because Obsidian's users chose a local-first Markdown tool on purpose and arrive with a filesystem mental model already loaded.</p>
+
+<div class="insight"><span class="tag">Generalise it</span>
+<p>A drawer is defensible when <strong>the destinations are created by the user rather than by you</strong>, and when your users are self-selected for depth. It is indefensible when you have a fixed set of five destinations you designed yourself and hid behind an icon to keep the screen tidy.</p></div>
+
+<h3>4.5 — Back: two platforms, two contracts</h3>
+
+<p>This is where cross-platform apps built by web teams break most visibly.</p>
+
+<figure>
+<svg viewBox="0 0 880 300" role="img" aria-labelledby="f10t">
+<title id="f10t">Comparison of the iOS edge-swipe back gesture and the Android system back gesture and their differing scopes</title>
+<style>
+.a10{font-family:Caveat,cursive;font-size:17px}
+.l10{font-family:Kalam,cursive;font-size:14px}
+.u10{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#4a5c6b}
+.d10{font-family:ui-monospace,monospace;font-size:10px;fill:#2d5f8d}
+</style>
+<!-- iOS -->
+<text class="l10" x="20" y="24" fill="#2d5f8d">iOS — interactive edge-swipe, left edge only</text>
+<rect x="20" y="36" width="150" height="240" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="20" y="36" width="20" height="240" fill="#fff8e1"/>
+<rect x="52" y="60" width="118" height="216" rx="6" fill="#eef4f9" stroke="#c9d9e6"/>
+<text class="u10" x="62" y="82">‹  Restaurant</text>
+<text class="u10" x="62" y="106" font-weight="600">Butter Chicken</text>
+<text class="u10" x="62" y="124">₹340 · serves 1</text>
+<path d="M26 170 q26 0 40 0" stroke="#b7791f" stroke-width="2" marker-end="url(#a10)"/>
+<defs><marker id="a10" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#b7791f"/></marker></defs>
+<g class="d10" font-size="9.5"><text x="20" y="296">Scope: pops ONE screen from the current stack.</text></g>
+
+<!-- Android -->
+<text class="l10" x="320" y="24" fill="#2d5f8d">Android — system back, whole-screen gesture (either edge)</text>
+<rect x="320" y="36" width="150" height="240" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="320" y="36" width="18" height="240" fill="#fff8e1"/>
+<rect x="452" y="36" width="18" height="240" fill="#fff8e1"/>
+<rect x="348" y="60" width="96" height="216" rx="6" fill="#eef4f9" stroke="#c9d9e6"/>
+<text class="u10" x="356" y="82">← Restaurant</text>
+<text class="u10" x="356" y="106" font-weight="600">Butter Chicken</text>
+<path d="M326 170 q22 0 34 0" stroke="#b7791f" stroke-width="2" marker-end="url(#a10)"/>
+<path d="M464 200 q-22 0 -34 0" stroke="#b7791f" stroke-width="2" marker-end="url(#a10)"/>
+<g class="d10" font-size="9.5"><text x="320" y="296">Scope: pops a screen — OR closes a sheet, dismisses a keyboard,</text></g>
+
+<!-- consequences -->
+<rect x="600" y="36" width="260" height="240" rx="10" fill="#fdeeec" stroke="#c0392b" stroke-width="1.3"/>
+<text class="l10" x="616" y="62" fill="#c0392b" font-size="15">THE BUGS THIS CAUSES</text>
+<g class="u10" font-size="10.5">
+<text x="616" y="88" font-weight="600" fill="#5c2018">1 · Carousels that eat the gesture</text>
+<text x="616" y="104">A horizontally swipeable row placed against the</text>
+<text x="616" y="118">screen edge steals the back-swipe. Inset it, or</text>
+<text x="616" y="132">the user cannot leave the screen.</text>
+<text x="616" y="156" font-weight="600" fill="#5c2018">2 · Android back that exits the app</text>
+<text x="616" y="172">Back from a tab that isn't Home should go to</text>
+<text x="616" y="186">Home, not kill the app. Web devs forget this.</text>
+<text x="616" y="210" font-weight="600" fill="#5c2018">3 · A back arrow on a modal</text>
+<text x="616" y="226">Modals get Cancel / Done, never ‹ Back. Mixing</text>
+<text x="616" y="240">them destroys the depth-vs-interruption signal.</text>
+<text x="616" y="264" font-weight="600" fill="#5c2018">4 · Unsaved work destroyed by a gesture</text>
+</g>
+</svg>
+<figcaption><b>Figure 10</b> — Back is not one behaviour with two skins. On iOS it is a stack pop bound to the left edge. On Android it is a system-level "undo the last thing that appeared," which may be a sheet, a keyboard, an overlay or a screen.</figcaption>
+</figure>
+
+<div class="ck">Back is designed per platform, not once. <b>On Android, verify: keyboard → sheet → screen → tab-to-home → exit, in that order.</b></div>
+
+<h3>4.6 — Deep links and state restoration</h3>
+
+<p>The URL gave you shareable state for free. In an app you get it by building it: a deep link arrives, and you must <em>synthesise a plausible back stack</em> so the user who opened "Bikanervala" from a WhatsApp message can press back and land somewhere sensible rather than being dumped out of the app.</p>
+
+<p>Practically, this means every screen worth linking to needs: a stable identifier, a rule for what its parent stack should be when arrived at cold, and a loading state for the case where it was opened with no cached data. Web designers get this wrong by assuming — reasonably, from a decade of habit — that "it has a URL, so it works."</p>
+
+<div class="ck">Every shareable screen defines its synthetic back stack and its cold-open loading state.</div>
+
+<details class="cp"><summary>Checkpoint — diagnose the architecture</summary>
+<div class="cpbody">
+<p><strong>Question:</strong> You are designing the mobile app for a hospital chain. Users need: book appointment, view reports, prescriptions, past visits, a family-members switcher, insurance, and support. Tab bar, drawer, or both — and how do you decide?</p>
+<p><strong>Answer:</strong> Both, split by frequency and ownership. The tab bar takes the small set of high-frequency destinations users switch between — Appointments, Reports, Prescriptions, Profile — because those are yours, fixed, and visited repeatedly. The family-members switcher is not a destination at all; it is a <em>scope control</em> that changes what every tab shows, so it belongs in the header as a persistent selector (like Slack's workspace switcher), not in the tab bar. Insurance and Support are low-frequency and belong inside Profile. Note the diagnostic sequence: count destinations, classify by frequency, then separate "destinations" from "scope controls" — a distinction that does not exist on the web, where a scope change was just another URL.</p>
+</div></details>
+
+<details class="tn"><summary>Teaching note — the assignment that teaches this best</summary>
+<div class="tnbody">
+<p>Give students one content shape and ask for three architectures. For example: "a college's student app — attendance, timetable, fees, library, events, grievances, hostel." Have them produce a tab-bar version, a drawer version, and a hybrid, each with a written justification. Then have them argue. The productive discovery is that there is no single right answer, only a set of trade-offs that depend on which two things students actually open daily. Push them to go find out rather than guess — five interviews is enough to settle it.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">The URL was doing enormous unpaid work for you. Now you pay for it.</p>
+<p class="note green">Tabs = parallel stacks that persist. This one has no web analogue at all.</p>
+<p class="note">Horizontal = deeper. Vertical = interruption. Never mix the signals.</p>
+<p class="note red">Android back ≠ iOS back. Test the full chain on Android or you will ship bug #2.</p>
+</div>
+
+<div class="secfoot"><span>Navigation architecture</span><span class="pg">04 / 10</span></div>
+</div>
+</section>
+
+<!-- ============================= §5 ============================= -->
+<section class="chapter" id="s5">
+<div class="card">
+<h2 class="sec"><span class="num">05</span> Layout and density — the inversion</h2>
+
+<p class="lede">One column is not a compromise you make because the screen is narrow. It is the format. And the economics of the format are the inverse of the web's.</p>
+
+<h3>5.1 — Scrolling got cheap, tapping got expensive</h3>
+
+<p>On the web you optimised against scrolling. Above-the-fold was a real concern, you fought for vertical space, you compressed content into columns, and a click was a trivially cheap action — one pixel-perfect, instantaneous, zero-effort event.</p>
+
+<p>On a phone the economics flip completely:</p>
+
+<div class="grid2">
+<div class="gbox web"><h5>On the web</h5>
+<p><strong>Scroll = expensive.</strong> Requires a wheel, a drag, or a keypress. Users genuinely stopped at the fold.</p>
+<p><strong>Click = cheap.</strong> Precise, instant, no error rate, no travel cost. Deep navigation trees were viable.</p>
+<p>Result: <em>wide, shallow, dense</em>. Cram it in, link liberally.</p></div>
+<div class="gbox app"><h5>On a phone</h5>
+<p><strong>Scroll = nearly free.</strong> A flick of the thumb travels hundreds of points. Users scroll enormous distances without noticing.</p>
+<p><strong>Tap = expensive.</strong> Aim, commit, wait for a screen transition, lose your place, need a way back.</p>
+<p>Result: <em>narrow, deep-in-content, shallow-in-navigation</em>. Show more per screen, make them tap less.</p></div>
+</div>
+
+<div class="insight"><span class="tag">The design consequence people get backwards</span>
+<p>Because taps are expensive, <strong>you should generally push more information onto the current screen rather than behind another tap.</strong> The instinct to "simplify" by hiding details behind a chevron is often a web instinct misapplied — on the web that chevron cost a cheap click; here it costs an expensive one.</p>
+<p style="margin-top:10px">This is why Swiggy's restaurant card shows rating, cuisine, price-for-two, delivery time and offer <em>all at once</em>. Five data points on a card looks busy in a design review. It is correct, because each one it hides is a tap plus a back-navigation plus a lost scroll position.</p></div>
+
+<h3>5.2 — The Netflix rail: why horizontal carousels work here and fail on desktop</h3>
+
+<p>Horizontal carousels have a genuinely poor reputation in web design — low engagement past the first item, poor accessibility, users ignore the arrows. On mobile they are the dominant pattern in streaming, commerce and food delivery. Both facts are true, and the reason is worth working through properly rather than accepting as a quirk.</p>
+
+<figure>
+<svg viewBox="0 0 880 380" role="img" aria-labelledby="f11t">
+<title id="f11t">Diagram explaining why horizontal carousel rails succeed on phones and underperform on desktop web</title>
+<style>
+.a11{font-family:Caveat,cursive;font-size:17px}
+.l11{font-family:Kalam,cursive;font-size:14px}
+.u11{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#4a5c6b}
+.d11{font-family:ui-monospace,monospace;font-size:10px;fill:#2d5f8d}
+</style>
+<!-- desktop carousel -->
+<text class="l11" x="20" y="24" fill="#c0392b">DESKTOP — carousel underperforms</text>
+<rect x="20" y="36" width="380" height="130" rx="8" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+<g fill="#dce6ee"><rect x="36" y="56" width="80" height="94" rx="5"/><rect x="124" y="56" width="80" height="94" rx="5"/><rect x="212" y="56" width="80" height="94" rx="5"/><rect x="300" y="56" width="80" height="94" rx="5"/></g>
+<circle cx="392" cy="103" r="12" fill="#fff" stroke="#c9d2da"/><path d="M389 98 l6 5 l-6 5" fill="none" stroke="#4a5c6b" stroke-width="1.6"/>
+<text class="d11" x="20" y="184" fill="#c0392b">Interaction cost: find the arrow → aim → click → wait for slide → click again</text>
+<text class="d11" x="20" y="200" fill="#c0392b">Discovery cost: content off-screen is invisible and there's room to just show it</text>
+<text class="a11" x="20" y="226" fill="#c0392b">You had 1400px of width. Hiding things sideways</text>
+<text class="a11" x="20" y="246" fill="#c0392b">was a self-inflicted wound.</text>
+
+<!-- mobile rail -->
+<text class="l11" x="470" y="24" fill="#1e8449">PHONE — the rail is the right answer</text>
+<rect x="470" y="36" width="180" height="300" rx="20" fill="#fff" stroke="#1e8449" stroke-width="1.6"/>
+<text class="u11" x="484" y="62" font-weight="600">Trending in India</text>
+<g fill="#dce6ee"><rect x="484" y="70" width="52" height="74" rx="4"/><rect x="544" y="70" width="52" height="74" rx="4"/><rect x="604" y="70" width="46" height="74" rx="4"/></g>
+<text class="u11" x="484" y="170" font-weight="600">Because you watched Panchayat</text>
+<g fill="#dce6ee"><rect x="484" y="178" width="52" height="74" rx="4"/><rect x="544" y="178" width="52" height="74" rx="4"/><rect x="604" y="178" width="46" height="74" rx="4"/></g>
+<text class="u11" x="484" y="278" font-weight="600">New releases</text>
+<g fill="#dce6ee"><rect x="484" y="286" width="52" height="42" rx="4"/><rect x="544" y="286" width="52" height="42" rx="4"/><rect x="604" y="286" width="46" height="42" rx="4"/></g>
+<path d="M614 112 q26 0 40 0" stroke="#1e8449" stroke-width="1.8" marker-end="url(#a11m)"/>
+<defs><marker id="a11m" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#1e8449"/></marker></defs>
+
+<!-- reasoning -->
+<rect x="20" y="264" width="420" height="102" rx="10" fill="#f2faf5" stroke="#1e8449" stroke-width="1.2"/>
+<text class="l11" x="36" y="288" fill="#1e8449" font-size="15">WHY IT INVERTS</text>
+<g class="u11" font-size="10.5">
+<text x="36" y="308">1 · No arrows needed. The gesture IS the control, and it's a universal one.</text>
+<text x="36" y="326">2 · Peeking. The clipped third item is a visible affordance — desktop hides it fully.</text>
+<text x="36" y="344">3 · Vertical space is the scarce axis, so trading sideways buys real estate that matters.</text>
+<text x="36" y="360">4 · The row itself is a semantic unit: each rail is one algorithmic answer, stacked.</text>
+</g>
+<text class="a11" x="676" y="120" fill="#1e8449" font-size="16">the clipped card</text>
+<text class="a11" x="676" y="140" fill="#1e8449" font-size="16">is the affordance</text>
+<text class="d11" x="676" y="200">Always clip the last visible</text>
+<text class="d11" x="676" y="216">item — a rail that ends flush</text>
+<text class="d11" x="676" y="232">with the screen edge reads as</text>
+<text class="d11" x="676" y="248">complete, and nobody swipes.</text>
+<text class="d11" x="676" y="280" fill="#c0392b">And inset it from the edge, or</text>
+<text class="d11" x="676" y="296" fill="#c0392b">it eats the back gesture (§4.5).</text>
+</svg>
+<figcaption><b>Figure 11</b> — The same pattern, opposite verdicts. The rail works on a phone because the gesture is free, the peek is self-explanatory, and vertical space is the resource actually under pressure.</figcaption>
+</figure>
+
+<div class="ck">Every horizontal rail clips its last visible item, and is inset ≥16dp from the screen edge.</div>
+
+<h3>5.3 — The Notion problem: compressing a dense tool</h3>
+
+<p>Notion on desktop leans on multi-column layouts, a persistent sidebar, hover-revealed block handles, right-click menus, drag-and-drop block reordering and a deep keyboard-shortcut vocabulary. Count how many of those survive contact with a phone: the sidebar has nowhere to live, hover is gone (§3), right-click is gone, drag-and-drop competes with scroll, and the keyboard shortcuts require a keyboard.</p>
+
+<figure>
+<svg viewBox="0 0 880 340" role="img" aria-labelledby="f12t">
+<title id="f12t">A dense document tool shown as a desktop layout and as the reduced phone layout, with the removed capabilities listed</title>
+<style>
+.a12{font-family:Caveat,cursive;font-size:16px}
+.l12{font-family:Kalam,cursive;font-size:13px;fill:#6b7c8c}
+.u12{font-family:'Segoe UI',sans-serif;font-size:8.5px;fill:#4a5c6b}
+</style>
+<text class="l12" x="20" y="22">DESKTOP — sidebar + columns + hover controls</text>
+<rect x="20" y="32" width="400" height="240" rx="8" fill="#fff" stroke="#8e9aa6" stroke-width="1.4"/>
+<rect x="20" y="32" width="96" height="240" fill="#f4f7fa" stroke="#eceff2"/>
+<g class="u12"><text x="30" y="52">Search</text><text x="30" y="70">▸ Team wiki</text><text x="30" y="86">▾ Marketing</text><text x="38" y="102">Q3 brief</text><text x="38" y="118">Personas</text><text x="30" y="136">▸ Engineering</text><text x="30" y="154">▸ Archive</text><text x="30" y="180">Templates</text><text x="30" y="196">Trash</text></g>
+<text class="u12" x="130" y="56" font-size="13" font-weight="600">Q3 Campaign Brief</text>
+<rect x="130" y="70" width="130" height="80" rx="4" fill="#f8fafc" stroke="#e3e9ee"/>
+<text class="u12" x="138" y="86" font-weight="600">Objectives</text>
+<text class="u12" x="138" y="102">Reach 2M in NCR</text><text class="u12" x="138" y="116">CAC under ₹180</text>
+<rect x="270" y="70" width="132" height="80" rx="4" fill="#f8fafc" stroke="#e3e9ee"/>
+<text class="u12" x="278" y="86" font-weight="600">Owners</text>
+<text class="u12" x="278" y="102">Priya · creative</text><text class="u12" x="278" y="116">Arjun · paid</text>
+<rect x="130" y="162" width="272" height="94" rx="4" fill="#f8fafc" stroke="#e3e9ee"/>
+<text class="u12" x="138" y="178" font-weight="600">Budget table</text>
+<g stroke="#e3e9ee"><line x1="138" y1="186" x2="394" y2="186"/><line x1="138" y1="204" x2="394" y2="204"/><line x1="138" y1="222" x2="394" y2="222"/><line x1="230" y1="186" x2="230" y2="248"/><line x1="310" y1="186" x2="310" y2="248"/></g>
+<g class="u12"><text x="144" y="199">Paid social</text><text x="236" y="199">₹4,20,000</text><text x="316" y="199">Arjun</text>
+<text x="144" y="217">Influencer</text><text x="236" y="217">₹2,60,000</text><text x="316" y="217">Priya</text>
+<text x="144" y="235">Print</text><text x="236" y="235">₹90,000</text><text x="316" y="235">Vendor</text></g>
+<circle cx="122" cy="90" r="5" fill="#c9d9e6"/><text class="u12" x="119" y="93" fill="#fff">⋮</text>
+<text class="a12" x="20" y="294" fill="#c0392b">Hover reveals ⋮ handles · right-click menus · drag to reorder ·</text>
+<text class="a12" x="20" y="314" fill="#c0392b">/ commands · Cmd+K · two columns · a permanent sidebar</text>
+
+<!-- phone -->
+<text class="l12" x="470" y="22">PHONE — what survives</text>
+<rect x="470" y="32" width="140" height="256" rx="18" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="470" y="46" width="140" height="20" fill="#fbfdff" stroke="#eceff2"/>
+<text class="u12" x="478" y="60">‹  Marketing / Q3 …</text>
+<text class="u12" x="480" y="86" font-size="11" font-weight="600">Q3 Campaign Brief</text>
+<text class="u12" x="480" y="106" font-weight="600">Objectives</text>
+<text class="u12" x="480" y="120">Reach 2M in NCR</text><text class="u12" x="480" y="132">CAC under ₹180</text>
+<text class="u12" x="480" y="152" font-weight="600">Owners</text>
+<text class="u12" x="480" y="166">Priya · creative</text><text class="u12" x="480" y="178">Arjun · paid</text>
+<text class="u12" x="480" y="198" font-weight="600">Budget</text>
+<rect x="480" y="204" width="120" height="60" rx="4" fill="#f8fafc" stroke="#e3e9ee"/>
+<g class="u12"><text x="486" y="218">Paid social  ₹4,20,000</text><text x="486" y="234">Influencer   ₹2,60,000</text><text x="486" y="250">Print          ₹90,000</text></g>
+<path d="M596 232 l8 0" stroke="#b7791f" stroke-width="1.4"/>
+<text class="a12" x="470" y="308" fill="#1e8449" font-size="15">Two columns → stacked. Table → scrolls sideways.</text>
+<text class="a12" x="470" y="328" fill="#1e8449" font-size="15">Sidebar → breadcrumb. Hover handles → long-press.</text>
+
+<!-- decision panel -->
+<rect x="636" y="32" width="224" height="256" rx="10" fill="#fdfaf0" stroke="#e2d6b8"/>
+<text class="l12" x="652" y="56" fill="#8a6d0b" font-size="14">THE COMPRESSION DECISIONS</text>
+<g class="u12" font-size="10">
+<text x="652" y="82" font-weight="600" fill="#8a6d0b">Keep</text>
+<text x="652" y="98">Reading. Quick capture. Search.</text>
+<text x="652" y="112">Comment. Check off a task.</text>
+<text x="652" y="138" font-weight="600" fill="#8a6d0b">Reduce</text>
+<text x="652" y="154">Editing — inline only, no block</text>
+<text x="652" y="168">restructuring.</text>
+<text x="652" y="194" font-weight="600" fill="#8a6d0b">Drop</text>
+<text x="652" y="210">Multi-column authoring. Bulk</text>
+<text x="652" y="224">reorganisation. Complex table</text>
+<text x="652" y="238">editing. Database view config.</text>
+<text x="652" y="266" fill="#c0392b" font-weight="600">Dropping is a decision, not a defeat.</text>
+</g>
+</svg>
+<figcaption><b>Figure 12</b> — Compression is a product decision before it is a layout decision. Decide what the phone is <em>for</em>, then design that well, rather than shrinking everything to 60% and calling it responsive.</figcaption>
+</figure>
+
+<h3>5.4 — Typography that survives a phone</h3>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:22%">Property</th><th style="width:26%">Your web default</th><th style="width:26%">Mobile target</th><th>Reason</th></tr></thead>
+<tbody>
+<tr><td>Body size</td><td class="n">16 px</td><td class="n">15–17 pt/sp minimum</td><td>Roughly comparable — but this is now a <em>floor</em>, and it scales with the user's setting</td></tr>
+<tr><td>Secondary text</td><td class="n">13–14 px, light grey</td><td class="n">13 pt min, ≥4.5:1 contrast</td><td>Your tasteful grey fails outdoors (§1.2)</td></tr>
+<tr><td>Measure</td><td class="n">60–75 characters</td><td class="n">30–45 characters</td><td>You physically cannot fit 65 characters at 17pt in 360dp. Stop trying.</td></tr>
+<tr><td>Line height</td><td class="n">1.5–1.6</td><td class="n">1.35–1.45</td><td>Short measure needs less leading; long leading wastes the scarce axis</td></tr>
+<tr><td>Type scale steps</td><td class="n">6–8 sizes</td><td class="n">4–5 sizes</td><td>Fewer steps read as more deliberate at this size; more steps read as noise</td></tr>
+<tr><td>Weight for hierarchy</td><td>Size does most of the work</td><td>Weight and colour do more of it</td><td>You have less size range available, so you lean on the other two axes</td></tr>
+<tr><td>Caps / letter-spacing</td><td>Common in headings</td><td>Sparingly, labels only</td><td>All-caps costs legibility, and legibility is already under pressure</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn"><span class="tag">The web habit that breaks hardest</span>
+<p>A 12px caption in light grey is a completely normal, professional choice on a website. On a phone it is simultaneously below the comfortable reading floor, likely failing contrast, and about to be scaled to 28pt by a user with Dynamic Type turned up — inside a row you sized at 44pt. It fails three ways at once. If you catch yourself reaching for small light grey text, that is the moment to stop and re-read §1.2.</p></div>
+
+<div class="ck">No text below 13pt/sp. No body text below 15. Every text container sized from content, never fixed.</div>
+
+<details class="cp"><summary>Checkpoint — the density question</summary>
+<div class="cpbody">
+<p><strong>Question:</strong> A product manager asks you to "clean up" a busy restaurant card by moving rating and delivery time behind a tap. Do you agree? On what grounds?</p>
+<p><strong>Answer:</strong> No, and the grounds are the tap/scroll inversion in §5.1. Rating and delivery time are precisely the two variables the user is <em>comparing across cards</em> — the decision is comparative, and comparison requires simultaneous visibility. Hiding them converts one scroll-and-scan into <em>n</em> taps and <em>n</em> back-navigations. "Clean" is not the objective; time-to-decision is. The correct move is to reduce visual noise around those data points (weight, colour, spacing) rather than to remove them.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">Scroll cheap, tap expensive. The whole section is downstream of this one sentence.</p>
+<p class="note green">Rails work here for a reason. Always clip the last card.</p>
+<p class="note red">Small light-grey text: three failures at once. Stop reaching for it.</p>
+</div>
+
+<div class="secfoot"><span>Layout &amp; density</span><span class="pg">05 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §6 ============================= -->
+<section class="chapter" id="s6">
+<div class="card">
+<h2 class="sec"><span class="num">06</span> iOS versus Android — conventions, and when to break them</h2>
+
+<p class="lede">You are designing for two operating systems with different idioms, different component libraries, and different user expectations built over fifteen years. Pretending otherwise is the most common way a cross-platform app feels subtly wrong on both.</p>
+
+<h3>6.1 — The comparison table</h3>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:18%">Concern</th><th style="width:34%">iOS — Human Interface Guidelines</th><th>Android — Material 3</th></tr></thead>
+<tbody>
+<tr><td>Primary navigation</td><td>Tab bar, bottom, 2–5 items, labels beneath icons</td><td>Navigation bar, bottom, 3–5 items; also navigation rail on larger widths</td></tr>
+<tr><td>Back</td><td>App-drawn ‹ Back button in the top-left, plus left-edge interactive swipe. Label often names the previous screen.</td><td>System gesture from either edge (or a system button). Your app usually draws no back control at all on the root of a tab.</td></tr>
+<tr><td>Title / header</td><td>Large title that collapses on scroll, centred small title when collapsed</td><td>Top app bar, title left-aligned, collapses via scroll behaviours</td></tr>
+<tr><td>System typeface</td><td>SF Pro / SF Compact, optical sizing built in</td><td>Roboto (Roboto Flex on newer), plus per-OEM substitutions</td></tr>
+<tr><td>Primary floating action</td><td>No FAB convention. Primary action goes in the toolbar or as a bottom-anchored button.</td><td>FAB — a real, expected pattern, bottom-right, one per screen</td></tr>
+<tr><td>Binary toggle</td><td>Switch, almost always. Checkboxes are rare and mostly in lists.</td><td>Switch for settings, checkbox for multi-select, radio for exclusive choice — all three used</td></tr>
+<tr><td>Depth model</td><td>Materials — translucency, blur, vibrancy. Layers you see <em>through</em>.</td><td>Elevation — tonal colour shift plus shadow. Layers you see <em>above</em>.</td></tr>
+<tr><td>Transient message</td><td>No system snackbar. Custom banner or an alert.</td><td>Snackbar, bottom, optional single action</td></tr>
+<tr><td>Confirmation of destructive act</td><td>Action sheet from the bottom, destructive item in red</td><td>Dialog, centred, text buttons bottom-right</td></tr>
+<tr><td>Date / time entry</td><td>Wheel picker or inline calendar</td><td>Material date picker dialog, plus a text-entry mode</td></tr>
+<tr><td>Sharing</td><td>System share sheet — deeply expected, users look for the square-with-arrow glyph</td><td>System share sheet via intent — equally expected</td></tr>
+<tr><td>Haptics</td><td>Rich, standardised feedback types; users are sensitised to them</td><td>Present and improving, but far more variable across OEMs — never rely on it as the only feedback</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 880 320" role="img" aria-labelledby="f13t">
+<title id="f13t">Side by side comparison of the same settings screen rendered with iOS conventions and with Material Design conventions</title>
+<style>
+.l13{font-family:Kalam,cursive;font-size:14px;fill:#2d5f8d}
+.u13{font-family:'Segoe UI',sans-serif;font-size:9.5px;fill:#1f2c38}
+.a13{font-family:Caveat,cursive;font-size:16px;fill:#b7791f}
+</style>
+<!-- iOS -->
+<text class="l13" x="30" y="24">SAME SCREEN · iOS idiom</text>
+<rect x="30" y="34" width="180" height="264" rx="20" fill="#f4f7fa" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="30" y="34" width="180" height="22" rx="20" fill="#fff"/><rect x="30" y="46" width="180" height="10" fill="#fff"/>
+<text class="u13" x="42" y="50" font-size="8">9:41</text>
+<text class="u13" x="42" y="76" font-size="8" fill="#3a7ca5">‹ Settings</text>
+<text class="u13" x="42" y="102" font-size="17" font-weight="700">Notifications</text>
+<rect x="42" y="116" width="156" height="88" rx="9" fill="#fff"/>
+<text class="u13" x="52" y="136">Order updates</text>
+<rect x="160" y="128" width="30" height="17" rx="8.5" fill="#1e8449"/><circle cx="182" cy="136.5" r="7" fill="#fff"/>
+<line x1="52" y1="146" x2="198" y2="146" stroke="#eceff2"/>
+<text class="u13" x="52" y="166">Offers &amp; promos</text>
+<rect x="160" y="158" width="30" height="17" rx="8.5" fill="#dde6ee"/><circle cx="168" cy="166.5" r="7" fill="#fff"/>
+<line x1="52" y1="176" x2="198" y2="176" stroke="#eceff2"/>
+<text class="u13" x="52" y="196">Sound</text><text class="u13" x="160" y="196" fill="#8e9aa6">Chime ›</text>
+<text class="u13" x="42" y="226" font-size="8" fill="#8e9aa6">GROUPED, INSET, ROUNDED</text>
+<rect x="42" y="238" width="156" height="30" rx="9" fill="#fff"/>
+<text class="u13" x="52" y="257" fill="#c0392b">Turn off all notifications</text>
+<rect x="118" y="286" width="60" height="3" rx="1.5" fill="#c3d4e0"/>
+
+<!-- Android -->
+<text class="l13" x="300" y="24">SAME SCREEN · Material idiom</text>
+<rect x="300" y="34" width="180" height="264" rx="20" fill="#fff" stroke="#2d5f8d" stroke-width="1.6"/>
+<rect x="300" y="34" width="180" height="22" rx="20" fill="#f2f7fb"/><rect x="300" y="46" width="180" height="10" fill="#f2f7fb"/>
+<text class="u13" x="312" y="50" font-size="8">9:41</text>
+<text class="u13" x="312" y="82" font-size="14" font-weight="600">← Notifications</text>
+<text class="u13" x="312" y="112" font-size="8" fill="#3a7ca5" font-weight="600">DELIVERY</text>
+<text class="u13" x="312" y="134">Order updates</text>
+<rect x="432" y="124" width="34" height="18" rx="9" fill="#3a7ca5"/><circle cx="457" cy="133" r="7.5" fill="#fff"/>
+<text class="u13" x="312" y="152" font-size="8" fill="#8e9aa6">Status changes and arrival alerts</text>
+<text class="u13" x="312" y="180">Offers &amp; promos</text>
+<rect x="432" y="170" width="34" height="18" rx="9" fill="#dde6ee"/><circle cx="441" cy="179" r="7.5" fill="#fff"/>
+<text class="u13" x="312" y="212" font-size="8" fill="#3a7ca5" font-weight="600">SOUND</text>
+<text class="u13" x="312" y="234">Notification chime</text>
+<circle cx="452" cy="229" r="7" fill="none" stroke="#3a7ca5" stroke-width="1.6"/><circle cx="452" cy="229" r="3.5" fill="#3a7ca5"/>
+<text class="u13" x="312" y="262">Silent</text>
+<circle cx="452" cy="257" r="7" fill="none" stroke="#c9d2da" stroke-width="1.6"/>
+<text class="u13" x="312" y="288" font-size="8" fill="#8e9aa6">FLAT, EDGE-TO-EDGE, LABELLED GROUPS</text>
+
+<!-- notes -->
+<rect x="560" y="34" width="298" height="264" rx="10" fill="#fdfaf0" stroke="#e2d6b8"/>
+<text class="l13" x="576" y="58" fill="#8a6d0b">WHAT CHANGED, AND WHY</text>
+<g class="u13" font-size="10">
+<text x="576" y="84" font-weight="600" fill="#8a6d0b">Grouping</text>
+<text x="576" y="100">iOS: inset rounded cards. Android: flat sections</text>
+<text x="576" y="114">with coloured section headers. Not cosmetic —</text>
+<text x="576" y="128">it's how each platform signals "these belong together."</text>
+<text x="576" y="154" font-weight="600" fill="#8a6d0b">Back</text>
+<text x="576" y="170">iOS draws ‹ with the parent's name. Android draws</text>
+<text x="576" y="184">← in the app bar and also honours the system gesture.</text>
+<text x="576" y="210" font-weight="600" fill="#8a6d0b">Exclusive choice</text>
+<text x="576" y="226">iOS uses a drill-in row with the current value on the</text>
+<text x="576" y="240">right. Android shows radio buttons inline.</text>
+<text x="576" y="266" font-weight="600" fill="#8a6d0b">Supporting text</text>
+<text x="576" y="282">Material expects a description line under a setting.</text>
+</g>
+</svg>
+<figcaption><b>Figure 13</b> — One feature, two idioms. Neither is a skin of the other; the grouping model, the back affordance and the choice control are all structurally different.</figcaption>
+</figure>
+
+<h3>6.2 — The real question: unified or native?</h3>
+
+<p>This is genuinely contested. Both positions are held by competent people shipping successful products, so here is the argument on both sides rather than a verdict.</p>
+
+<div class="grid2">
+<div class="gbox app"><h5>The case for unified</h5>
+<p>Your brand is the product. Users who switch phones should recognise your app. One design system, one component library, one set of specs, roughly half the design and QA cost. Users are far more fluent in cross-platform conventions than they were in 2015 — a whole generation learned interfaces from apps, not from an OS.</p>
+<p><strong>Who does this:</strong> Netflix, Spotify, Instagram, Uber, most large consumer apps.</p></div>
+<div class="gbox web"><h5>The case for native</h5>
+<p>Your app is a guest in an environment the user knows better than they know you. Matching platform idioms makes it feel fast, familiar and trustworthy — and trust is not a brand asset you can substitute for. Native components also inherit accessibility, text scaling, dark mode and future OS changes for free.</p>
+<p><strong>Who does this:</strong> Banking and government apps, utilities, Apple's and Google's own apps, most productivity tools.</p></div>
+</div>
+
+<div class="insight"><span class="tag">The decision framework I'd actually use</span>
+<p><strong>Unify the brand layer. Localise the system layer.</strong></p>
+<ul style="margin-bottom:0;margin-top:10px">
+<li><strong>Unify:</strong> colour, typography, iconography, illustration, motion personality, content layout, tone of voice, your own components (cards, rails, product tiles).</li>
+<li><strong>Localise, always:</strong> navigation and back behaviour, share sheet, date and time pickers, permission prompts, keyboard handling, text scaling, haptics, system dialogs, destructive-action confirmation.</li>
+</ul>
+<p style="margin-top:10px">Look again at Figure 13 through this lens: the switch <em>colour</em> should be your brand's. The switch <em>shape and position</em> should be the platform's. That single split resolves most of the argument.</p></div>
+
+<p>The failure mode at each extreme is worth naming. Fully unified apps built by web teams tend to ship an Android app that is an iOS app with the corners changed — no system back handling, no FAB where one belongs, iOS-style action sheets where a dialog is expected. Fully native apps built without a design system tend to drift into two products that share a logo and nothing else, and the cost surfaces two years later when every feature has to be designed twice.</p>
+
+<div class="ck">Navigation, back, pickers, permissions and share are platform-native. Everything above them is yours.</div>
+
+<details class="tn"><summary>Teaching note — the assessment that exposes the gap</summary>
+<div class="tnbody">
+<p>Give students an iOS screenshot of a well-known app and ask them to redraw it as the Android version. The weak submissions change the status bar and the font. The strong ones move the back affordance, swap the grouped inset list for flat sections, replace the action sheet with a dialog, and add a FAB — and can say why for each. It marks itself, and it's a good mid-term.</p>
+</div></details>
+
+<div class="gutter">
+<p class="note">Unify the brand layer. Localise the system layer. That's the whole answer.</p>
+<p class="note red">"Android version" ≠ "iOS version with different corners."</p>
+<p class="note green">Elevation vs materials: Android stacks above, iOS sees through.</p>
+</div>
+
+<div class="secfoot"><span>iOS vs Android</span><span class="pg">06 / 10</span></div>
+</div>
+</section>
+
+<!-- ============================= §7 ============================= -->
+<section class="chapter" id="s7">
+<div class="card">
+<h2 class="sec"><span class="num">07</span> The Indian device floor</h2>
+
+<p class="lede">Most mobile UX material is written from a context where the reference device is a recent iPhone on reliable LTE. If you are shipping in India, that describes a minority of your users. The constraint is real, it is a design constraint rather than an engineering one, and it changes decisions.</p>
+
+<h3>7.1 — What the floor actually looks like</h3>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:24%">Dimension</th><th style="width:30%">Design-review device</th><th>Realistic floor device</th></tr></thead>
+<tbody>
+<tr><td>Screen</td><td>6.1" OLED, @3x, 1000+ nits</td><td>6.5" LCD, @2x, 720 × 1600 px, ~400 nits — <strong>and it will be used outdoors</strong></td></tr>
+<tr><td>Memory</td><td>8 GB</td><td>2–4 GB, of which your app gets a fraction before the OS reclaims it</td></tr>
+<tr><td>Storage</td><td>256 GB, mostly free</td><td>32–64 GB, chronically near full — users uninstall apps to free space, and yours competes</td></tr>
+<tr><td>Network</td><td>Stable 5G / office Wi-Fi</td><td>4G that degrades to 3G on a moving train; frequent 2–5 s round trips; metered data</td></tr>
+<tr><td>Background work</td><td>Standard OS lifecycle</td><td>Aggressive OEM battery managers that kill background processes and suppress notifications</td></tr>
+<tr><td>Text size setting</td><td>100%</td><td>Frequently raised — shared devices, older users, small-print fatigue</td></tr>
+<tr><td>Language</td><td>English</td><td>English plus one or more Indic scripts, which are typographically taller and wider than Latin</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 880 320" role="img" aria-labelledby="f14t">
+<title id="f14t">A performance and design budget chart contrasting a flagship device context with a budget device context</title>
+<style>
+.l14{font-family:Kalam,cursive;font-size:14px;fill:#6b7c8c}
+.u14{font-family:'Segoe UI',sans-serif;font-size:10px;fill:#4a5c6b}
+.d14{font-family:ui-monospace,monospace;font-size:10.5px;fill:#2d5f8d}
+.a14{font-family:Caveat,cursive;font-size:17px;fill:#c0392b}
+</style>
+<text class="l14" x="20" y="24">TIME TO FIRST USEFUL PIXEL — same screen, two contexts</text>
+
+<!-- flagship bar -->
+<text class="d14" x="20" y="58">Flagship + 5G</text>
+<rect x="140" y="46" width="70" height="18" fill="#1e8449" opacity="0.7"/><text class="u14" x="146" y="59" fill="#fff">launch</text>
+<rect x="212" y="46" width="60" height="18" fill="#3a7ca5" opacity="0.7"/><text class="u14" x="218" y="59" fill="#fff">fetch</text>
+<rect x="274" y="46" width="46" height="18" fill="#5ba8cf" opacity="0.8"/><text class="u14" x="278" y="59" fill="#fff">render</text>
+<text class="d14" x="330" y="60" fill="#1e8449">≈ 1.1 s — nobody notices</text>
+
+<!-- budget bar -->
+<text class="d14" x="20" y="102">Budget + weak 4G</text>
+<rect x="140" y="90" width="150" height="18" fill="#1e8449" opacity="0.7"/><text class="u14" x="180" y="103" fill="#fff">cold launch</text>
+<rect x="292" y="90" width="290" height="18" fill="#3a7ca5" opacity="0.7"/><text class="u14" x="390" y="103" fill="#fff">fetch — the dominant cost</text>
+<rect x="584" y="90" width="120" height="18" fill="#5ba8cf" opacity="0.8"/><text class="u14" x="612" y="103" fill="#fff">render + images</text>
+<text class="d14" x="714" y="104" fill="#c0392b">≈ 6–9 s</text>
+
+<!-- thresholds -->
+<line x1="212" y1="36" x2="212" y2="130" stroke="#b7791f" stroke-dasharray="4 3"/>
+<text class="u14" x="216" y="128" fill="#b7791f">400 ms · Doherty</text>
+<line x1="320" y1="36" x2="320" y2="146" stroke="#c0392b" stroke-dasharray="4 3"/>
+<text class="u14" x="324" y="144" fill="#c0392b">1 s · flow breaks</text>
+
+<text class="a14" x="20" y="176">You cannot make the network faster. You can decide what appears first.</text>
+
+<!-- consequences grid -->
+<rect x="20" y="192" width="410" height="112" rx="10" fill="#f2faf5" stroke="#1e8449" stroke-width="1.2"/>
+<text class="l14" x="36" y="216" fill="#1e8449" font-size="15">DESIGN MOVES THAT ACTUALLY HELP</text>
+<g class="u14" font-size="10.5">
+<text x="36" y="238">• Skeleton screens shaped like the real content, not spinners</text>
+<text x="36" y="256">• Text before images — the copy is 2 KB, the poster is 180 KB</text>
+<text x="36" y="274">• Cache the last successful screen and show it instantly, then refresh</text>
+<text x="36" y="292">• Optimistic UI for anything the user initiated (like, save, add to cart)</text>
+</g>
+
+<rect x="450" y="192" width="410" height="112" rx="10" fill="#fdeeec" stroke="#c0392b" stroke-width="1.2"/>
+<text class="l14" x="466" y="216" fill="#c0392b" font-size="15">DESIGN MOVES THAT MAKE IT WORSE</text>
+<g class="u14" font-size="10.5">
+<text x="466" y="238">• A full-bleed hero image as the first thing that must load</text>
+<text x="466" y="256">• Custom fonts that block text rendering until they arrive</text>
+<text x="466" y="274">• A centred spinner with no shape — reads as "broken" after 3 s</text>
+<text x="466" y="292">• Animations on list items that fire on every scroll frame</text>
+</g>
+</svg>
+<figcaption><b>Figure 14</b> — The budget device doesn't need a different design; it needs a design whose <em>loading order</em> was decided on purpose. Every item in the green box is a design decision, not an optimisation.</figcaption>
+</figure>
+
+<h3>7.2 — What this changes in your design</h3>
+
+<h4>Image strategy is a design decision, not an engineering one</h4>
+<p>The designer decides the aspect ratio, the crop, the number of images per screen and whether a screen can be understood before its images arrive. A rail of six 3:4 posters at @3x is a meaningfully different product from a rail of six 16:9 thumbnails, in bytes and in time-to-usable. JioHotstar and Netflix both ship aggressive image sizing and progressive loading in India for exactly this reason — the poster you see first is often a low-resolution placeholder that sharpens.</p>
+
+<h4>Skeletons must be shaped, not generic</h4>
+<p>A grey rectangle where the title will be, a grey square where the poster will be, in the real layout. This does two things: it removes the layout shift when content arrives, and it tells the user what is coming. A centred spinner does neither and, past about three seconds, is indistinguishable from a crash.</p>
+
+<h4>Offline is a state you design, not an error you show</h4>
+<p>On a train between Delhi and Dehradun, connectivity is intermittent by default, not exceptionally. The question "what does this screen look like with no network and stale cache" needs an answer for every screen, and the answer is rarely "a full-screen error." Usually it is: show the cached content, mark it as stale, queue the user's actions, and reconcile when the connection returns. Obsidian is instructive here for a different reason — it is local-first by architecture, so its offline state is simply its normal state.</p>
+
+<h4>Install size is a conversion metric</h4>
+<p>On a phone with 3 GB free, a 90 MB app competes with photographs. Google Play's compressed download ceiling for app bundles is 200 MB, but that is a technical limit rather than a target — this market has produced a genuine culture of "Lite" builds precisely because size affects whether the install completes at all. Design consequence: every bundled font, illustration set, animation library and onboarding video is a trade against install completion.</p>
+
+<div class="analogy"><span class="tag">The reframe worth teaching</span>
+<p>Designing for the floor is not designing <em>down</em>. Every one of these moves — shaped skeletons, text-first loading, cached-and-stale states, optimistic UI, restrained asset budgets — makes the app better on a flagship too. The flagship user simply never notices, because the improvement is invisible when everything is fast. <span class="hl">Constraints on the floor produce quality at the ceiling.</span></p></div>
+
+<div class="ck">Every screen has a defined empty, loading, stale-cache, offline and error state — designed, not defaulted.</div>
+
+<div class="gutter">
+<p class="note">2 GB RAM, 720p, metered 4G, near-full storage. That's your user.</p>
+<p class="note green">Skeletons shaped like the content. Text before images. Cache and refresh.</p>
+<p class="note">Designing for the floor is how you get quality at the ceiling.</p>
+</div>
+
+<div class="secfoot"><span>The Indian device floor</span><span class="pg">07 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §8 ============================= -->
+<section class="chapter" id="s8">
+<div class="card">
+<h2 class="sec"><span class="num">08</span> The unlearning table</h2>
+
+<p class="lede">This is the section to screenshot. Twenty habits, what each becomes, and which of the three constraints forces the change.</p>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:26%">What you did on the web</th><th style="width:32%">What it becomes on a phone</th><th style="width:11%">Forced by</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Nav bar across the top</td><td>Tab bar across the bottom, 3–5 items, labelled</td><td class="n">Hand</td><td>The thumb lives at the bottom; the top of a 6.5" phone requires a grip change</td></tr>
+<tr><td>Hamburger menu for everything</td><td>Tabs for destinations; drawer only for user-created hierarchies</td><td class="n">Hand</td><td>Hidden destinations get visited less; the reach cost compounds the discovery cost</td></tr>
+<tr><td>Hover to reveal actions</td><td>Visible controls, or long-press as an accelerator with a visible equivalent</td><td class="n">Touch</td><td>There is no "here but not committed" state on a touchscreen</td></tr>
+<tr><td>Tooltips</td><td>Deleted. Use a label, a supporting line, or an info row.</td><td class="n">Touch</td><td>No hover to trigger them, and no space to place them without occlusion</td></tr>
+<tr><td>Right-click context menu</td><td>Long-press menu, plus an explicit overflow control</td><td class="n">Touch</td><td>Long-press is undiscoverable on its own</td></tr>
+<tr><td>Buttons sized to look right</td><td>Buttons sized to hit right — 44pt/48dp hit area minimum</td><td class="n">Touch</td><td>10–14mm contact patch, drifting centroid</td></tr>
+<tr><td>Dropdown opening downward</td><td>Bottom sheet rising from the bottom edge</td><td class="n">Hand</td><td>Occlusion — the finger covers a downward menu</td></tr>
+<tr><td>Toast in the top-right corner</td><td>Snackbar at the bottom, above the tab bar</td><td class="n">Hand + Eye</td><td>Reachable if it has an action; inside the visual centre of attention</td></tr>
+<tr><td>Feedback on click (release)</td><td>Feedback on touch-<em>down</em>, within 100 ms</td><td class="n">Touch</td><td>Without it users assume the tap missed and tap again</td></tr>
+<tr><td>Browser back button</td><td>Two platform contracts you implement separately</td><td class="n">OS</td><td>iOS pops one screen; Android back unwinds keyboard, sheet, screen, then tab</td></tr>
+<tr><td>URL as navigation state</td><td>A navigation stack you build, plus deep links with synthetic back stacks</td><td class="n">OS</td><td>Nothing gives you shareable, restorable state for free</td></tr>
+<tr><td>Page reload restores you roughly</td><td>Explicit state restoration across background, suspend and cold relaunch</td><td class="n">OS</td><td>The OS can reclaim your process at any moment</td></tr>
+<tr><td>Breakpoints for width</td><td>Safe-area insets, size classes, and <em>text-scale</em> resilience</td><td class="n">OS</td><td>Vertical variance from insets, keyboard and Dynamic Type exceeds horizontal variance</td></tr>
+<tr><td><code>px</code> everywhere</td><td><code>pt</code> / <code>dp</code> for layout, <code>sp</code> for text</td><td class="n">OS</td><td>Text scales with a user setting; layout does not</td></tr>
+<tr><td>Fixed-height rows and cards</td><td>Minimum heights; containers sized from content</td><td class="n">OS</td><td>Text at 200% scale will clip anything with a hard height</td></tr>
+<tr><td>Above-the-fold anxiety</td><td>Reach-zone discipline</td><td class="n">Hand</td><td>Scrolling became cheap; reaching became the expensive axis</td></tr>
+<tr><td>Hide detail behind a click to simplify</td><td>Show comparative data on the card; reduce noise instead</td><td class="n">Hand</td><td>Taps cost a transition, a lost scroll position and a return trip</td></tr>
+<tr><td>Carousels are a bad pattern</td><td>Rails are a good pattern — clipped, inset, gesture-driven</td><td class="n">Touch</td><td>The gesture is free and universal; the peek is the affordance</td></tr>
+<tr><td>Tasteful small grey secondary text</td><td>13pt floor, ≥4.5:1 contrast, higher for outdoor-critical text</td><td class="n">Eye</td><td>Ambient light, viewing distance and motion all degrade legibility</td></tr>
+<tr><td>Loading spinner in the middle</td><td>Skeleton shaped like the incoming content</td><td class="n">Eye + OS</td><td>Removes layout shift, communicates what's coming, survives slow networks</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 880 300" role="img" aria-labelledby="f15t">
+<title id="f15t">A summary map showing how the three constraints of hand, eye and operating system generate each area of mobile design practice</title>
+<style>
+.l15{font-family:Kalam,cursive;font-size:14px;fill:#2d5f8d}
+.u15{font-family:'Segoe UI',sans-serif;font-size:10px;fill:#1f2c38}
+.a15{font-family:Caveat,cursive;font-size:17px;fill:#2d5f8d}
+</style>
+<text class="l15" x="20" y="24">THE DERIVATION MAP — everything in this masterclass, traced to its cause</text>
+
+<!-- three roots -->
+<rect x="30" y="44" width="150" height="46" rx="10" fill="#2d5f8d"/>
+<text x="72" y="66" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">THE HAND</text>
+<text x="52" y="82" font-family="'Segoe UI',sans-serif" font-size="9" fill="#bfe0f3">arc · grip · occlusion</text>
+
+<rect x="30" y="128" width="150" height="46" rx="10" fill="#3a7ca5"/>
+<text x="78" y="150" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">THE EYE</text>
+<text x="44" y="166" font-family="'Segoe UI',sans-serif" font-size="9" fill="#d6ecf8">distance · light · motion</text>
+
+<rect x="30" y="212" width="150" height="46" rx="10" fill="#5ba8cf"/>
+<text x="86" y="234" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="600" fill="#fff">THE OS</text>
+<text x="42" y="250" font-family="'Segoe UI',sans-serif" font-size="9" fill="#fff">insets · gestures · lifecycle</text>
+
+<!-- branches -->
+<g stroke="#c9d9e6" stroke-width="1.4" fill="none">
+<path d="M180 60 q60 0 90 -12"/><path d="M180 66 q60 0 90 22"/><path d="M180 72 q60 0 90 56"/><path d="M180 78 q60 0 90 90"/>
+<path d="M180 148 q60 0 90 34"/><path d="M180 154 q60 0 90 68"/>
+<path d="M180 232 q60 0 90 34"/><path d="M180 238 q60 0 90 -34"/><path d="M180 226 q60 0 90 -104"/>
+</g>
+
+<g class="u15" font-size="11">
+<rect x="272" y="38" width="176" height="22" rx="5" fill="#eef4f9"/><text x="282" y="53">Bottom tab bars</text>
+<rect x="272" y="76" width="176" height="22" rx="5" fill="#eef4f9"/><text x="282" y="91">Bottom sheets, not dropdowns</text>
+<rect x="272" y="114" width="176" height="22" rx="5" fill="#eef4f9"/><text x="282" y="129">44 / 48 hit areas</text>
+<rect x="272" y="152" width="176" height="22" rx="5" fill="#eef4f9"/><text x="282" y="167">Show data, don't hide it</text>
+<rect x="272" y="190" width="176" height="22" rx="5" fill="#eaf4fb"/><text x="282" y="205">Contrast floors, type floors</text>
+<rect x="272" y="228" width="176" height="22" rx="5" fill="#eaf4fb"/><text x="282" y="243">Skeletons, glanceable states</text>
+<rect x="272" y="266" width="176" height="22" rx="5" fill="#e7f3fa"/><text x="282" y="281">Safe areas, sp vs dp</text>
+</g>
+
+<!-- second layer -->
+<g stroke="#dde6ee" stroke-width="1.2" fill="none">
+<path d="M448 49 q50 0 70 40"/><path d="M448 87 q50 0 70 6"/><path d="M448 125 q50 0 70 -22"/>
+<path d="M448 163 q50 0 70 26"/><path d="M448 201 q50 0 70 -6"/>
+<path d="M448 239 q50 0 70 -34"/><path d="M448 277 q50 0 70 -66"/>
+</g>
+<g class="u15" font-size="11">
+<rect x="520" y="80" width="180" height="26" rx="6" fill="#fff" stroke="#c9d9e6"/><text x="530" y="97">Navigation architecture (§4)</text>
+<rect x="520" y="122" width="180" height="26" rx="6" fill="#fff" stroke="#c9d9e6"/><text x="530" y="139">Layout &amp; density (§5)</text>
+<rect x="520" y="164" width="180" height="26" rx="6" fill="#fff" stroke="#c9d9e6"/><text x="530" y="181">Platform conventions (§6)</text>
+<rect x="520" y="206" width="180" height="26" rx="6" fill="#fff" stroke="#c9d9e6"/><text x="530" y="223">The device floor (§7)</text>
+</g>
+
+<text class="a15" x="730" y="120">Nothing here is</text>
+<text class="a15" x="730" y="142">arbitrary. Everything</text>
+<text class="a15" x="730" y="164">traces back three</text>
+<text class="a15" x="730" y="186">boxes to the left.</text>
+</svg>
+<figcaption><b>Figure 15</b> — The map to keep. When you meet a mobile pattern you don't recognise in 2031, trace it leftward: which of the three does it serve?</figcaption>
+</figure>
+
+<div class="secfoot"><span>The unlearning table</span><span class="pg">08 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §9 ============================= -->
+<section class="chapter" id="s9">
+<div class="card">
+<h2 class="sec"><span class="num">09</span> Studio work</h2>
+
+<p class="lede">Reading this document changes nothing. These two exercises are where it becomes usable. Budget three hours.</p>
+
+<h3>Exercise 1 — Teardown <span style="font-weight:400;color:#6b7c8c;font-size:16px">· 60 minutes · individual</span></h3>
+
+<p>Pick one Indian app you use several times a week. Swiggy, Zomato, PhonePe, Groww, Blinkit, IRCTC Rail Connect, JioHotstar, Rapido — pick one you actually use, not one you admire.</p>
+
+<ol>
+<li><strong>Map the navigation stack.</strong> Draw it as a diagram in the style of Figure 8. Start at cold launch. Show every tab as a separate stack. Mark which transitions are horizontal pushes and which are vertical modals. Go at least three levels deep on your most-used path.</li>
+<li><strong>Overlay the reach map</strong> on three screens: the home screen, the screen where the primary conversion happens, and one settings or account screen. Mark every interactive element as natural / stretch / hard using Figure 2's zones.</li>
+<li><strong>Find three measurable violations.</strong> Not "this feels cluttered." Each one must name the number it breaks and where the number comes from — for example: <em>"The 'Apply coupon' control is 32 × 24pt against a 44pt iOS minimum, and it sits in the top-right hard zone while being the second-most-used control on the screen."</em></li>
+<li><strong>Propose one fix</strong> for the worst of the three, and state which constraint your fix serves and which trade-off you accepted.</li>
+</ol>
+
+<div class="analogy"><span class="tag">Marking criterion</span>
+<p>A submission that says "the UI is confusing" scores nothing. A submission that says "the back gesture is consumed by the offers carousel on the restaurant screen, so a one-handed user cannot leave without reaching the top-left corner" scores full marks even if it identifies only one problem. <strong>Specificity is the skill being assessed.</strong></p></div>
+
+<h3>Exercise 2 — Rebuild <span style="font-weight:400;color:#6b7c8c;font-size:16px">· 90 minutes · individual, then paired critique</span></h3>
+
+<p>Take one screen from a website you have built yourself — a portfolio project counts, a client site counts, a college project counts. Redesign it as a phone screen at 393 × 852 pt.</p>
+
+<p>Deliver three things:</p>
+<ul>
+<li><strong>The screen</strong>, drawn to the 8-point grid, with safe areas marked and every hit area annotated.</li>
+<li><strong>A change log</strong> — one line per structural change, each naming the constraint that forced it. Aim for at least eight entries. If you have fewer than eight, you have shrunk the page rather than redesigned it.</li>
+<li><strong>A "what I removed and why" paragraph.</strong> Removing things on purpose is the skill; removing nothing is the failure mode.</li>
+</ul>
+
+<p>Then swap with a partner and run their screen against the checklist below. Do not discuss it first — mark it cold, the way a user meets it.</p>
+
+<h3>The master checklist</h3>
+
+<p>Every checklist line from this masterclass, in one place. This is what a screen has to survive before it leaves your hands.</p>
+
+<div class="grid2">
+<div class="gbox app"><h5>Hand — position and reach</h5>
+<p>☐ Primary action in the bottom third, or bottom-anchored<br>
+☐ Nothing critical in the top-far corner<br>
+☐ Menus and sheets open away from the finger<br>
+☐ Horizontal rails inset ≥16dp from the screen edge<br>
+☐ Destructive actions deliberately placed out of the easy arc</p></div>
+
+<div class="gbox app"><h5>Touch — targets and feedback</h5>
+<p>☐ Every interactive element ≥44pt / 48dp hit area<br>
+☐ ≥8dp clearance between adjacent targets<br>
+☐ Pressed state fires on touch-down, within 100 ms<br>
+☐ Every gesture has a visible tappable equivalent<br>
+☐ No behaviour depends on hover or right-click</p></div>
+
+<div class="gbox app"><h5>Eye — legibility</h5>
+<p>☐ Body text ≥15pt/sp, no text below 13<br>
+☐ Body contrast ≥4.5:1; icons and borders ≥3:1<br>
+☐ Outdoor-critical text pushed well above the floor<br>
+☐ Measure between 30 and 45 characters<br>
+☐ Checked at max and min brightness, and once outdoors</p></div>
+
+<div class="gbox app"><h5>OS — structure and lifecycle</h5>
+<p>☐ Safe-area insets read from the system, never hardcoded<br>
+☐ Layout survives 200% text scale without clipping<br>
+☐ Containers sized from content, heights are minimums<br>
+☐ State survives background, resume and cold relaunch<br>
+☐ Android back chain verified: keyboard → sheet → screen → home<br>
+☐ Modals use Cancel/Done, never a back arrow<br>
+☐ Deep-linkable screens define a synthetic back stack</p></div>
+
+<div class="gbox app"><h5>System — spacing and platform</h5>
+<p>☐ Every gap resolves to 4 / 8 / 16 / 24 / 32 / 48<br>
+☐ Screen edge margin 16dp unless justified<br>
+☐ Navigation, back, pickers, permissions, share are platform-native<br>
+☐ Brand layer unified; system layer localised<br>
+☐ Reference device named in the file</p></div>
+
+<div class="gbox app"><h5>Floor — states and weight</h5>
+<p>☐ Empty, loading, stale, offline and error states all designed<br>
+☐ Skeletons shaped like the real content<br>
+☐ Screen is comprehensible before images arrive<br>
+☐ Reduce Motion honoured with a still fallback<br>
+☐ Tested once on a low-end Android device, not only a simulator</p></div>
+</div>
+
+<details class="tn"><summary>Teaching note — running this in a 90-minute class</summary>
+<div class="tnbody">
+<p>Exercise 1 works well as pre-class homework — students arrive with their teardown and the session becomes a critique studio rather than a lecture. Twelve students × three violations gives you thirty-six real examples from Indian apps they use, which is a far better slide deck than anything you would build in advance.</p>
+<p>For Exercise 2, insist on paper or a whiteboard for the first thirty minutes. Students who open Figma immediately spend the hour on corner radii. The structural decision — what goes where, what gets cut — is made faster and better with a pen, and that is the decision being taught.</p>
+<p>If you have only one session, cut Exercise 2 to the change log alone. The eight-entry list is where the learning is concentrated; the pixels are optional.</p>
+</div></details>
+
+<div class="secfoot"><span>Studio</span><span class="pg">09 / 10</span></div>
+</div>
+</section>
+
+
+<!-- ============================= §10 ============================= -->
+<section class="chapter" id="s10">
+<div class="card">
+<h2 class="sec"><span class="num">10</span> Vocabulary, sources, and what comes next</h2>
+
+<h3>10.1 — Glossary</h3>
+
+<div class="tblwrap">
+<table>
+<thead><tr><th style="width:22%">Term</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>Safe area</strong></td><td>The region of the screen not covered by system UI — status bar, notch or Dynamic Island, home indicator, rounded corners. Read from the system; never hardcode.</td></tr>
+<tr><td><strong>Inset</strong></td><td>The distance between the screen edge and the safe area on a given side. Varies by device and orientation.</td></tr>
+<tr><td><strong>Hit area / hit box</strong></td><td>The invisible region that responds to touch. May be, and usually should be, larger than the visible element.</td></tr>
+<tr><td><strong>Navigation stack</strong></td><td>The ordered list of screens the user has pushed into. Back pops the top item. Each tab owns its own.</td></tr>
+<tr><td><strong>Push / pop</strong></td><td>Adding a screen to the stack (usually a horizontal slide) and removing it. Signals depth within one journey.</td></tr>
+<tr><td><strong>Modal presentation</strong></td><td>A screen presented over the stack, usually vertically, that must be resolved or dismissed. Gets Cancel/Done, not Back.</td></tr>
+<tr><td><strong>Bottom sheet</strong></td><td>A panel rising from the bottom edge carrying contextual choices. Occupies the thumb zone and avoids occlusion.</td></tr>
+<tr><td><strong>Rail</strong></td><td>A horizontally scrolling row of items inside a vertically scrolling screen. The Netflix pattern.</td></tr>
+<tr><td><strong>pt</strong></td><td>Logical point (iOS). Multiplied by the screen's scale factor to reach physical pixels.</td></tr>
+<tr><td><strong>dp</strong></td><td>Density-independent pixel (Android). 1dp = 1px at 160dpi.</td></tr>
+<tr><td><strong>sp</strong></td><td>Scale-independent pixel (Android). Like dp, but multiplied by the user's font-size setting. Text only.</td></tr>
+<tr><td><strong>DPR / scale factor</strong></td><td>How many physical pixels draw one logical unit — @1x, @2x, @3x.</td></tr>
+<tr><td><strong>Dynamic Type</strong></td><td>iOS's user-controlled text sizing. The iOS counterpart to Android's font scale.</td></tr>
+<tr><td><strong>Reachability</strong></td><td>iOS gesture that slides the whole screen down so the top becomes thumb-reachable. An escape hatch, not a design allowance.</td></tr>
+<tr><td><strong>Occlusion</strong></td><td>The hand covering the part of the screen it is touching. The cause of most bottom-anchored mobile patterns.</td></tr>
+<tr><td><strong>Optimistic UI</strong></td><td>Showing the result of a user action immediately and reconciling with the server afterwards. Essential on slow networks.</td></tr>
+<tr><td><strong>Skeleton screen</strong></td><td>A placeholder in the shape of the incoming content, shown during loading. Replaces the spinner.</td></tr>
+<tr><td><strong>State restoration</strong></td><td>Rebuilding the exact screen, scroll position and input state after the OS suspends or kills the app.</td></tr>
+<tr><td><strong>Deep link</strong></td><td>A URL that opens a specific screen inside the app, requiring a synthesised back stack.</td></tr>
+<tr><td><strong>Elevation vs materials</strong></td><td>Android's depth model (tonal shift plus shadow, layers <em>above</em>) versus iOS's (blur and vibrancy, layers seen <em>through</em>).</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>10.2 — Sources, and how to read them</h3>
+
+<p>Where this masterclass states a platform number — 44pt, 48dp, 8dp spacing, 34pt home indicator — it comes from the platform guidelines and is normative. Where it states a research finding, the source and its date are given so you can judge how much weight it carries. Where it states my own working rule, it is labelled as judgement. Please keep that distinction when you teach from this, because students will quote whatever you say with equal confidence.</p>
+
+<ul>
+<li><strong>Apple Human Interface Guidelines</strong> — the authority for iOS. Read the Layout, Navigation, and Accessibility sections at minimum. Updated with each OS release; check it rather than trusting a blog post about it.</li>
+<li><strong>Material Design 3</strong> — the authority for Android. The Accessibility and Navigation sections carry the touch-target and structure guidance used here.</li>
+<li><strong>WCAG 2.2</strong> (W3C, 2023) — SC 1.4.3 and 1.4.11 for contrast, SC 2.5.5 and 2.5.8 for target size.</li>
+<li><strong>Nielsen Norman Group</strong> — the response-time thresholds (0.1 s / 1 s / 10 s) and a large body of mobile navigation and discoverability research.</li>
+<li><strong>Steven Hoober, <em>How Do Users Really Hold Mobile Devices?</em></strong> (2013) — the grip ratios in Figure 2. Directionally useful, geometrically dated; the caveat in the figure is not optional.</li>
+<li><strong>Luke Wroblewski, <em>Mobile First</em></strong> (2011) — thumb-zone thinking and the argument for constraint-led design. Old, and still the clearest statement of the case.</li>
+<li><strong>Josh Clark, <em>Designing for Touch</em></strong> (2015) — the best single treatment of touch ergonomics for designers.</li>
+<li><strong>Refactoring UI</strong>, Wathan &amp; Schoger (2018) — spacing systems, hierarchy through weight and colour, and why constraint-based scales work.</li>
+</ul>
+
+<h3>10.3 — What Masterclass 2 covers, and why it comes second</h3>
+
+<p>This masterclass built the <em>structure</em>: where things go, how big they are, how the user moves between them, and what the platform demands. Everything in it is static — it would be true of a printed screenshot.</p>
+
+<p>Masterclass 2 is <strong>Motion, State and Feel</strong>: transitions and what they communicate, easing and spring physics, the five states every screen has (empty, loading, partial, error, ideal), perceived performance, optimistic UI, haptics, and gesture-driven interaction where the animation tracks your finger rather than playing back at you.</p>
+
+<p>It comes second for a simple reason. <span class="hl">Motion communicates relationships between structures.</span> A shared-element transition tells the user that the small poster they tapped and the large poster now filling the screen are the same object — but only if there is a coherent structure for it to describe. Animating an incoherent architecture produces an app that feels slick for ten seconds and confusing thereafter. Structure first, then feel.</p>
+
+<p>Masterclass 3 is <strong>Systems and Surfaces</strong>: design tokens and component libraries, onboarding and permission priming, recommendation and feed surfaces, power-user density, monetisation placement, and the handoff from design to engineering.</p>
+
+<div class="insight"><span class="tag">One last thing</span>
+<p>You came into this with a decade of design instinct built on a cursor and a wide canvas. Almost none of that instinct is wasted — hierarchy, typography, rhythm, colour, restraint all transfer intact. What does not transfer is the <em>geometry</em>: where the input comes from, what it covers, how big it is, and who owns the screen.</p>
+<p style="margin-top:10px">That is a small set of things to relearn, and Figure 15 fits on one page. Go rebuild one of your own screens. That is where it lands.</p></div>
+
+<div class="gutter">
+<p class="note green">Structure first. Then motion. Then systems. In that order, for a reason.</p>
+<p class="note">The instinct transfers. The geometry doesn't. That's the whole gap.</p>
+</div>
+
+<div class="secfoot"><span>Glossary &amp; next</span><span class="pg">10 / 10</span></div>
+</div>
+</section>
+
+</div>
+
+<footer style="background:linear-gradient(135deg,#24506f,#3a7ca5);color:#d6ecf8;padding:38px 24px;text-align:center;font-size:14.5px">
+  <div style="max-width:940px;margin:0 auto">
+    <p style="font-family:'Kalam',cursive;font-size:19px;color:#ffe9a8;margin:0 0 8px">Masterclass 1 of 3 — UX for Mobile Apps</p>
+    <p style="margin:0 0 4px"><strong style="color:#fff">The Physics of the Phone</strong> · Reference devices: iPhone 15 (393 × 852 pt) and Android baseline (360 × 800 dp)</p>
+    <p style="margin:0;opacity:.75">Next: Masterclass 2 — Motion, State &amp; Feel · Then: Masterclass 3 — Systems &amp; Surfaces</p>
+  </div>
+</footer>
+
+</body>
+</html>
